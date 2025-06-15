@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IRiS nX Archive</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📚 smgal.com의 Archive</h1>
+            <p>2004-2018년 다이어리 게시판 아카이브</p>
+            <div class="stats">
+                <span>총 4223개 게시물</span>
+                <span>원글 873개</span>
+                <span>답글 3350개</span>
+            </div>
+        </header>
+        
+        <div class="controls">
+            <input type="text" id="search" placeholder="제목, 내용, 작성자로 검색...">
+            <div class="filters">
+                <div class="filter-group year-filter-group">
+                    <div class="year-row">
+                        <button class="year-btn active" data-year="2018">2018년 이후</button>
+                        <button class="year-btn" data-year="2017">2017년</button>
+                        <button class="year-btn" data-year="2016">2016년</button>
+                        <button class="year-btn" data-year="2015">2015년</button>
+                        <button class="year-btn" data-year="2014">2014년</button>
+                        <button class="year-btn" data-year="2013">2013년</button>
+                        <button class="year-btn" data-year="2012">2012년</button>
+                        <button class="year-btn" data-year="2011">2011년</button>
+                    </div>
+                    <div class="year-row">
+                        <button class="year-btn" data-year="2010">2010년</button>
+                        <button class="year-btn" data-year="2009">2009년</button>
+                        <button class="year-btn" data-year="2008">2008년</button>
+                        <button class="year-btn" data-year="2007">2007년</button>
+                        <button class="year-btn" data-year="2006">2006년</button>
+                        <button class="year-btn" data-year="2005">2005년</button>
+                        <button class="year-btn" data-year="2004">2004년</button>
+                    </div>
+                </div>
+                <hr class="hr-dotted" />
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="all">전체</button>
+                    <button class="filter-btn" data-filter="original">원글만</button>
+                </div>
+                <hr class="hr-solid" />
+            </div>
+        </div>
+        
+        <div id="pagination-top"></div>
+        <div id="posts-container"></div>
+        <div id="pagination"></div>
+    </div>
+    
+    <script src="assets/js/app.js"></script>
+</body>
+</html>
