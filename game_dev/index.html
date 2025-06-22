@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>smgal.com의 Archive</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📚 smgal.com의 Archive</h1>
+            <p>『개발 관련 게시판』아카이브</p>
+            <div class="stats">
+                <span>총 349개 게시물</span>
+                <span>원글 114개</span>
+                <span>답글 235개</span>
+            </div>
+        </header>
+        
+        <div class="controls">
+            <input type="text" id="search" placeholder="제목, 내용, 작성자로 검색...">
+            <div class="filters">
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="all">전체</button>
+                    <button class="filter-btn" data-filter="original">원글만</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="pagination-top"></div>
+        <div id="posts-container"></div>
+        <div id="pagination"></div>
+    </div>
+    
+    <script src="assets/js/app.js"></script>
+</body>
+</html>
