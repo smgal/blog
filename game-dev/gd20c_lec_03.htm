@@ -1,0 +1,751 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>Direct X 6.1 에 있는 DirectMusic 에 대한 Document 번역</TITLE>
+<META name="generator" content="Namo WebEditor v5.0">
+<STYLE><!--
+.leading200 { line-height: 200% }
+.leading180 { line-height: 180% }
+.leading150 { line-height: 150% }
+.leading100 { line-height: 100% }
+-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="navy" text="white" link="blue" vlink="purple" alink="red">
+
+<P><font color="black"><span style="background-color:white;">이것은 1999년 하이텔 
+게임 제작 동호회에 올렸던 강좌 4회분 입니다.</span></font></P>
+<p align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="gd_data/gd20c_lec_03.zip"><span style="background-color:white;">바이너리 
+데이터</span></a></p>
+<p><font color="#CCFF00">#####################################################</font></p>
+<p><FONT face="굴림체">아래의 글은 제가 Direct X 6.0 에 있는 DirectMusic 에 대한 Document를 그냥 끄<BR>
+적 끄적 개요만 추려서 번역해본 겁니다.</FONT></p>
+<P><FONT face="굴림체">만약 MCI를 사용하여 MIDI를 배경음악으로 연주 하는데 질리셨던 분들은 한 번 읽<BR>
+어 보시면 약간 도움이 되실 것이라고 봅니다.</FONT></P>
+<P><FONT face="굴림체">그럼.. SMgal...</FONT></P>
+<P><FONT face="굴림체"><BR>
+&lt;&lt; DirectMusic Document &gt;&gt;</FONT></P>
+<P><FONT face="굴림체">▶ DirectMusic 이란 ?</FONT></P>
+<P><FONT face="굴림체">* DirectMusic은 DirectX의 음악 컴포넌트 API 이다.<BR>
+* DirectSound와는 달리 메시지 기반의 음악 데이터를 가지고 작업한다.<BR>
+* 게다가 MIDI 와 DLS (Downloadable sounds) 표준을 지원한다.<BR>
+* 역시 다른 DirectX 의 컴포넌트와 마찬가지로 COM 을 기반으로 한다.<BR>
+* DirectMusic의 모든 기능은 윈도우 95, 윈도우 98, 윈도우 NT 5.0 에서 모두 사<BR>
+&nbsp;&nbsp;용 이 가능하지만, 윈도우 95 의 DLS 에 대한 하드웨어 지원은 되지 않는다.</FONT></P>
+<P><FONT face="굴림체"><BR>
+▶ 왜 DirectMusic을 사용하는가 ?</FONT></P>
+<P><FONT face="굴림체"><BR>
+1. DirectMusic API 는 플랫폼에 관한 기본적인 요구사항을 대변한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;* downloadable sounds를 사용할 때 애플리케이션은 모든 기종에서 같은 카운트<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;를 가지고, 원래 디자인하고자 했던 속도에 동기화 시킨다.<BR>
+&nbsp;&nbsp;* MIDI 가 생성해 내는 음악의 PlayBack은 2ms 이다.<BR>
+&nbsp;&nbsp;* 하드웨어 가속이 지원하지 않는 기기에서는 최소 능률로 수행된다.<BR>
+&nbsp;&nbsp;* DirectMusic은 저 수준의 특성을 제어함에 있어서 제한을 두지 않으므로 확장<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;성이 용이하다.</FONT></P>
+<P><FONT face="굴림체">2. 게다가 DirectMusic은 쉬운 &nbsp;프로그램 개발과 사용자의 경험을 &nbsp;풍부하게 하기 <BR>
+위한 중요한 특징들을 제공해 준다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;* DirectMusic은 표준 MIDI 파일과 interactive music segment와 서드 파티 기<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;술을 동등하게 지원한다.<BR>
+&nbsp;&nbsp;* 동시에 여러 개의 음악을 연주하는 기능이 있다.<BR>
+&nbsp;&nbsp;* DirectMusic은 16 개의 MIDI 채널의 제한을 뛰어넘어, 어떤 수의 음색이라도 <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;가상적으로 동시에 연주할 수 있다.<BR>
+&nbsp;&nbsp;* DLS 의 악기를 자동으로 관리한다.<BR>
+&nbsp;&nbsp;* DirectMusic의 연주 엔진은 동적 사운드트랙을 생성하여 사용되어질 수 있고 <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;동적인 상호 playback이 가능하다.</FONT></P>
+<P><FONT face="굴림체">▶ DirectMusic의 구조 (생략)</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;* Core and Performance Layers <BR>
+&nbsp;&nbsp;* Interfaces and Objects <BR>
+&nbsp;&nbsp;* DirectMusic Object Types <BR>
+&nbsp;&nbsp;* DirectMusic Messages <BR>
+&nbsp;&nbsp;* Downloadable Sounds <BR>
+&nbsp;&nbsp;* Microsoft Software Synthesizer </FONT></P>
+<P><FONT face="굴림체">▶ DirectMusic Tutorials</FONT></P>
+<P><FONT face="굴림체">1. MIDI 파일 연주</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;1) COM의 초기화</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectMusic의호출을 하기 전에 다음과 같은 COM의 초기화가 필요하다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (FAILED(CoInitialize(NULL)))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 애플리케이션 종료<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} // 그렇지 않다면 계속</FONT></P>
+<P><FONT face="굴림체"><BR>
+&nbsp;&nbsp;2) 퍼포먼스 생성</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectMusic 애플리케이션의 중심 객체가 '퍼포먼스'이다. 그리고 그것은 세<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;그먼트의 playback을 관리한다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;이것은 COM의 CoCreateInstance 함수를 사용하여 생성된다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;다음은 예제 함수이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDirectMusicPerformance* CreatePerformance(void)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDirectMusicPerformance* pPerf;<BR>
+&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (FAILED(CoCreateInstance(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CLSID_DirectMusicPerformance,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NULL,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CLSCTX_INPROC, <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IID_IDirectMusicPerformance,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(void**)&amp;pPerf<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pPerf = NULL;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return pPerf;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;그리고 다음과 같이 사용하여 전역 퍼포먼스 포인터를 초기화시키는 함수를 <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;사용할 수 있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDirectMusicPerformance* g_pPerf = CreatePerformance();</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;퍼포먼스가 생성되고 나면, IDirectMusicPerformance::Init 메소드를 호출하<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;여 초기화시킬 필요가 있다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;이 메소드는 디폴트 포트를 관리하는 DirectMusic 객체를 생성한다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;사용자는 직접 이 메소드에 접근 할 필요가 없기 때문에 Init 에는 NULL 을 <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;넘겨주면 된다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pPerf-&gt;Init(NULL);</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;이제는 퍼포먼스에 포트를 추가하는 것이 필요하다. &nbsp;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDirectMusicPerformance::AddPort 메소드에 NULL 파라메터를 넘겨줘서 호출<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;하게 되면 자동적으로 하나의 채널 그룹을 가진 마이크로소프트 소프트웨어 <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;신디사이저를 추가한다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;그리고 이것은 0-15까지의 채널을 지정한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;다음의 예제에서는 퍼포먼스가 성공적으로 초기화되었을 때 TRUE를 넘겨주는 <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;구조로 되어 있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BOOL InitializeSynth(IDirectMusicPerformance* pPerf)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BOOL fReturn = FALSE;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (SUCCEEDED( pPerf-&gt;AddPort(NULL)))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fReturn = TRUE;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return fReturn;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</FONT></P>
+<P><FONT face="굴림체"><BR>
+&nbsp;&nbsp;3) 로더의 생성</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;디스크로부터 어떠한 객체를 로드하기 위해서 DirectMusicLoader 객체가 우<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;선적으로 생성될 필요가 있다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;다음의 함수에서 보이듯이, 이것은 다른 COM 객체들과 같다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDirectMusicLoader* CreateLoader(void)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDirectMusicLoader* pLoader;<BR>
+&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (FAILED(CoCreateInstance(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CLSID_DirectMusicLoader,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NULL,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CLSCTX_INPROC, <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IID_IDirectMusicLoader,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(void**)&amp;pLoader<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)))<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pLoader = NULL;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return pLoader;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;그리고 다음과 같이 사용하여 전역 변수를 초기화시키는 함수를 사용한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDirectMusicLoader* g_pLoader = CreateLoader();</FONT></P>
+<P><FONT face="굴림체"><BR>
+&nbsp;&nbsp;4) MIDI 파일의 로딩</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadSegment는 마지막 단계에서 생성되어지며 세그먼트 객체를 로드하는데 <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;사용되는 DirectMusicLoader에 대한 포인터를 가진다. <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;전역 세그먼트 포인터를 초기화하는데 그것이 사용되고, 세그먼트를 연주하<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;기 위해서 나중에 필요하게 될 것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (g_pLoader)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDirectMusicSegment* g_pMIDIseg = LoadSegment(g_pLoader);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;약간의 지역 변수를 초기화한 후에, 그 함수는 로더의 현재 찾기 디렉토리를 <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;애플리케이션이 현재 작업하고 있는 디렉토리로 바꾸어 준다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDirectMusicSegment* LoadSegment(IDirectMusicLoader* pLoader)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMUS_OBJECTDESC ObjDesc; <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDirectMusicObject* pObjectSeg = NULL;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDirectMusicSegment* pSegment = NULL;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;char szDir[_MAX_PATH];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WCHAR wszDir[_MAX_PATH];</FONT></P>
+<P><FONT face="굴림체">&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if( _getcwd( szDir, _MAX_PATH ) == NULL )<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 에러가 발생.. NULL 을 리턴 한다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return NULL;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MULTI_TO_WIDE(wszDir, szDir);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pLoader-&gt;SetSearchDirectory(GUID_DirectMusicAllTypes,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wszDir, FALSE );<BR>
+&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMUS_OBJECTDESC 구조로 로드되어지는 객체를 묘사하자면...</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ObjDesc.guidClass = CLSID_DirectMusicSegment;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ObjDesc.dwSize = sizeof(DMUS_OBJECTDESC);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wcscpy( ObjDesc.wszFileName, &quot;Tune.mid&quot; );<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ObjDesc.dwValidData = DMUS_OBJ_CLASS | DMUS_OBJ_FILENAME;<BR>
+&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;이제 객체를 로드한다. IDirectMusicSegment 인터페이스에 대한 쿼리를 거치<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;고 다시 해제된다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;로딩하는 객체 역시 세그먼트를 생성하고, 트랙의 초기화하며, 그 외의 <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;playback에 대한 MIDI 데이터를 준비하기 위한 모든 것를 해야한다는 점에 <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;주의하자.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pLoader-&gt;GetObject( &amp;ObjDesc,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IID_IDirectMusicSegment, (void**) &amp;pSegment );<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return pSegment;<BR>
+&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} // LoadSegment() 의 끝</FONT></P>
+<P><FONT face="굴림체"><BR>
+5) MIDI 파일의 연주</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;모든 준비 작업은 이전의 과정에서 모두 끝냈다. 그래서 음악을 연주하는 부<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;분은 간단하게 다음과 같다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDirectMusicSegmentState* g_pSegState;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pPerf-&gt;PlaySegment(g_pMIDISeg, 0, 0, &amp;g_pSegState);</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDirectMusicPerformance::PlaySegment 호출 시의 파라메터는 다음과 같다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 이전 과정에서 만들었던 세그먼트<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 타이밍 플래그의 집합과 시작 시간 <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 세그먼트 스테이트 객체의 포인터 주소. ( 세그먼트에 관한 정보를 가져오<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;기 위해 리턴된 포인터를 사용할 수 있다. 만약 세그먼트 스테이트가 필요 <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;없다면 NULL로한다. )</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;만약 한 번 이상으로 파일을 연주하려면 PlaySegment를 호출하기 이전에 <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDirectMusicSegment::SetRepeats 메소드를 먼저 호출해야 한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;또한 연주가 끝나기 전이나 반복 연주를 멈추게 하려면 IDirectMusicPerform<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ance::Stop 메소드를 호출하면 된다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;이 메소드를 가장 간단한 방법으로 사용하면, 현재 연주되는 모든 음악을 바<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;로 멈추게 한다. </FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pPerf-&gt;Stop(NULL, NULL, 0, 0)</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;하지만, 단지 하나의 세그먼트 또는 그 세그먼트의 하나의 인스턴스를 멈추<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;게 하기 위해서는 현재의 세그먼트 또는 세그먼트 스테이트에 대한 포인터를 <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;넘겨주면 된다.</FONT></P>
+<P><FONT face="굴림체">6) DirectMusic 종료</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;종료하기 이전에, 프로그램은 퍼포먼스를 중단시켜야 하고 생성된 모든 객체<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;들을 해제하여야 하며 COM 레퍼런스 해제를 해야한다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;( CoInitialize를 호출한 만큼 대응하는 CoUninitialize 가 있어야 한다는 <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;것을 명심하자. )</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;다음의 함수는 필요한 제거 과정을 수행한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HRESULT FreeDirectMusic()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 세그먼트 해제<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pMIDISeg-&gt;Release();</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 연주되고 있는 음악이 있다면 모두 멈춘다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pPerf-&gt;Stop( NULL, NULL, 0, 0 );</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 퍼포먼스 객체를 닫고 해제한다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pPerf-&gt;CloseDown();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pPerf-&gt;Release();</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 로더 객체를 해제한다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pLoader-&gt;Release();</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// COM을 해제한다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CoUninitialize();</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return S_OK;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</FONT></P>
+<P>&nbsp;</P>
+<p><font color="#CCFF00">#####################################################</font></p>
+<p>&nbsp;<FONT face="굴림체">------------------------------------------------------------------------ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>### 델파이로 하는 Direct X - Direct Music (1/3)</FONT></p>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;1. Direct Music 의 개요<BR></FONT><FONT color=aqua face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;~~~~~~~~~~~~~~~~~~~~~~~<BR></FONT><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;2. Direct 
+Music 초기화와 MIDI 읽기<BR>&nbsp;&nbsp;&nbsp;&nbsp;3. Direct Music 출력</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;작성자 
+: 안영기 ( HiTEL ID : SMgal )</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(1) Direct Music 이란 무엇인가 ?</FONT></P>
+<P><FONT face="굴림체">아래의 글은 제가 Direct X 6.0 에 있는 Direct Music 에 대한 Document를 
+개<BR>요만 추려서 번역해 본 것이다. 그리고 그 안의 C 소스는 다시 파스칼로 번역<BR>했다. ( 제일 처음 Direct Music 이 
+소개되었던 당시에 쓴 글이라 6.0 기준임<BR>)</FONT></P>
+<P><FONT face="굴림체">&lt;&lt; Direct Music Document &gt;&gt;</FONT></P>
+<P><FONT face="굴림체"><BR>▶ Direct Music 이란 ?</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;- Direct Music 은 DirectX 의 음악 컴포넌트 API 이다.<BR>&nbsp;&nbsp;- Direct 
+Sound 와는 달리 메시지 기반의 음악 데이터를 가지고 작업한다.<BR>&nbsp;&nbsp;- 게다가 MIDI 와 DLS (Downloadable 
+sounds) 표준을 지원한다.<BR>&nbsp;&nbsp;- 역시 다른 DirectX 의 컴포넌트와 마찬가지로 COM 을 기반으로 한다.<BR>&nbsp;&nbsp;- 
+Direct Music 의 &nbsp;모든 기능은 &nbsp;윈도우즈 95, &nbsp;윈도우즈 98, 윈도우즈 NT<BR>&nbsp;&nbsp;&nbsp;&nbsp;5.0 에서 모두 사용이 가능하지만, 
+윈도우즈 95 의 DLS 에 대한 하드웨어 &nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;지원은 되지 않는다.</FONT></P>
+<P><FONT face="굴림체"><BR>▶ 왜 Direct Music을 사용하는가 ?</FONT></P>
+<P><FONT face="굴림체">1. Direct Music API 는 플랫폼에 관한 기본적인 요구사항을 대변한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;- downloadable sounds를 사용할 때 애플리케이션은 모든 기종에서 같은 카 
+&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;운트를 가지고, 원래 디자인하고자 했던 속도에 동기화 시킨다.<BR>&nbsp;&nbsp;- MIDI 가 생성해 내는 음악의 Play Back 은 
+2ms 이다.<BR>&nbsp;&nbsp;- 하드웨어 가속이 지원하지 않는 기기에서는 최소 능률로 수행된다.<BR>&nbsp;&nbsp;- Direct Music 은 &nbsp;저 수준의 
+특성을 제어함에 있어서 제한을 두지 않으므<BR>&nbsp;&nbsp;&nbsp;&nbsp;로 확장성이 용이하다.</FONT></P>
+<P><FONT face="굴림체">2. 게다가 Direct Music 은 쉬운 &nbsp;프로그램 &nbsp;개발과 사용자의 경험을 &nbsp;풍부하<BR>&nbsp;&nbsp;&nbsp;게 하기 
+위한 중요한 특징들을 제공해 준다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;- Direct Music은 표준 MIDI 파일과 interactive music segment 와 서드 
+파<BR>&nbsp;&nbsp;&nbsp;&nbsp;티 기술을 동등하게 지원한다.<BR>&nbsp;&nbsp;- 동시에 여러 개의 음악을 연주하는 기능이 있다.<BR>&nbsp;&nbsp;- Direct Music은 
+16 개의 MIDI 채널의 제한을 뛰어넘어, 어떤 수의 음색이 &nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;라도 가상적으로 동시에 연주할 수 있다.<BR>&nbsp;&nbsp;- DLS 의 
+악기를 자동으로 관리한다.<BR>&nbsp;&nbsp;- Direct Music 의 연주 엔진은 동적 사운드트랙을 생성하여 사용되어질 수 &nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;있고 
+동적인 상호 playback 이 가능하다.</FONT></P>
+<P><FONT face="굴림체"><BR>▶ DirectMusic Tutorials</FONT></P>
+<P><FONT face="굴림체">1. MIDI 파일 연주</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;1) COM의 초기화</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Direct Music의 호출을 하기 전에 다음과 같은 COM의 초기화가 필요하다.</FONT></P>
+<P><FONT color=yellow face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if CoInitialize(nil) &lt;&gt; S_OK then 
+begin<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 애플리케이션 종료<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 그렇지 않다면 계속</FONT></P>
+<P><FONT face="굴림체"><BR>&nbsp;&nbsp;2) 퍼포먼스 생성</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Direct Music 애플리케이션의 중심 객체가 '퍼포먼스'이다. 그리고 그것<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;은 
+세그먼트의 play back을 관리한다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;이것은 COM의 CoCreateInstance 함수를 사용하여 
+생성된다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;다음은 예제 함수이다.</FONT></P>
+<P><FONT color=yellow face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;function CreatePerformance : 
+IDirectMusicPerformance;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pPerf : 
+IDirectMusicPerformance;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if 
+CoCreateInstance(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CLSID_DirectMusicPerformance,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nil,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CLSCTX_INPROC, 
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IID_IDirectMusicPerformance,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pPerf<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;) 
+&lt;&gt; S_OK then begin<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pPerf := 
+nil;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CreatePerformance := 
+pPerf;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;그리고 다음과 같이 사용하여 &nbsp;전역 퍼포먼스 포인터를 초기화시키는 함<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;수를 사용할 수 
+있다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;<BR></FONT><FONT color=yellow face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pPerf : 
+IDirectMusicPerformance;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;........<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pPerf := 
+CreatePerformance;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;퍼포먼스가 생성되고 나면, IDirectMusicPerformance.Init 메쏘드를 
+&nbsp;호<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;출하여 초기화시킬 필요가 있다. &nbsp;이 메쏘드는 디폴트 포트를 &nbsp;관리하는<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Direct Music 객체를 
+생성한다. 사용자는 직접 이 메쏘드에 접근 할 &nbsp;필<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;요가 없기 때문에 Init 에는 nilL 을 넘겨주면 
+된다.</FONT></P>
+<P><FONT color=yellow face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pPerf.Init(nil);</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;이제는 퍼포먼스에 포트를 추가하는 것이 필요하다. &nbsp;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDirectMusicPerformance.AddPort 메쏘드에 nil 파라메터를 넘겨줘서 
+호<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;출하게 되면 자동적으로 하나의 채널 그룹을 가진 마이크로소프트 &nbsp;소프<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;트웨어 신디사이저를 추가한다. 그리고 
+이것은 0-15까지의 채널을 &nbsp;지정<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;다음의 예제에서는 퍼포먼스가 성공적으로 초기화되었을 때 TRUE를 넘겨<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;주는 구조로 되어 
+있다.</FONT></P>
+<P><FONT color=yellow face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;function InitializeSynth(pPerf : 
+IDirectMusicPerformance) 
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 
+Boolean;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fReturn : 
+Boolean;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fReturn := FALSE;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if 
+pPerf-&gt;AddPort(nil) = S_OK then begin<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fReturn := 
+TRUE;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InitializeSynth := 
+fReturn;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;3) 로더의 생성</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;디스크로부터 어떠한 객체를 로드하기 위해서 DirectMusicLoader 
+객체가<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;우선적으로 생성될 필요가 있다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;다음의 함수에서 보이듯이, 이것은 다른 COM 객체들과 
+같다.</FONT></P>
+<P><FONT color=yellow face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;function CreateLoader : 
+IDirectMusicLoader;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pLoader : 
+IDirectMusicLoader;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if 
+CoCreateInstance(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CLSID_DirectMusicLoader,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nil,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CLSCTX_INPROC, 
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IID_IDirectMusicLoader,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pLoader<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;) 
+&lt;&gt; S_OK then begin<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pLoader := 
+nil;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CreateLoader := 
+pLoader;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;그리고 다음과 같이 사용하여 &nbsp;전역 변수를 초기화시키는 함수를 
+사용한<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;다.</FONT></P>
+<P><FONT color=yellow face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var &nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pLoader : 
+IDirectMusicLoader;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;........<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pLoader := 
+CreateLoader;</FONT></P>
+<P><FONT face="굴림체"><BR>&nbsp;&nbsp;4) MIDI 파일의 로딩</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadSegment는 마지막 단계에서 생성되어지며 세그먼트 객체를 로드하는<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;데 사용되는 
+DirectMusicLoader에 대한 포인터를 가진다. <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;전역 세그먼트 포인터를 초기화하는데 그것이 사용되고, &nbsp;세그먼트를 연 
+&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;주하기 위해서 나중에 필요하게 될 것이다.</FONT></P>
+<P><FONT color=yellow face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pMIDIseg : 
+IDirectMusicSegment;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;..........<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Assigned(g_pLoader) then 
+begin<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pMIDIseg := LoadSegment(g_pLoader);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;약간의 지역 변수를 초기화한 후에, 그 함수는 로더의 현재 찾기 디렉토<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;리를 
+애플리케이션이 현재 작업하고 있는 디렉토리로 바꾸어 준다.</FONT></P>
+<P><FONT color=yellow face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;function LoadSegment(pLoader : 
+IDirectMusicLoader) <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 
+IDirectMusicSegment;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ObjDesc &nbsp;&nbsp;&nbsp;: 
+TDMUS_OBJECTDESC;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pObjectSeg : 
+IDirectMusicObject;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pSegment &nbsp;&nbsp;: 
+IDirectMusicSegment;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;szDir &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: array [0.._MAX_PATH] of 
+CHAR;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wszDir &nbsp;&nbsp;&nbsp;&nbsp;: array [0.._MAX_PATH] of 
+WCHAR;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pObjectSeg := nil;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pSegment &nbsp;&nbsp;:= 
+nil;<BR>&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if _getcwd(szDir,_MAX_PATH) = nil then 
+begin<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(* 역자주. _getcwd() 는 C 에서 path를 구하는 표준 
+함수이다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;델파이에서는 &nbsp;ExtractFilePath() 함수를 사용하면 &nbsp;같은 
+결과를<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;얻는다 *)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 에러가 발생.. NULL 을 리턴 
+한다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadSegment := 
+nil;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Exit;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MULTI_TO_WIDE(wszDir,szDir);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pLoader.SetSearchDirectory(GUID_DirectMusicAllTypes,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wszDir,FALSE 
+);<BR></FONT><FONT face="굴림체">&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMUS_OBJECTDESC 구조로 로드되어지는 객체를 
+묘사하자면...</FONT></P>
+<P><FONT color=yellow face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ObjDesc.guidClass &nbsp;&nbsp;= 
+CLSID_DirectMusicSegment;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ObjDesc.dwSize &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 
+sizeof(TDMUS_OBJECTDESC);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wcscpy(ObjDesc.wszFileName,'Tune.mid');<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ObjDesc.dwValidData 
+= DMUS_OBJ_CLASSor or DMUS_OBJ_FILENAME;<BR>&nbsp;<BR></FONT><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;이제 
+객체를 로드한다. &nbsp;IDirectMusicSegment 인터페이스에 대한 쿼리를<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;거치고 다시 해제된다. 로딩하는 객체 역시 
+세그먼트를 생성하고, &nbsp;트랙<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;의 초기화하며, 그 외의 playback에 대한 MIDI 데이터를 준비하기 &nbsp;위한<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;모든 
+것을 해야한다는 점에 주의하자.</FONT></P>
+<P><FONT color=yellow face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pLoader.GetObject(ObjDesc,IID_IDirectMusicSegment,pSegment 
+);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadSegment := pSegment;<BR>&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} // LoadSegment() 의 
+끝</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;5) MIDI 파일의 연주</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;모든 준비 작업은 이전의 과정에서 모두 끝냈다. &nbsp;그래서 음악을 연주하<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;는 부분은 
+간단하게 다음과 같다.</FONT></P>
+<P><FONT color=yellow face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pSegState : 
+IDirectMusicSegmentState;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pPerf.PlaySegment(g_pMIDISeg,0,0,g_pSegState);</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDirectMusicPerformance.PlaySegment() 호출 시의 &nbsp;&nbsp;파라메터는 
+다음과<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;같다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 이전 과정에서 만들었던 세그먼트<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 타이밍 플래그의 집합과 시작 시간 
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 세그먼트 스테이트 객체의 포인터 주소. ( 세그먼트에 관한 정보를 가<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;져오기 위해 리턴된 포인터를 사용할 
+수 있다. &nbsp;만약 세그먼트 스테이<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;트가 필요 없다면 nil 로한다. )</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;만약 한 번 이상으로 파일을 연주하려면 PlaySegment를 호출하기 
+이전에<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDirectMusicSegment.SetRepeats() 메쏘드를 먼저 호출해야 한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;또한 &nbsp;&nbsp;연주가 &nbsp;&nbsp;&nbsp;끝나기 &nbsp;&nbsp;전이나 &nbsp;&nbsp;반복 &nbsp;&nbsp;연주를 &nbsp;&nbsp;&nbsp;멈추게 
+&nbsp;&nbsp;하려면<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectMusicPerformance.Stop() 메쏘드를 호출하면 된다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;이 메쏘드를 가장 간단한 
+방법으로 사용하면, &nbsp;현재 연주되는 모든 음악<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;을 바로 멈추게 한다. </FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pPerf.Stop(nil,nil,0,0);</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;하지만, &nbsp;단지 하나의 세그먼트 또는 &nbsp;그 세그먼트의 하나의 인스턴스를<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;멈추게 하기 
+위해서는 현재의 세그먼트 또는 세그먼트 스테이트에 &nbsp;대한<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;포인터를 넘겨주면 된다.</FONT></P>
+<P><FONT face="굴림체">6) DirectMusic 종료</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;종료하기 이전에, 프로그램은 퍼포먼스를 중단시켜야 하고 &nbsp;생성된 모든<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;객체들을 해제하여야 
+하며 COM 레퍼런스 해제를 해야한다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;( CoInitialize를 호출한 만큼 대응하는 CoUninitialize 가 있어야 
+한다<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;는 것을 명심하자. )</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;다음의 함수는 필요한 제거 과정을 수행한다.</FONT></P>
+<P><FONT color=yellow face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;funtion FreeDirectMusic : 
+HRESULT;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 세그먼트 
+해제<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pMIDISeg.Release;</FONT></P>
+<P><FONT color=yellow face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 연주되고 있는 음악이 있다면 모두 
+멈춘다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pPerf.Stop(nil,nil,0,0);</FONT></P>
+<P><FONT color=yellow face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 퍼포먼스 객체를 닫고 
+해제한다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pPerf.CloseDown;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pPerf.Release;</FONT></P>
+<P><FONT color=yellow face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 로더 객체를 
+해제한다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_pLoader.Release;</FONT></P>
+<P><FONT color=yellow face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// COM을 
+해제한다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CoUninitialize;</FONT></P>
+<P><FONT color=yellow face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FreeDirectMusic := 
+S_OK;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(2) DLS 란 무엇인가 ?</FONT></P>
+<P><FONT face="굴림체">예전에는 대부분의 컴퓨터 음악은 전혀 다른 두 가지의 방법 중의 하나로 &nbsp;만<BR>들어 졌다. 그 두 가지는 
+각각 장점과 단점이 있었는데...</FONT></P>
+<P><FONT face="굴림체">웨이브 형식은 디지탈 샘플링으로부터 재생산되어지며 전형적으로 *.wav 라는<BR>파일이나 CD 트랙의 음악 
+같은 것이다. &nbsp;디지탈 샘플들은 &nbsp;어떠한 사운드라도<BR>재생산 할 수 있으며, 출력 역시 모든 사운드 카드에서 유사한 방식으로 
+출력<BR>가능하다. 그러나 웨이브 형식은 저장 공간이 많이 필요하고 리소스가 커진다<BR>는 단점이 있다.</FONT></P>
+<P><FONT face="굴림체">악기 음악의 MIDI 방식은 보통 하드웨어적으로 합성되어지며 메세지에 반응하<BR>는 방식으로 구성되어 있다. 
+&nbsp;MIDI 파일은 용량도 작고 리소스도 매우 작아진<BR>다. &nbsp;그러나 신디사이저 내의 제너럴 MIDI 로는 악기의 수에 제한이 있고, 
+다<BR>른 시스템으로 가면 출력 음이 달라져 버리는 경우가 발생한다.</FONT></P>
+<P><FONT face="굴림체">MIDI 의 간결성과 유연성을 가지면서 디지탈 샘플링의 장점을 결합하는 한 가<BR>지 방법에는 &nbsp;디지탈 
+샘플링으로 &nbsp;MIDI 의 악기를 웨이브로 합성하는 것이다.<BR>이들 샘플들은 실제 악기의 녹음으로 얻을 수가 있는데 그것은 하드웨어 
+상에<BR>저장된다. 이 샘플들은 음의 피치 길이와 볼륨을 가변적으로 생성하는 방법으<BR>로 조절되어 진다.</FONT></P>
+<P><FONT face="굴림체">웨이브 테이블 합성 방식은 FM ( 주파수 변조 ) 합성보다도 더 사실적인 음색<BR>을 만들어 낸다. 그러나 
+여전히 악기 종류와 개수에는 제한이 따른다. 그래서<BR>특이한 악기일 수록 하드웨어에 따라 음이 다르게 나올 수가 있는데, 주로 제<BR>조 
+회사의 악기에 따라 달라진다.</FONT></P>
+<P><FONT face="굴림체">이런 제한을 극복하기 위해서 &nbsp;DLS ( downloadable sounds ) 의 표준이 
+&nbsp;MIDI<BR>제조업자 협회에서 제정되어 졌다. &nbsp;DLS 는 시스템 상의 하드웨어적 구성보다<BR>는, 실행 시간에 제공되는 샘플에 기초해서 
+웨이브를 합성하는 방식을 취하고<BR>있다. </FONT></P>
+<P><FONT face="굴림체">악기의 데이터 세부는 신디사이즈에서 다운로딩 받는다. 그래서 그 악기는 다<BR>른 MIDI 악기와 유사하게 
+연주될 수 있다. 왜냐하면 DLS 데이터는 애플리케이<BR>션의 한 부분으로 배포될 수가 있고, &nbsp;개발자들은 사운드 트랙이 모든 
+시스템<BR>에서 동일한 음을 낼 수 있다는 보장을 받는 것이다. 그리고 더 이상 악기 선<BR>택에 있어서의 제한을 받지 않게 
+된다.</FONT></P>
+<P><FONT face="굴림체">DLS 악기는 하나 또는 그 이상의 디지탈 샘플로부터 생성되어 지는데, 일반적<BR>으로 단일 피치로 구성되며 
+&nbsp;다른 피치를 생성하는 합성기에 의해서 조절되어<BR>진다.</FONT></P>
+<P><FONT face="굴림체">다중 샘플은 현실적인 넓은 범위의 피치의 악기 음을 만드는데 주로 사용된다. <BR>DLS 악기가 다운로딩 
+되었을 때, 각각의 샘플은 피치의 어떠한 범위로 지정되<BR>는데 이것은 영역(region)이라고 하며 적어도 16 개의 영역이 
+있다.</FONT></P>
+<P><FONT face="굴림체">게다가, &nbsp;샘플들은 조음이 주어질 수 있는데 &nbsp;attack ( 빠르게 최대 볼륨으로<BR>음정이 뛰는 정도 ) 
+이나 &nbsp;decay ( 빠르게 최대 볼륨에서 떨어지는 정도 ) 같<BR>은 것을 정의 할 수 있다. &nbsp;그리고 다른 특성들은 실제 악기에 의해서 
+만들어<BR>지는 것과 유사한 방법으로 음을 만든다.</FONT></P>
+<P><FONT face="굴림체">DLS 는 신디사이저에서 다운로딩한 악기의 집합으로 저장된다. </FONT></P>
+<P><FONT face="굴림체">DLS 악기는 패치 넘버가 주어지며 다른 MIDI 악기가 하는 것처럼 MIDI 메시지<BR>에 응답한다. 
+&nbsp;그러나 DLS 악기는 제너럴 MIDI 세트에 한정 지어져서는 안 된<BR>다. &nbsp;사실, 그것이 악기로서만 대표되어져서는 안되기 때문이다. 
+왜냐하면 음<BR>성의 부분이나, &nbsp;완전히 음악으로 구성된 것이나 할 것 없이 모두 DLS 악기로<BR>바뀌어질 수 있기 
+때문이다.</FONT></P>
+<P><FONT face="굴림체">DLS 에 대한 더 많은 정보를 원하거나 어떻게 악기가 만들어지는 가를 보려면<BR>Direct Music 
+Producer 의 도큐멘트를 보면 된다. </FONT></P>
+<P><FONT face="굴림체"><BR>------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(3) Direct Music 과 기존의 방식 비교</FONT></P>
+<P><FONT face="굴림체">DLS 라고 하는 말은 생소한 말이지만 그 방식은 전혀 생소한 것이 아니다. 예<BR>전에 모듈 음악이라는 것을 
+들어보신 분은 알겠지만, 실제의 악기의 샘플링을<BR>실 연주에 이용하는 방식은 오래 전부터 있었다. &nbsp;MOD, S3M, IT 등등의 
+&nbsp;모듈<BR>음악 파일들이 그것인데 &nbsp;이것들은 그 파일 자체에 그 샘플링 된 악기의 데이<BR>터를 가지고 있었다. 그리고 또한, DLS 처럼 
+악기를 따로 모아쓰는 개념도 있<BR>었는데, 그것이 BNK 확장자를 가진 뱅크라는 개념이었고 ROL, IMS 등의 FM 방<BR>식의 파일 
+포맷에서 사용되었다. ( 그 당시의 뱅크는 &nbsp;악기 이름으로 &nbsp;악기를<BR>구분했기 때문에 이름만 다르다면 악기의 개수에는 제한이 없었다. 
+)</FONT></P>
+<P><FONT face="굴림체">위에서 장황하게 말한 DLS 는 &nbsp;위의 두 가지 방식을 합한 것이다. &nbsp;FM 방식의<BR>뱅크의 장점인 '악기는 
+따로 모은다'는 것과, 모듈 음악의 장점인 '실제 샘플<BR>링 데이터'를 쓴다는 두 가지를 합한 것이다. 그리고 FM 의 단점인 음질 
+저하<BR>나, 모듈 음악의 단점인 용량 증가는 그런 대로 해결이 된 것이다. ( MIDI 파<BR>일의 크기는 모듈 음악에 배해 훨씬 적은 
+용량이다. )</FONT></P>
+<P><FONT face="굴림체">그리고 Direct Music 은 MIDI 를 표방하고 있지만 실제는 Direct Sound 가 발<BR>전한 
+형태로 &nbsp;보면 된다. &nbsp;Direct Music 이 단독으로 &nbsp;쓰일 때는 &nbsp;내부적으로<BR>Direct Sound 를 생성하며, 이미 Direct 
+Sound 이 생성되어 있다면 그 객체를<BR>Direct Music 쪽으로 넘겨주어야 한다. 음의 데이터만 MIDI 파일에서 읽을 
+뿐,<BR>음의 합성이나 피치 변형 ( 피치 주파수가 커지면 그 악기의 음도 올라간다 )<BR>에는 Direct Sound 버퍼를 이용하기 
+때문이다. 사운드 카드의 '미디 매퍼' 나<BR>'소프트웨어 신디사이저' 나 'MPU-401 모듈' 은 &nbsp;모두 legacy port 라고 
+해서<BR>윈도우즈 2000 부터는 &nbsp;아예 지원도 &nbsp;안 할 예정이라고 한다. &nbsp;아마 윈도우즈 <BR>2000 미디어 플레이어에서의 &nbsp;MIDI 
+연주는 &nbsp;무조건 Direct Music 을 통해서만<BR>가능해 질 것 같다.</FONT></P>
+<P><FONT face="굴림체">물론 요새의 게임 제작은 아예 CD (CDDA) 로 가고 있지만 &nbsp;어차피 CD 도 신디<BR>사이저에서 사용한 
+모듈의 음을 녹음한 것에 불과하므로, 자신의 음원을 다운<BR>로딩 해서 DLS 상태로 게임을 배포한다면 CD 의 트랙으로 배포할 때와 
+똑같은<BR>결과를 얻는다. 아니 실제로는 용량도 훨씬 줄고 CD-ROM 에 대한 부하도 줄어<BR>든다.<BR>( CD 로 배경 음을 연주하는 
+게임의 가장 큰 단점이라면, 게임 데이터를 항상<BR>&nbsp;&nbsp;하드디스크에 복사를 해두고 실행해야 한다는 것이다. CD 에서 게임을 
+바로<BR>&nbsp;&nbsp;실행시키면 CD 음이 뚝뚝 끊기기 때문이다. &nbsp;당연하지만 CD-ROM 의 읽기 헤<BR>&nbsp;&nbsp;더는 하나이기 때문이다. 
+)</FONT></P>
+<P><FONT face="굴림체">-----------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1999 
+/ 11 / 10</FONT></P>
+<p><font color="#CCFF00">#####################################################</font></p>
+<p><FONT face="굴림체">------------------------------------------------------------------------ 
+&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<BR>### 델파이로 하는 Direct X - Direct Music (2/3)</FONT></p>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;1. Direct Music 의 개요<BR>&nbsp;&nbsp;&nbsp;&nbsp;2. Direct Music 초기화와 MIDI 
+읽기<BR></FONT><FONT color=aqua face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<BR></FONT><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;3. 
+Direct Music 출력</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;작성자 
+: 안영기 ( HiTEL ID : SMgal )</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(1) Direct Music 초기화</FONT></P>
+<P><FONT face="굴림체"><BR>1) COM 의 초기화</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;if CoInitialize(nil) &lt;&gt; S_OK then 
+exit;</FONT></P>
+<P><FONT face="굴림체">제일 처음의 과정은 COM 의 초기화이다. </FONT></P>
+<P><FONT face="굴림체"><BR>2) Direct Music Performance 의 생성</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;if 
+CoCreateInstance(CLSID_DirectMusicPerformance,nil,CLSCTX_INPROC,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IID_IDirectMusicPerformance,MIDIPerf) &lt;&gt; S_OK then 
+exit;</FONT></P>
+<P><FONT face="굴림체">Performance &nbsp;&nbsp;는 &nbsp;&nbsp;Direct &nbsp;Music &nbsp;&nbsp;의 &nbsp;&nbsp;가장 &nbsp;&nbsp;기본적인 &nbsp;&nbsp;인터페이스인데, 
+<BR>CoCreateInstance() 함수를 통해 그 인터페이스를 얻어 온다. </FONT></P>
+<P><FONT face="굴림체">Direct Music 부터는 Create 계열의 초기화 함수를 지원하지 않으므로 COM 의 <BR>방식대로 
+Direct Music Performance &nbsp;의 클래스 아이디를 &nbsp;통해 인터페이스를 <BR>돌려주도록 만들었다. 여기서 MIDIPerf 라는 
+변수가 Performance 객체이다.</FONT></P>
+<P><FONT face="굴림체">역시 실패하면 S_OK 가 아닌 값이 들어온다.</FONT></P>
+<P><FONT face="굴림체"><BR>3) Performance 의 초기화</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;if 
+MIDIPerf.Init(DirectMusic,DirectSound,Handle) &lt;&gt; S_OK then 
+exit;</FONT></P>
+<P><FONT face="굴림체">IDirectMusicPerformance 의 메쏘드인 Init() 를 호출하면 &nbsp;되는데 그 파라메<BR>터는 
+다음과 같다.</FONT></P>
+<P><FONT face="굴림체">첫 &nbsp;번째 &nbsp;&nbsp;파라메터는 IDirectMusic &nbsp;&nbsp;객체이다. &nbsp;&nbsp;만약 nil &nbsp;을 &nbsp;&nbsp;주었다면 
+<BR>IDirectMusic 객체는 밖으로 드러나지 않게 된다.</FONT></P>
+<P><FONT face="굴림체">두 번째 파라메터는 IDirectSound 객체이다. 만약 Direct Sound 와 같이 사용<BR>하려면 
+미리 생성되어 있는 Direct Sound 객체를 넘겨줘야 한다. 같이 사용하<BR>지 않는다면 nil 로 인자를 주면 되는데, 이 &nbsp;때는 
+Direct Music 이 내부적으<BR>로 Direct Sound 객체를 생성하게 된다.</FONT></P>
+<P><FONT face="굴림체">세 번째 파라메터는 Direct Sound 를 만들기 위한 &nbsp;핸들이다. ( Direct Sound<BR>초기화에 
+핸들이 필요하다는 것을 앞의 Direct Sound &nbsp;강좌에서 했었다. ) 만<BR>약 nil 로 인자를 주었다면 메인 윈도우의 핸들이 
+들어간다.</FONT></P>
+<P><FONT face="굴림체"><BR>4) Performance 의 포트 추가</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;if MIDIPerf.AddPort(nil) &lt;&gt; S_OK then 
+exit;</FONT></P>
+<P><FONT face="굴림체">포트란 &nbsp;미디 &nbsp;&nbsp;출력 &nbsp;디바이스를 &nbsp;&nbsp;말한다. &nbsp;사운드 &nbsp;&nbsp;카드에 &nbsp;따라 &nbsp;다르며 
+<BR>IDirectMusic 객체에 있는 EnumPort() 라는 메쏘드로 &nbsp;사용 가능한 포트를 찾<BR>을 수가 &nbsp;있다. 지금처럼 &nbsp;nil 
+로 &nbsp;&nbsp;인자를 주면 Direct &nbsp;Music 의 &nbsp;디폴트인<BR>'Microsoft Software Synthesizer' 로 선택하는 것이 
+된다. </FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;var<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PortCaps &nbsp;&nbsp;: 
+TDMus_PortCaps;</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;PortCaps.dwSize := Sizeof(PortCaps);<BR>| &nbsp;&nbsp;i 
+:= 0;<BR>| &nbsp;&nbsp;while DirectMusic.EnumPort(i,PortCaps) = S_OK do begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Inc(i);<BR>| &nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">현재의 사용 가능한 포트를 알아오기 위해서는 &nbsp;IDirectMusic.EnumPort 을 사<BR>용하면 된다. 
+제일 처음 값은 0 으로 하여 &nbsp;S_FALSE 메세지가 나올 때까지 루<BR>프를 돌리면서 1 씩 증가시켜 대입하면 모든 포트를 찾을 수 있다. 
+</FONT></P>
+<P><FONT face="굴림체">PortCaps.wszDescription 에는 포트의 이름이 &nbsp;들어 있고, PortCaps.guidPort 
+<BR>에 그 포트의 GUID 가 들어 있다.</FONT></P>
+<P><FONT face="굴림체">디폴트인 'Microsoft Software Synthesizer' 이외의 MIDI 장치로 플레이 하기 
+<BR>위해서는 아래와 같이 하면 된다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;&nbsp;var<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GUID &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: TGUID;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PortParams : TDMus_PortParams;</FONT></P>
+<P><FONT color=yellow face=굴림체>| 
+&nbsp;&nbsp;FillChar(PortParams,Sizeof(PortParams),0);<BR>| &nbsp;&nbsp;PortParams.dwSize &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= 
+Sizeof(PortParams);<BR>| &nbsp;&nbsp;PortParams.dwValidParams := 
+DMUS_PORTPARAMS_EFFECTS;<BR>| &nbsp;&nbsp;PortParams.dwEffectFlags := 
+DMUS_EFFECT_REVERB;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// reverb 예를 든 것이다. 실제에서는 자신에게 맞게 하면 된다.<BR>| &nbsp;&nbsp;HR 
+:= DirectMusic.CreatePort(GUID,PortParams,MIDIPort,nil);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// GUID 에는 
+자기가 쓰고자 하는 포트의 GUID 를 넣으면 된다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// IDirectMusic 의 GetDefaultPort 로 &nbsp;GUID 
+를 얻는다면 &nbsp;Microsoft<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Software Synthesizer 가 선택된다.<BR>| &nbsp;&nbsp;if (HR 
+&lt;&gt; S_OK) and (HR &lt;&gt; S_FALSE) then exit;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 성공하면 S_OK 나 
+S_FALSE 가 돌아온다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// S_FALSE 가 돌아 올 때는, 함수가 성공 했지만 요구 조건을 만족시<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 키지 못할 때이다. &nbsp;이 경우에는 그 장치가 reverb 를 지원하지 않<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 으면 S_FALSE 가 
+돌아온다.<BR>|<BR>| &nbsp;&nbsp;DirectMusic.Activate(TRUE);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 포트를 활성화 시킨다.<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// MIDIPort.Activate(TRUE); 를 써도 같은 결과이다.<BR>|<BR>| &nbsp;&nbsp;if 
+MIDIPerf.AddPort(MIDIPort) &lt;&gt; S_OK then exit;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 포트를 추가한다. nil 이 
+아닌 값이 쓰였다.<BR>|<BR>| &nbsp;&nbsp;MIDIPerf.AssignPChannelBlock(0,MIDIPort,1);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+첫 번째 파라메터가 &nbsp;0 이면 채널 0-15를, 1 이면 채널 16-31을, 2<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 이면 채널 32-47을.... 이런 
+식으로 증가한다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 마지막 파라메터는 포트상의 채널 그룹인데 1 이상의 값이 온다.</FONT></P>
+<P><FONT face="굴림체"><BR>5) Notification 추가</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;GUID := GUID_NOTIFICATION_SEGMENT;<BR>| 
+&nbsp;&nbsp;MIDIPerf.AddNotificationType(GUID);</FONT></P>
+<P><FONT face="굴림체">Performance 에 Notification 을 추가한다. Direct Music 에서는 자신이 
+원하<BR>는 이벤트 메세지만 받을 수 있도록 위와 같이 받고 싶은 것만 추가한다.</FONT></P>
+<P><FONT face="굴림체">가능한 이벤트의 목록은 다음과 같다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;GUID_NOTIFICATION_SEGMENT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Segment 에 대한 알림 
+기능<BR>&nbsp;GUID_NOTIFICATION_PERFORMANCE &nbsp;&nbsp;&nbsp;- Performance 에 대한 알림 
+기능<BR>&nbsp;GUID_NOTIFICATION_MEASUREANDBEAT - Segment 에 대한 알림 
+기능<BR>&nbsp;GUID_NOTIFICATION_CHORD &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- &nbsp;에 대한 알림 
+기능<BR>&nbsp;GUID_NOTIFICATION_COMMAND &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Segment 에 대한 알림 기능</FONT></P>
+<P><FONT face="굴림체"><BR>6) Direct Music Loader 의 생성</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;if 
+CoCreateInstance(CLSID_DirectMusicLoader,nil,CLSCTX_INPROC,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IID_IDirectMusicLoader,MIDILoader) &lt;&gt; S_OK then 
+exit;<BR>| &nbsp;&nbsp;if not Assigned(MIDILoader) then exit;</FONT></P>
+<P><FONT face="굴림체">위의 Performance 의 생성과 &nbsp;대동소이하다. 클래스 ID 와 &nbsp;인터페이스 ID 만 <BR>바뀐 
+것뿐이다.</FONT></P>
+<P><FONT face="굴림체">여기까지 하면 일단 Direct Music 에 대한 초기화는 끝났다.</FONT></P>
+<P><FONT face="굴림체"><BR>-----------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(2) MIDI 파일 읽기</FONT></P>
+<P><FONT face="굴림체">1) Direct Music Segment 생성</FONT></P>
+<P><FONT face="굴림체">IDirectMusicSegment 객체는 MIDI 파일의 세그먼트를 가진다.<BR>아래는 MIDI 파일에서 
+Segment 객체를 만드는 함수이다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| function MULTI_TO_WIDE(x : PWideChar; y : 
+PChar) : integer;<BR>| // 이 함수는 C 로된 예제에 #define 으로 되어 있던 것을 풀어 쓴 것이다.<BR>| // y 
+라는 Char 형 배열을 x 라는 WideChar 형의 배열로 바꾼다.<BR>| begin<BR>| &nbsp;&nbsp;&nbsp;MULTI_TO_WIDE :=<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MultiByteToWideChar(CP_ACP,MB_PRECOMPOSED,y,-1,x,MAX_PATH);<BR>| 
+end;</FONT></P>
+<P><FONT color=yellow face=굴림체>| function LoadMIDISegment(MIDIPerf &nbsp;&nbsp;&nbsp;: 
+IDirectMusicPerformance;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MIDILoader &nbsp;: 
+IDirectMusicLoader;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FileName &nbsp;&nbsp;&nbsp;: String) &nbsp;: 
+IDirectMusicSegment;<BR>| var<BR>| &nbsp;&nbsp;&nbsp;ObjDesc &nbsp;&nbsp;&nbsp;&nbsp;: TDMUS_OBJECTDESC;<BR>| 
+&nbsp;&nbsp;&nbsp;MIDISegment : IDirectMusicSegment;<BR>| &nbsp;&nbsp;&nbsp;wPath &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: array 
+[0..DMUS_MAX_FILENAME-1] of WCHAR;<BR>| &nbsp;&nbsp;&nbsp;HR &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: HResult;<BR>| 
+begin<BR>| &nbsp;&nbsp;&nbsp;LoadMIDISegment := nil;<BR>| &nbsp;&nbsp;&nbsp;// Segment 가 지정되지 않은 상태<BR>|<BR>| 
+&nbsp;&nbsp;&nbsp;MULTI_TO_WIDE(wPath,PChar(ExtractFilePath(FileName)));<BR>| &nbsp;&nbsp;&nbsp;// FileName 의 
+Path 만 wPath 라는 WideChar 형 배열로 복사<BR>|<BR>| &nbsp;&nbsp;&nbsp;HR := 
+MIDILoader.SetSearchDirectory(GUID_DirectMusicAllTypes,wPath,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FALSE);<BR>| 
+&nbsp;&nbsp;&nbsp;if (HR &lt;&gt; S_OK) and (HR &lt;&gt; S_FALSE) then exit;<BR>| &nbsp;&nbsp;&nbsp;// MIDI 
+파일을 찾을 디렉토리를 설정한다.<BR>| <BR>| 
+&nbsp;&nbsp;&nbsp;FillChar(ObjDesc,Sizeof(TDMUS_OBJECTDESC),0);<BR>| &nbsp;&nbsp;&nbsp;ObjDesc.dwSize &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= 
+sizeof(TDMUS_OBJECTDESC);<BR>| &nbsp;&nbsp;&nbsp;ObjDesc.dwValidData := DMUS_OBJ_CLASS or 
+DMUS_OBJ_FILENAME;<BR>| &nbsp;&nbsp;&nbsp;ObjDesc.guidClass &nbsp;&nbsp;:= CLSID_DirectMusicSegment;<BR>| 
+&nbsp;&nbsp;&nbsp;// DirectMusicSegment 의 클래스 ID 를 지정<BR>| 
+&nbsp;&nbsp;&nbsp;MULTI_TO_WIDE(ObjDesc.wszFileName,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PChar(ExtractFileName(FileName)));<BR>| 
+&nbsp;&nbsp;&nbsp;// 파일의 이름을 지정<BR>| <BR>| &nbsp;&nbsp;&nbsp;Pointer(MIDISegment) := nil;<BR>| &nbsp;&nbsp;&nbsp;HR := 
+MIDILoader.GetObject(ObjDesc,IID_IDirectMusicSegment,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MIDISegment);<BR>| 
+&nbsp;&nbsp;&nbsp;if HR &lt;&gt; S_OK then exit;<BR>| &nbsp;&nbsp;&nbsp;// IDirectMusicSegment 의 인터페이스를 
+얻는다.<BR>| <BR>| &nbsp;&nbsp;&nbsp;if Assigned(MIDISegment) then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HR := 
+MIDISegment.SetParam(GUID_StandardMIDIFile,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$FFFFFFFF,0,0,Pointer(MIDIPerf));<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if HR &lt;&gt; S_OK then exit;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 이 Segment 는 표준 MIDI 파일로 
+지정<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HR := MIDISegment.SetParam(GUID_Download,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$FFFFFFFF,0,0,Pointer(MIDIPerf));<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (HR &lt;&gt; S_OK) and (HR &lt;&gt; S_FALSE) then exit;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 이 
+Segment 는 'DLS 를 사용하여 악기를 다운로딩한다'라고 지정<BR>| &nbsp;&nbsp;&nbsp;end;<BR>|<BR>| &nbsp;&nbsp;&nbsp;LoadMIDISegment 
+&nbsp;&nbsp;&nbsp;&nbsp;:= MIDISegment;<BR>| end;</FONT></P>
+<P><FONT face="굴림체">위의 소스는 Direct X 6.1 이후의 Direct Music &nbsp;에서 제대로 동작한다. 이렇<BR>게 말고, 
+Direct X 7.0 의 Direct Music 방식으로 &nbsp;하면 아래처럼도 할 수 있<BR>다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;&nbsp;LoadMIDISegment := nil;<BR>|<BR>| 
+&nbsp;&nbsp;&nbsp;FillChar(ObjDesc,Sizeof(TDMUS_OBJECTDESC),0);<BR>| &nbsp;&nbsp;&nbsp;ObjDesc.dwSize &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= 
+sizeof(TDMUS_OBJECTDESC);<BR>| &nbsp;&nbsp;&nbsp;ObjDesc.dwValidData := DMUS_OBJ_CLASS or 
+DMUS_OBJ_FULLPATH;<BR>| &nbsp;&nbsp;&nbsp;ObjDesc.guidClass &nbsp;&nbsp;:= CLSID_DirectMusicSegment;<BR>| 
+&nbsp;&nbsp;&nbsp;MULTI_TO_WIDE(ObjDesc.wszFileName,PChar(FileName));<BR>|<BR>| 
+&nbsp;&nbsp;&nbsp;Pointer(MIDISegment) := nil;<BR>| &nbsp;&nbsp;&nbsp;HR := 
+MIDILoader.GetObject(ObjDesc,IID_IDirectMusicSegment,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MIDISegment);<BR>| 
+&nbsp;&nbsp;&nbsp;if HR &lt;&gt; S_OK then exit;<BR>| &nbsp;&nbsp;&nbsp;........</FONT></P>
+<P><FONT face="굴림체">이 방식은, 디렉토리를 지정해 놓고 파일을 정의하던 &nbsp;그 위의 방법과는 달리 <BR>한번에 Full Path 로 
+&nbsp;MIDI 파일을 읽는다. &nbsp;그리고 Direct X 6.1 &nbsp;의 Direct <BR>Music 에는 치명적인 버그가 하나 있는데, 그것은 
+Path 이름에 공백이 들어가<BR>면 Path 를 제대로 찾지 못한다는 것이다. &nbsp;특히 한글 윈도우즈는 c:\windows<BR>\바탕 
+화면\test.Mid 와 같이 Path 에 많은 &nbsp;공백이 존재한다. 그래서 필자는 <BR>Direct Music 을 위해서라면 Direct X 
+7.0 버전을 사용할 것을 권유한다.</FONT></P>
+<P><FONT face="굴림체">위의 함수의 사용법을 보면 아래와 같다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;&nbsp;MIDISegment := 
+LoadMIDISegment(MIDIPerf,MIDILoader,FileName);</FONT></P>
+<P><FONT face="굴림체"><BR>-----------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1999 
+/ 11 / 11</FONT></P>
+<P><font color="#CCFF00">#####################################################</font></P>
+<p><FONT face="굴림체">------------------------------------------------------------------------<BR>&nbsp;&nbsp;&nbsp;&nbsp;<BR>### 
+델파이로 하는 Direct X - Direct Music (3/3)</FONT></p>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;1. Direct Music 의 개요<BR>&nbsp;&nbsp;&nbsp;&nbsp;2. Direct Music 초기화와 MIDI 
+읽기<BR>&nbsp;&nbsp;&nbsp;&nbsp;3. Direct Music 출력<BR></FONT><FONT color=aqua face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;~~~~~~~~~~~~~~~~~~~~</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;작성자 
+: 안영기 ( HiTEL ID : SMgal )</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(1) Direct Music 의 출력</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;if Assigned(MIDISegment) then begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HR := MIDIPerf.PlaySegment(MIDISegment,0,ZERO_INT64,MIDISegStat);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if HR &lt;&gt; S_OK then Exit;</FONT></P>
+<P><FONT face="굴림체">연주에 쓰이는 IDirectMusicPerformance.PlaySegment() 는 4 개의 파라메터가 
+<BR>있다.</FONT></P>
+<P><FONT face="굴림체">첫 번째 파라메터는 연주할 세그먼트이다.</FONT></P>
+<P><FONT face="굴림체">두 번째 파라메터는 이 메쏘드의 행동을 정의하는 것인데 DMUS_SEGF_FLAGS 중<BR>에 하나가 들어 갈 
+수 있다. &nbsp;( C 에서는 열거형 (enum) 이지만 델파이에서는 <BR>상수로 정의하고 있다. ) 주로 primary segment 와 
+control segment, 또는 세<BR>그먼트의 바운더리 ( 경계 ) 에 대한 플래그가 있다. 자세한 것은 SDK 헬프를 <BR>참조하기 
+바란다.</FONT></P>
+<P><FONT face="굴림체">세 번째 파라메터는 그 세그먼트에서 연주를 시작 할 곳의 시간이다. 두 번째 <BR>파라메터에서 
+DMUS_SEGF_REFTIME 가 정의되어 있지 않다면 </FONT></P>
+<P><FONT face="굴림체">네 번째 파라메터는 연주될 세그먼트 인스턴스에 대한 &nbsp;세그먼트 상태를 나타<BR>내는 객체를 &nbsp;넣는다. &nbsp;nil 
+&nbsp;이 &nbsp;아닌 값이 &nbsp;들어갔다면 IDirectMusicSegment <BR>State 객체의 포인터가 돌아온다. &nbsp;물론 &nbsp;이 객체의 Release 
+는 프로그래머의 <BR>몫이다.</FONT></P>
+<P><FONT face="굴림체"><BR>ZERO_INT64 는 &nbsp;이전 버전인 델파이 3 와 호환을 위해서 만들어 본 &nbsp;상수인데 <BR>실제 
+정의는 아래와 같이 되어 있다. &nbsp;( 이건 필자가 Direct Music 테스트 당<BR>시에 Delphi 3 를 사용하고 있었기 때문에 만든 
+것이지, 그 이상의 버전을 사<BR>용하는 사람에게는 전혀 필요가 없다. )</FONT></P>
+<P><FONT color=yellow face=굴림체>| </FONT><FONT color=silver face=굴림체>{$IFDEF 
+VER100}</FONT><FONT color=yellow face=굴림체><BR>| type &nbsp;Int64 = array [0..1] of 
+DWORD;<BR>| const ZERO_INT64 : Int64 = (0,0);<BR>| </FONT><FONT color=silver face=굴림체>{$ELSE}</FONT><FONT color=yellow face=굴림체><BR>| const ZERO_INT64 : 
+Int64 = 0;<BR>| </FONT><FONT color=silver face=굴림체>{$ENDIF}</FONT></P>
+<P><FONT face="굴림체">이 컴파일러가 델파이3 이면 DWORD 두 개로 만들어지고, &nbsp;그 이상이라면 원래<BR>부터 있는 64 bit 
+정수형인 Int64 로 형이 정의된다. ( 물론 델파이 2 버전이<BR>라면 에러를 낼 것이다. )</FONT></P>
+<P><FONT face="굴림체"><BR>------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(2) Direct Music 의 종료</FONT></P>
+<P><FONT color=yellow face=굴림체>| procedure CloseMIDI;<BR>| begin<BR>| &nbsp;&nbsp;&nbsp;if 
+Assigned(MIDISegment) then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Assigned(MIDIPerf) &nbsp;&nbsp;&nbsp;then 
+MIDIPerf.Stop(nil,nil,0,0);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// MIDI 의 연주를 멈춘다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if 
+Assigned(MIDISegment) then MIDISegment.SetParam(<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GUID_Unload,$FFFFFFFF,0,0,Pointer(MIDIPerf));<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 트랙의 밴드에 대한 악기 데이터를 제거한다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Assigned(MIDISegment) then 
+MIDISegment._Release;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 세그먼트 객체를 해제한다.<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pointer(MIDISegment) := nil;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 다시 초기화..<BR>| &nbsp;&nbsp;&nbsp;end;<BR>| 
+end;</FONT></P>
+<P><FONT face="굴림체">단지 Stop 만 했다면 PlaySegment 로 다시 연주가 가능하다. &nbsp;( Pause 계열의<BR>메쏘드는 
+보이지 않는다. )</FONT></P>
+<P><FONT face="굴림체"><BR>아래는 Direct Music 을 해제하는 부분이다.</FONT></P>
+<P><FONT face="굴림체"><BR></FONT><FONT color=yellow face=굴림체>| procedure 
+FinalizeDMusic;<BR>| begin<BR>|<BR>| &nbsp;&nbsp;&nbsp;if Assigned(MIDIPerf) &nbsp;&nbsp;&nbsp;then 
+MIDIPerf.Stop(nil,nil,0,0);<BR>| &nbsp;&nbsp;&nbsp;if Assigned(MIDISegment) then 
+MIDISegment.SetParam(GUID_Unload,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$FFFFFFFF,0,0,Pointer(MIDIPerf));<BR>| 
+&nbsp;&nbsp;&nbsp;if Assigned(MIDIPerf) &nbsp;&nbsp;&nbsp;then MIDIPerf.CloseDown;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+MIDIPerf.Init() 에 대응하는 메쏘드이다. <BR>|<BR>| &nbsp;&nbsp;&nbsp;if Assigned(MIDIPort) &nbsp;&nbsp;&nbsp;then 
+MIDIPort._Release;<BR>| &nbsp;&nbsp;&nbsp;if Assigned(MIDISegStat) then 
+MIDISegStat._Release;<BR>| &nbsp;&nbsp;&nbsp;if Assigned(MIDISegment) then 
+MIDISegment._Release;<BR>| &nbsp;&nbsp;&nbsp;if Assigned(MIDILoader) &nbsp;then 
+MIDILoader._Release;<BR>| &nbsp;&nbsp;&nbsp;if Assigned(MIDIPerf) &nbsp;&nbsp;&nbsp;then 
+MIDIPerf._Release;<BR>| &nbsp;&nbsp;&nbsp;if Assigned(DirectMusic) then 
+DirectMusic._Release;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 자신이 생성한 Direct Music 의 객체는 모두 해제한다.<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 필자가 사용하는 소스에서 바로 가져 왔기 때문에 이 강좌에서 다<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 루지 않은 객체도 
+있다.<BR>|<BR>| &nbsp;&nbsp;&nbsp;Pointer(MIDIPort) &nbsp;&nbsp;&nbsp;:= nil;<BR>| &nbsp;&nbsp;&nbsp;Pointer(MIDISegStat) := 
+nil;<BR>| &nbsp;&nbsp;&nbsp;Pointer(MIDISegment) := nil;<BR>| &nbsp;&nbsp;&nbsp;Pointer(MIDILoader ) := 
+nil;<BR>| &nbsp;&nbsp;&nbsp;Pointer(MIDIPerf &nbsp;&nbsp;) := nil;<BR>| &nbsp;&nbsp;&nbsp;Pointer(DirectMusic) := 
+nil;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 역시 nil 로 초기화<BR>|<BR>| &nbsp;&nbsp;&nbsp;CoUninitialize;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// COM 
+해제<BR>|<BR>| end;</FONT></P>
+<P><FONT face="굴림체">다른 Direct X 의 해제와 별 다를 것이 없다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(3) Direct Music 의 Notification</FONT></P>
+<P><FONT face="굴림체">이것은 Direct Music 의 상태를 알려주는 부분이다. 멀티미디어 API 와 는 달<BR>리 
+CallBack 방식이 아닌 직접 유저가 불러 주어야 한다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| procedure TimeProcedure;<BR>| var<BR>| &nbsp;&nbsp;&nbsp;pMsg 
+&nbsp;: PDMus_Notification_PMsg;<BR>| begin<BR>|<BR>| &nbsp;&nbsp;&nbsp;if Assigned(MIDIPerf) then 
+begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while (MIDIPerf.GetNotificationPMsg<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(PDMus_Notification_PMsg(pMsg)) = S_OK) do begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case pMsg.dwNotificationOption of<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMUS_NOTIFICATION_SEGSTART :<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// MIDI 연주를 시작한다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DMUS_NOTIFICATION_SEGEND &nbsp;&nbsp;:<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// MIDI 연주가 끝났다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MIDIPerf.FreePMsg(PDMus_PMsg(pMsg));<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;&nbsp;&nbsp;end;<BR>| 
+end;</FONT></P>
+<P><FONT face="굴림체">이것 이외에 모든 알림 플래그를 나열해 보면...</FONT></P>
+<P><FONT face="굴림체">1) AddNotificationType 에 GUID_NOTIFICATION_SEGMENT 를 넣었을 
+때</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;DMUS_NOTIFICATION_SEGSTART<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// MIDI 연주를 
+시작한다.<BR>&nbsp;&nbsp;&nbsp;DMUS_NOTIFICATION_SEGEND<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// MIDI 연주가 
+끝났다.<BR>&nbsp;&nbsp;&nbsp;DMUS_NOTIFICATION_SEGALMOSTEND<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// MIDI 연주가 거의 끝났다. 버퍼 용량만큼만 
+남았을 때<BR>&nbsp;&nbsp;&nbsp;DMUS_NOTIFICATION_SEGLOOP<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// MIDI 연주가 다시 재연주 
+되었다.<BR>&nbsp;&nbsp;&nbsp;DMUS_NOTIFICATION_SEGABORT<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Stop 명령에 의해 멈추어 졌다.</FONT></P>
+<P><FONT face="굴림체">2) AddNotificationType 에 GUID_NOTIFICATION_PERFORMANCE 를 넣었을 
+때</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;DMUS_NOTIFICATION_MUSICSTARTED<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Playback 을 
+시작했다.<BR>&nbsp;&nbsp;&nbsp;DMUS_NOTIFICATION_MUSICSTOPPED<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Playback 이 
+끝났다.</FONT></P>
+<P><FONT face="굴림체">3) AddNotificationType 에 GUID_NOTIFICATION_MEASUREANDBEAT 를 
+넣었을 때</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;DMUS_NOTIFICATION_MEASUREBEAT<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Help 에도 용도 안 적혀 
+있음</FONT></P>
+<P><FONT face="굴림체">4) AddNotificationType 에 GUID_NOTIFICATION_CHORD 를 넣었을 
+때</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;DMUS_NOTIFICATION_CHORD<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Help 에도 용도 안 적혀 
+있음</FONT></P>
+<P><FONT face="굴림체">5) AddNotificationType 에 GUID_NOTIFICATION_COMMAND 를 넣었을 
+때</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;DMUS_NOTIFICATION_GROOVE<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Groove 
+change.<BR>&nbsp;&nbsp;&nbsp;DMUS_NOTIFICATION_EMBELLISHMENT<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Embellishment command 
+(intro, fill, break, or end).</FONT></P>
+<P><FONT face="굴림체">위의 플래그들 중, 아래의 4 개는 Help 에서 조차도 제대로 설명이 안 되어있<BR>다. 그냥 알아서 
+사용하기 바란다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체"><BR>&lt;&lt; 에필로그 &gt;&gt;</FONT></P>
+<P><FONT face="굴림체">지금까지 설명한 것은 Direct X &nbsp;의 Direct Music 부분이었습니다. &nbsp;델파이로<BR>게임 
+만드시려는 분들께 조금이나마 도움이 되었으면 좋겠습니다.</FONT></P>
+<P><FONT face="굴림체">한가지 주의 하실 점은, &nbsp;배포되는 델파이 헤더 중에 Direct Music 만은 제대<BR>로 실행이 
+안됩니다. 컨버팅 한 사람조차 제대로 실행을 안 시켜 보았던 것인<BR>지는 모르겠지만 선언 부분에 약간의 오류가 있어서 &nbsp;그 부분을 제가 다시 
+수<BR>정했습니다. 그 수정본은 VTOOL 자료실에 올리겠습니다.</FONT></P>
+<P><FONT face="굴림체">이번의 강좌 ( 특히 이번 3 편 ) 는 너무 날림으로 해서 죄송합니다. Direct <BR>Music 은 
+Direct Draw 정도의 분량이라 &nbsp;( 인터페이스의 종류는 훨씬 많음 ) <BR>더 많은 설명이 필요한대도 불구하고 &nbsp;이 정도로 강좌를 
+마치게 되었습니다. <BR>다른 Direct X 를 써본 사람이라면 Direct Music 역시 헬프 도큐멘트를 보면 <BR>충분히 알 수 있는 
+내용들로 되어 있습니다. </FONT></P>
+<P><FONT face="굴림체">예상외로 일이 많이 겹치게 되어서 &nbsp;제가하는 Direct X 강좌는 여기서 마칠까 <BR>합니다. 강좌 쓰는데 
+매달린다고 다른 쪽에 소홀했더니 그쪽에서 말썽이 생기<BR>는군요...</FONT></P>
+<P><FONT face="굴림체">지금까지 델파이로 Direct &nbsp;Draw, 멀티미디어 &nbsp;타이머, DIB, &nbsp;Direct Input, 
+<BR>MMX, Direct Sound, Direct Music 까지의 강좌를 했는데... 이 모든 강좌들은<BR>제 홈페이지에 오시면 바이너리 
+자료도 같이 구하실 수가 있습니다.<BR>( 물론 바이너리 자료가 있는 것만.. )</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&lt; http://smgal.com/ &gt;</FONT></P>
+<P><FONT face="굴림체">그럼 마지막으로 한마디 남기겠습니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot; </FONT><FONT color=aqua face=굴림체>A mountain is a 
+mountain, Water is water.</FONT><FONT face="굴림체"> 
+&quot;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;copyright SMgal 
+1999/11/13</FONT></P>
+<P>&nbsp;</P></body>
+</HTML>

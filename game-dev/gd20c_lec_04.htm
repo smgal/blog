@@ -1,0 +1,578 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<title>Direct Input (1/2)</title>
+<meta name="generator" content="Namo WebEditor v5.0">
+<style><!--
+.leading200 { line-height: 200% }
+.leading180 { line-height: 180% }
+.leading150 { line-height: 150% }
+.leading100 { line-height: 100% }
+-->
+</style>
+</head>
+
+<body bgcolor="navy" text="white" link="blue" vlink="purple" alink="red">
+
+<P><font color="black"><span style="background-color:white;">이것은 1999년 하이텔 
+게임 제작 동호회에 올렸던 강좌 2회분 입니다.</span></font></P>
+<p><font color="#CCFF00">#####################################################</font></p>
+<p>
+<FONT face="굴림체">------------------------------------------------------------------------<br>
+### 델파이로 하는 Direct X - Direct Input (1/2)<br>
+------------------------------------------------------------------------<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;작성자 
+: 안영기 ( HiTEL ID : SMgal )</FONT></p>
+<p>&nbsp;</p>
+<p><FONT face="굴림체">&nbsp;Direct Input 이란 무엇인가 ? &nbsp;Direct X 의 
+구성 요소 중에서 Direct Setup<br>
+다음으로 쉬운 요소이다.</FONT></p>
+<p><FONT face="굴림체">&nbsp;Direct Input은 입력 장치에 대한 모든 정보를 제어하기 
+위한 Direct X의 구<br>
+성요소인데, 주로 관리하는 쪽이 키보드, 마우스, 조이스틱이다. </FONT></p>
+<p><FONT face="굴림체">&nbsp;마우스로는 3차원 마우스까지 지원하고, 조이스틱으로는 
+일반적인 2축 4버튼<br>
+뿐만 아니라 사이더와인더같은 비행기 조종간이나 스티어링 기능이 있는 레이<br>
+스용 조이스틱까지 지원한다. ( 하지만 필자가 3차원 마우스나 조이스틱을 가<br>
+지고있지 않기 때문에 강좌에서는 언급하지 않겠다. )</FONT></p>
+<p><FONT face="굴림체">Direct Input 강좌는 총 2 편으로 구성될 예정인데, 1편은 
+키보드 관리고 2편<br>
+은 마우스 관리로 할 예정이다.</FONT></p>
+<p><FONT face="굴림체">------------------------------------------------------------------------</FONT></p>
+<p><FONT face="굴림체">(1) Direct Input 의 Keyboard 를 왜 사용하는가 ?</FONT></p>
+<p><FONT face="굴림체">&nbsp;윈도우즈에는 키보드를 감지하기 위한 좋은 API 함수가 
+이미 있다.</FONT></p>
+<p><FONT face="굴림체">&nbsp;GetAsyncKeyState() 라는 함수인데 &nbsp;이 함수만 
+사용해도 현재의 키가 눌러져<br>
+있는지.. &nbsp;아니면 이 함수를 호출하기 전에 &nbsp;특정 키가 눌러진 적이 있는지를<br>
+알 수 있다.</FONT></p>
+<p><FONT face="굴림체">&nbsp;일반적인 게임( 윈도우 기반의 게임 )에서는 이 함수만으로도 
+충분히 키보드<br>
+관리를 할 수 있고 Direct X 기반의 게임이라고 하더라도 이 함수로도 충분히<br>
+키보드 입력에 무리없이 사용할 수 있다.</FONT></p>
+<p><FONT face="굴림체">&nbsp;그렇다면 Direct Input 의 Keyboard 를 왜 사용하는가 
+? </FONT></p>
+<p><FONT face="굴림체">&nbsp;필자가 생각하는 이유는 이렇다... Direct Input 의 
+Keyboard 는 DOS 시절에<br>
+게임 프로그래머가 키보드 인터럽트를 가로채서 만든 &nbsp;Multi Key 라는 기법에<br>
+가장 가까운 용법으로 쓰이기 때문에 게임 프로그래머들에게 익숙한 사용법을<br>
+제공한다. 그리고 키 조합이 많은 아케이드나 액션 게임등에서 키조합이 간단<br>
+하고 그 속도가 빠르다.</FONT></p>
+<p><FONT face="굴림체">&nbsp;이 정도면 충분한 이유가 되었다고 생각하고 구현으로 
+들어가겠다.</FONT></p>
+<p><FONT face="굴림체">------------------------------------------------------------------------</FONT></p>
+<p><FONT face="굴림체">(2) Direct Input 의 Keyboard 객체 구현</FONT></p>
+<p><font face="굴림체" color="yellow">| type<br>
+| <br>
+| &nbsp;&nbsp;&nbsp;TKeyState = array[0..255] of Byte;<br>
+| <br>
+| &nbsp;&nbsp;&nbsp;TDxInput = class<br>
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;constructor Create(hInstance : integer; 
+Handle : integer);<br>
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure &nbsp;&nbsp;Free;<br>
+| &nbsp;&nbsp;&nbsp;private<br>
+| &nbsp;&nbsp;&nbsp;public<br>
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectInput &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 
+IDirectInput;<br>
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectInputKeyboard : IDirectInputDevice;<br>
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure GetKeyState(var KeyState : TKeyState);<br>
+| &nbsp;&nbsp;&nbsp;end;</font></p>
+<p><FONT face="굴림체">&nbsp;이렇게 간단한 객체로 Direct Input 의 Keyboard 객체가 
+만들어진다.</FONT></p>
+<p><FONT face="굴림체">&nbsp;생성자, 소멸자, 그리고 변수 2 개와 함수하나... 
+</FONT></p>
+<p><FONT face="굴림체">&nbsp;우리는 항상 그렇듯 10줄의 설명 보다는 10줄의 코드를 
+더 빨리 이해하기 때<br>
+문에 implementation에 구현되어 있는 객체 메소드를 직접 보면서 설명하겠다.</FONT></p>
+<p><FONT face="굴림체">&nbsp;아래에 보이는 것이 생성자다.<br>
+&nbsp;파라메터는 Instance와 Handle을 받는다.</FONT></p>
+<p><font face="굴림체" color="yellow">| constructor TDxInput.Create(hInstance 
+: integer; Handle : integer);<br>
+| var<br>
+| &nbsp;&nbsp;&nbsp;HR : HResult;<br>
+| begin<br>
+| &nbsp;&nbsp;&nbsp;// 선조의 Create를 실행한다.<br>
+| &nbsp;&nbsp;&nbsp;Inherited Create;<br>
+| <br>
+| &nbsp;&nbsp;&nbsp;// Direct Input 객체를 만든다.<br>
+| &nbsp;&nbsp;&nbsp;HR := DirectInputCreate(hInstance,DIRECTINPUT_VERSION,<br>
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectInput,nil);<br>
+| &nbsp;&nbsp;&nbsp;if HR &lt;&gt; DI_OK then exit;<br>
+| <br>
+| &nbsp;&nbsp;&nbsp;// 키보드 디바이스를 생성한다.<br>
+| &nbsp;&nbsp;&nbsp;HR := DirectInput.CreateDevice(GUID_SysKeyboard,<br>
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectInputKeyboard,nil);<br>
+| &nbsp;&nbsp;&nbsp;if HR &lt;&gt; DI_OK then exit;<br>
+| <br>
+| &nbsp;&nbsp;&nbsp;// 키보드에 대한 데이터 포맷을 설정한다.<br>
+| &nbsp;&nbsp;&nbsp;HR := DirectInputKeyboard.SetDataFormat(c_dfDIKeyboard);<br>
+| &nbsp;&nbsp;&nbsp;if HR &lt;&gt; DI_OK then exit;<br>
+| <br>
+| &nbsp;&nbsp;&nbsp;// 상호 협력 레벨을 설정한다.<br>
+| &nbsp;&nbsp;&nbsp;HR := DirectInputKeyboard.SetCooperativeLevel(Handle,<br>
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DISCL_NONEXCLUSIVE 
+or DISCL_FOREGROUND);<br>
+| &nbsp;&nbsp;&nbsp;if HR &lt;&gt; DI_OK then exit;<br>
+| <br>
+| &nbsp;&nbsp;&nbsp;// 키보드의 접근 권한을 얻는다.<br>
+| &nbsp;&nbsp;&nbsp;HR := DirectInputKeyboard.Acquire;<br>
+| &nbsp;&nbsp;&nbsp;if (HR &lt;&gt; DI_OK) and (HR &lt;&gt; DI_NOEFFECT) then 
+begin<br>
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 실패했을 때 그 원인을 알아 본다.<br>
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case HR of<br>
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DIERR_NOTINITIALIZED 
+&nbsp;: <br>
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ShowMessage('Direct 
+Input Error : NOTINITIALIZED');<br>
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DIERR_INVALIDPARAM &nbsp;&nbsp;&nbsp;: 
+<br>
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ShowMessage('Direct 
+Input Error : INVALIDPARAM');<br>
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DIERR_OTHERAPPHASPRIO 
+: <br>
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ShowMessage('Direct 
+Input Error : OTHERAPPHASPRIO');<br>
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ShowMessage('Direct 
+Input Error');<br>
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<br>
+| &nbsp;&nbsp;&nbsp;end;<br>
+| end;</font></p>
+<p><FONT face="굴림체">&nbsp;이걸로 Direct Input의 Keyboard에 대한 초기화가 
+모두 끝났다. 그럼 순차적<br>
+으로 다시 자세하게 설명해 보면.....</FONT></p>
+<p><FONT face="굴림체">1) DirectInputCreate(hInstance,DIRECTINPUT_VERSION,DirectInput,nil);</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;Direct Input 객체를 생성하는 함수다. 
+</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;첫번째 파라메터 : 이 객체를 생성하려는 
+프로그램의 인스턴스<br>
+&nbsp;&nbsp;&nbsp;두번째 파라메터 : Direct Input 의 버전 넘버, 아래처럼 정의되어 
+있다.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$IFDEF 
+DIRECTX3}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DIRECTINPUT_VERSION 
+= $0300;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$ELSE}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DIRECTINPUT_VERSION 
+= $0500;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$ENDIF}<br>
+&nbsp;&nbsp;&nbsp;세번째 파라메터 : Direct Input 의 주 객체인 IDirectInput 로 
+선언된 변<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;수가 
+var 로 들어가게 된다. 성공하면 nil이 아닌 값이<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;들어온다.<br>
+&nbsp;&nbsp;&nbsp;네번째 파라메터 : 무조건 nil을 쓴다. </FONT></p>
+<p><FONT face="굴림체">2) DirectInput.CreateDevice(GUID_SysKeyboard,DirectInputKeyboard,nil);<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;사용할 디바이스를 생성한다.</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;첫번째 파라메터 : 사용할 디바이스의 
+GUID를 넣는다. 이미 정의되어 있는<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'시스템 
+키보드'에 대한 GUID인 GUID_SysKeyboard를 넣<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;으면 
+된다. &nbsp;참고로 강좌 2편에 나올 '마우스' 에 대한<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GUID는 
+GUID_SysMouse 이다.<br>
+&nbsp;&nbsp;&nbsp;두번째 파라메터 : IDirectInputDevice 로 선언된 변수가 var 
+로 들어간다.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;역시 
+성공하면 nil이 아닌 값이 들어 온다.<br>
+&nbsp;&nbsp;&nbsp;세번째 파라메터 : 무조건 nil을 쓴다. </FONT></p>
+<p><FONT face="굴림체">3) DirectInputKeyboard.SetDataFormat(c_dfDIKeyboard);</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;디바이스에 대한 데이터 포맷을 설정한다.<br>
+&nbsp;&nbsp;&nbsp;현재는 키보드 디바이스이므로 키보드에 대한 데이터 정보를 보냈다.</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;첫번째 파라메터 : 나중에 Direct Input으로부터 
+돌려 받을 데이터의 형의<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;구조체를 
+넣는다. 이미 &nbsp;c_dfDIKeyboard, c_dfDIMouse,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c_dfDIJoystick, 
+c_dfDIJoystick2 등이 &nbsp;정의되어 있으<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;며 
+자신만의 데이터 형도 정의할 수 있다.</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+4) DirectInputKeyboard.SetCooperativeLevel(Handle,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DISCL_NONEXCLUSIVE 
+or DISCL_FOREGROUND);</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;상호 협력 레벨을 설정한다. 이것은 디바이스를 
+자신이 독점할 것인가? 아<br>
+&nbsp;&nbsp;&nbsp;니면 다른 프로그램도 동시에 사용할 수 있게 하느냐에 대한 것을 
+정의 한<br>
+&nbsp;&nbsp;&nbsp;다. 파라메터 이름을 보면 알겠지만 NONEXCLUSIVE 하면서 FOREGROUND 
+에서<br>
+&nbsp;&nbsp;&nbsp;만 동작하도록 했다. ( 쉽게 말하면 딴 프로그램도 키보드 쓸 
+수있고 현재<br>
+&nbsp;&nbsp;&nbsp;Handle을 보낸 윈도우에 Focus 가 있을 때만 &nbsp;키보드 정보를 
+받을 수 있게<br>
+&nbsp;&nbsp;&nbsp;설정했다. )<br>
+&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;첫번째 파라메터 : 키보드 정보를 받을 윈도우의 핸들</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;두번째 파라메터 : 협력 레벨에 대한 
+플래그가 들어간다.</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DISCL_EXCLUSIVE 
+&nbsp;&nbsp;&nbsp;- 딴 프로그램에서는 Aquire() 하고 있는 동안에<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;키보드를 
+사용할 수가 없다.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DISCL_NONEXCLUSIVE - 딴 프로그램과 
+킵드 정보를 공유한다.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DISCL_FOREGROUND &nbsp;&nbsp;- 
+윈도우에 Focus가 있을 때만 키보드 정보를 받<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;을 
+수 있다.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DISCL_BACKGROUND &nbsp;&nbsp;- 
+윈도우가 비활성되어도 키보드 정보를 받을 수<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가 
+있다.</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;( DISCL_EXCLUSIVE 
+와 DISCL_NONEXCLUSIVE 는 동시에 사용할 수 없고<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DISCL_FOREGROUND 
+와 DISCL_BACKGROUND 도 마찬가지다. )</FONT></p>
+<p><FONT face="굴림체">5) DirectInputKeyboard.Acquire;</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;디바이스의 접근 권한을 얻는다. 현재는 
+키보드로 정의되어 있으므로 키보<br>
+&nbsp;&nbsp;&nbsp;드에 대한 접근 권한이다. Acquire를 호출 하지 않으면 키보드의 
+데이터를<br>
+&nbsp;&nbsp;&nbsp;가져 올 수 없다.</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;그리고 리턴 값이 위의 다른 함수와는 
+좀 다르다는 것을 느꼈을 것이다.</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (HR 
+&lt;&gt; DI_OK) and (HR &lt;&gt; DI_NOEFFECT) then</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;이런 식으로 성공했을 때의 값은 DI_OK 
+뿐만 아니라 S_FALSE 라는 값일 수<br>
+&nbsp;&nbsp;&nbsp;도 있다. DI_OK 는 Direct Input이 성공했을 때 항상 돌려주는 
+HResult 값<br>
+&nbsp;&nbsp;&nbsp;이며, DI_NOEFFECT는 이미 Acquire를 이미 호출 한 상태일 때의 
+리턴 값이<br>
+&nbsp;&nbsp;&nbsp;다.</FONT></p>
+<p><FONT face="굴림체"><br>
+이렇게 생성자에 대한 부분이 구성된다.</FONT></p>
+<p><FONT face="굴림체"><br>
+그러면 이번에는 소멸자에 대해서 알아 보자.</FONT></p>
+<p><font face="굴림체" color="yellow">| procedure &nbsp;&nbsp;TDxInput.Free;<br>
+| begin<br>
+| &nbsp;&nbsp;&nbsp;// 키보드 접근 권한 해제<br>
+| &nbsp;&nbsp;&nbsp;DirectInputKeyboard.Unacquire;<br>
+|<br>
+| &nbsp;&nbsp;&nbsp;// Direct Input 디바이스 객체 해제<br>
+| &nbsp;&nbsp;&nbsp;DirectInputKeyboard._Release;<br>
+| &nbsp;&nbsp;&nbsp;Pointer(DirectInputKeyboard) := nil;<br>
+|<br>
+| &nbsp;&nbsp;&nbsp;// Direct Input 객체 해제<br>
+| &nbsp;&nbsp;&nbsp;DirectInput._Release;<br>
+| &nbsp;&nbsp;&nbsp;Pointer(DirectInput) := nil;<br>
+|<br>
+| &nbsp;&nbsp;&nbsp;// 선조의 Free를 실행한다. <br>
+| &nbsp;&nbsp;&nbsp;Inherited;<br>
+| end;</font></p>
+<p><FONT face="굴림체">생성자에 비해서는 비교적 간단하다. 그럼 설명 하자면...</FONT></p>
+<p><FONT face="굴림체">1) DirectInputKeyboard.Unacquire;</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;Aquire 메소드에 의해 얻어진 접근 권한을 
+해제한다.</FONT></p>
+<p><FONT face="굴림체">2) DirectInputKeyboard._Release;<br>
+&nbsp;&nbsp;&nbsp;Pointer(DirectInputKeyboard) := nil;</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;Direct Input 디바이스 객체를 해제한다. 
+COM 에서는 그냥 Release를 사용<br>
+&nbsp;&nbsp;&nbsp;하는데 _Release 사용하는 이유는, 델파이 2 의 OLE2 와는 다른, 
+델파이 3<br>
+&nbsp;&nbsp;&nbsp;의 이상에서 지원하는 IUnknown 인터페이스를 사용하기 때문이다.</FONT></p>
+<p><FONT face="굴림체">3) DirectInput._Release;<br>
+&nbsp;&nbsp;&nbsp;Pointer(DirectInput) := nil;</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;Direct Input 객체를 해제한다. 왜 Release라는 
+과정이 필요한지는 COM 에<br>
+&nbsp;&nbsp;&nbsp;관련된 책자를 읽어 보기 바란다. 참고로 Direct X 는 모두 COM 
+기반이다.</FONT></p>
+<p><FONT face="굴림체"><br>
+그럼 이제 딱 하나의 함수만 남았다. </FONT></p>
+<p><font face="굴림체" color="yellow">| procedure &nbsp;&nbsp;TDxInput.GetKeyState(var 
+KeyState : TKeyState);<br>
+| var<br>
+| &nbsp;&nbsp;&nbsp;HR : HResult;<br>
+| begin<br>
+| &nbsp;&nbsp;&nbsp;// 키보드의 상태를 읽는다.<br>
+| &nbsp;&nbsp;&nbsp;HR := DirectInputKeyboard.GetDeviceState(SizeOf(KeyState),@KeyState);<br>
+| &nbsp;&nbsp;&nbsp;// 만약 입력 장치에 대한 정보를 읽어 버렸으면 다시 Aquire 
+한다.<br>
+| &nbsp;&nbsp;&nbsp;if HR = DIERR_INPUTLOST then DirectInputKeyboard.Acquire;<br>
+| end;</font></p>
+<p><FONT face="굴림체">1) DirectInputKeyboard.GetDeviceState(SizeOf(KeyState),@KeyState);</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;디바이스의 상태를 읽는다. 현재는 DirectInputKeyboard 
+가 키보드로 정의<br>
+&nbsp;&nbsp;&nbsp;되었으므로 키보드에 대한 정보를 읽어 온다.</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;첫번째 파라메터 : 두번째 파라메터에 
+들어가는 버퍼의 사이즈를 넣는다.</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;두번째 파라메터 : 입력 장치의 정보를 
+가져오는 버퍼의 포인터를 넣는다.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;물론 
+그 구조는 SetDataFormat() 에서 이미 정의했다.</FONT></p>
+<p><FONT face="굴림체">------------------------------------------------------------------------</FONT></p>
+<p><FONT face="굴림체">(3) Direct Input 의 Keyboard 객체 용법</FONT></p>
+<p><FONT face="굴림체">객체를 구현했으니 이제는 사용하는 방법만 남았다.</FONT></p>
+<p><FONT face="굴림체">일단 객체의 선언은 다음처럼 하면 된다.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;DxInput : TDxInput;</FONT></p>
+<p><FONT face="굴림체">그리고 생성은 <br>
+&nbsp;&nbsp;&nbsp;&nbsp;DxInput := TDxInput.Create(hInstance,Handle);</FONT></p>
+<p><FONT face="굴림체">소멸은<br>
+&nbsp;&nbsp;&nbsp;&nbsp;DxInput.Free;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;DxInput := nil;</FONT></p>
+<p><FONT face="굴림체">이렇게 사용한다.</FONT></p>
+<p><FONT face="굴림체">그렇다면 용법을 보자...</FONT></p>
+<p><font face="굴림체" color="yellow">| var<br>
+| &nbsp;&nbsp;&nbsp;KeyState : TKeyState;<br>
+| <br>
+| begin<br>
+| &nbsp;&nbsp;&nbsp;// KeyState 에 키보드 상태를 가져온다.<br>
+| &nbsp;&nbsp;&nbsp;DxInput.GetKeyState(KeyState);<br>
+| <br>
+| &nbsp;&nbsp;&nbsp;// 오른쪽 화살표키가 눌러져 있는 상태인가 ?<br>
+| &nbsp;&nbsp;&nbsp;if KeyState[DIK_RIGHT] and $80 &gt; 0 then <br>
+| &nbsp;&nbsp;&nbsp;// 왼쪽 화살표키가 눌러져 있는 상태인가 ?<br>
+| &nbsp;&nbsp;&nbsp;if KeyState[DIK_LEFT ] and $80 &gt; 0 then <br>
+| &nbsp;&nbsp;&nbsp;// 위쪽 화살표키가 눌러져 있는 상태인가 ?<br>
+| &nbsp;&nbsp;&nbsp;if KeyState[DIK_UP &nbsp;&nbsp;] and $80 &gt; 0 then <br>
+| &nbsp;&nbsp;&nbsp;// 아래쪽 화살표키가 눌러져 있는 상태인가 ?<br>
+| &nbsp;&nbsp;&nbsp;if KeyState[DIK_DOWN ] and $80 &gt; 0 then <br>
+| end;</font></p>
+<p><FONT face="굴림체">KeyState 에 되돌아 오는 값은 TKeyState 에 선언된 대로 
+256 개의 byte 배열<br>
+이다. 그리고 그 배열들은 Direct Input 헤더에 정의된 DIK_RIGHT 와 같은 상<br>
+수에 의해 특정 정보를 가져올 수가 있다. &nbsp;DOS 때의 스캔코드와 유사하게 키<br>
+보드의 실제 물리적인 버튼에 바로 대응한다. 즉 'a' 키를 누르면 무조건 'a'<br>
+키로 인식한다. ( 일반적인 키보드라면 Sfhit - 'a' 가 되면 'A' 로 인식하지<br>
+만 여기에서는 '왼쪽 Shift' 와 'a'로 따로 인식한다. )</FONT></p>
+<p><FONT face="굴림체">그 배열들에 저장된 값의 MSB(최상위비트)가 1이면 현재 
+그 키가 눌러진 것이<br>
+고 0 이라면 키가 떼어진 것이다. 이 정보를 가지고 DOS 때의 Multi-Key 처럼<br>
+핸들링하면 이전에 눌러졌었는지.. 또는 현재 몇개의 키가 조합되었는지 등을<br>
+알수가있다. ( BM98 이라는 음악 게임에 보면 동시에 6키를 눌러도 동시에 모<br>
+두 인식을 해 내는 것을 볼 수 있을것이다. )</FONT></p>
+<p><FONT face="굴림체">------------------------------------------------------------------------</FONT></p>
+<p><FONT face="굴림체">(4) Direct Input 의 Keyboard 객체 사용 예제</FONT></p>
+<p><FONT face="굴림체">그럼 실제로 사용을 해보자면....</FONT></p>
+<p><FONT face="굴림체">1. 위에서 만든 Direct Input 객체를 따로 Unit 로 저장한다.</FONT></p>
+<p><FONT face="굴림체">2. 새로운 프로젝트를 만들고, Unit1 에는 방금 만든 Direct 
+Input 객체가 있<br>
+&nbsp;&nbsp;&nbsp;는 unit를 uses한다. 그리고 Direct Input 헤더인 DInput.Pas 
+도 uses한다.</FONT></p>
+<p><FONT face="굴림체">3. 폼에는 타이머, 라벨, 버튼을 만든다.</FONT></p>
+<p><FONT face="굴림체">4. TForm1 의 public 에 'DxInput : TDxInput;' 을 추가한다.</FONT></p>
+<p><FONT face="굴림체">5. 버튼의 클릭 이벤트에 다음과 같이 입력한다.</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;DxInput := TDxInput.Create(hInstance,Handle);<br>
+&nbsp;&nbsp;&nbsp;Timer1.Enabled := TRUE;</FONT></p>
+<p><FONT face="굴림체">6. Form 의 Close 이벤트에 다음과 같이 입력한다.</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;Timer1.Enabled := FALSE;<br>
+&nbsp;&nbsp;&nbsp;DxInput.Free;<br>
+&nbsp;&nbsp;&nbsp;DxInput := nil;</FONT></p>
+<p><FONT face="굴림체">7. 타이머 이벤트의 Interval을 1로 하고 이벤트에는 다음과 
+같이 입력한다.</FONT></p>
+<p><FONT face="굴림체">var<br>
+&nbsp;&nbsp;&nbsp;KeyState : TKeyState;<br>
+&nbsp;&nbsp;&nbsp;s &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: string;<br>
+begin<br>
+&nbsp;&nbsp;&nbsp;DxInput.GetKeyState(KeyState);<br>
+&nbsp;&nbsp;&nbsp;s := '';<br>
+&nbsp;&nbsp;&nbsp;if KeyState[DIK_RIGHT] and $80 &gt; 0 then s := s + 'Right 
+';<br>
+&nbsp;&nbsp;&nbsp;if KeyState[DIK_LEFT ] and $80 &gt; 0 then s := s + 'Left 
+';<br>
+&nbsp;&nbsp;&nbsp;if KeyState[DIK_UP &nbsp;&nbsp;] and $80 &gt; 0 then s := 
+s + 'Up ';<br>
+&nbsp;&nbsp;&nbsp;if KeyState[DIK_DOWN ] and $80 &gt; 0 then s := s + 'Down 
+';<br>
+&nbsp;&nbsp;&nbsp;Label1.Caption := s;<br>
+end;</FONT></p>
+<p><FONT face="굴림체">8. 실행한다.</FONT></p>
+<p><FONT face="굴림체">9. 버튼을 누르면 Direct Input 의 키보드 핸들링이 시작되는데... 
+현재는 화<br>
+&nbsp;&nbsp;&nbsp;살표 키에만 반응한다. 동시에 화살표키를 여러개 누르거나 &nbsp;동시에 
+4개를<br>
+&nbsp;&nbsp;&nbsp;눌러도 모두 반응한다. </FONT></p>
+<p><FONT face="굴림체">나머지 키에 대한 상수 값은 델파이용 Direct X 의 DInput.Pas 
+에 보면 잘 나<br>
+와 있다.</FONT></p>
+<p><FONT face="굴림체"><br>
+------------------------------------------------------------------------</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1999 
+/ 10 / 31</FONT></p>
+<p><font color="#CCFF00">#####################################################</font></p>
+<p>
+<FONT face="굴림체">------------------------------------------------------------------------<BR>### 
+델파이로 하는 Direct X - Direct Input 
+(2/2)<BR>------------------------------------------------------------------------<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;작성자 
+: 안영기 ( HiTEL ID : SMgal )</FONT></p>
+<P>&nbsp;</P>
+<P><FONT face="굴림체">&nbsp;앞 장에서 우리는 Direct Input 에 의한 키보드 상태 읽기를 했었다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;그렇다면 이제는 마우스에 대한 상태를 읽어야 할 차례인데.... 앞 장에서도<BR>간략하게 언급했듯이 
+키보드에서 했던 방식으로 쉽게 접근 할 수가 있다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(1) Direct Input 의 Mouse 를 왜 사용하는가 ?</FONT></P>
+<P><FONT face="굴림체">&nbsp;윈도우즈에는 마우스 위치를 감지하기 위한 좋은 API 함수가 이미 있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;GetCursorPos() 라는 함수인데 &nbsp;이 함수만 사용해도 현재의 마우스의 위치를<BR>알 수가 있고, 
+&nbsp;앞에서 언급한 GetAsyncKeyState() 함수에서 VK_LBUTTON 등을<BR>사용하면 현재의 마우스 버튼 상태도 알 수가 
+있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;일반적인 게임( 윈도우 기반의 게임 )에서는 이 함수만으로도 충분히 마우스<BR>관리를 할 수 있고 
+Direct X 기반의 게임이라고 하더라도 이 함수로도 충분히<BR>마우스 상태 정보 얻는데 무리없이 사용할 수 있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;그렇다면 Direct Input 의 Mouse 를 왜 사용하는가 ? </FONT></P>
+<P><FONT face="굴림체">&nbsp;실제로 마우스 버튼의 상태를 얻기 위해서는 GetAsyncKeyState() 를 사용하<BR>나 Direct 
+Input 를 사용하나 똑같다. &nbsp;하지만 Direct Input 를 사용하면 동<BR>시에 마우스 버튼들의 상태와 마우스 위치 정보를 얻어 오기 
+때문에 &nbsp;속도가<BR>빨라진다. 그리고 GetCursorPos() 라는 함수는 &nbsp;단지 윈도우 바탕화면에서의<BR>절대적인 위치만을 돌려주지만 
+Direct Input 에서는 X, Y 축에 대한 이동 변<BR>량(Delta)을 기준으로 하기 때문에 마우스의 위치를 잡는 것 뿐아니라 
+&nbsp;마우<BR>스가 단위 시간에 얼마만큼의 속도로 움직였는지까지도 알아 낼 수가 있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;예를들어 &nbsp;당구 게임을 만드는데 &nbsp;마우스를 밀어서 큐대를 조종한다고 하면<BR>공을 칠 때 &nbsp;순간적인 y 
+변량으로 힘의 세기를 측정하고 x 의 변량으로 빗나<BR>간 정도를 알 수 있을 것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;이 정도면 충분한 이유가 되었다고 생각하고 구현으로 들어가겠다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(2) Direct Input 의 Mouse 객체 구현</FONT></P>
+<P><FONT color=yellow face=굴림체>| type<BR>| &nbsp;&nbsp;&nbsp;TMouseState = 
+TDIMouseState;<BR>|<BR>| &nbsp;&nbsp;&nbsp;TDxInput = class<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;constructor 
+Create(hInstance : integer; Handle : integer);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure &nbsp;&nbsp;Free;<BR>| 
+&nbsp;&nbsp;&nbsp;private<BR>| &nbsp;&nbsp;&nbsp;public<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectInput &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: IDirectInput;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectInputMouse &nbsp;&nbsp;&nbsp;: IDirectInputDevice;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure 
+GetMouseState(var MouseState : TMouseState);<BR>| &nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;이렇게 간단한 객체로 Direct Input 의 Mouse 객체가 만들어진다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;생성자, 소멸자, 그리고 변수 2 개와 함수하나... </FONT></P>
+<P><FONT face="굴림체">&nbsp;우리는 항상 그렇듯 10줄의 설명 보다는 10줄의 코드를 더 빨리 이해하기 때<BR>문에 
+implementation에 구현되어 있는 객체 메소드를 직접 보면서 설명하겠다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;아래에 보이는 것이 생성자다.<BR>&nbsp;파라메터는 Instance와 Handle을 받는다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| constructor TDxInput.Create(hInstance : 
+integer; Handle : integer);<BR>| var<BR>| &nbsp;&nbsp;&nbsp;HR : HResult;<BR>| begin<BR>| &nbsp;&nbsp;&nbsp;// 
+선조의 Create를 실행한다.<BR>| &nbsp;&nbsp;&nbsp;Inherited Create;<BR>| <BR>| &nbsp;&nbsp;&nbsp;// Direct Input 객체를 
+만든다.<BR>| &nbsp;&nbsp;&nbsp;HR := DirectInputCreate(hInstance,DIRECTINPUT_VERSION,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectInput,nil);<BR>| &nbsp;&nbsp;&nbsp;if HR &lt;&gt; 
+DI_OK then exit;<BR>| <BR>| &nbsp;&nbsp;&nbsp;// 마우스 디바이스를 생성한다.<BR>| &nbsp;&nbsp;&nbsp;HR := 
+DirectInput.CreateDevice(GUID_SysMouse,DirectInputMouse,nil);<BR>| &nbsp;&nbsp;&nbsp;if HR 
+&lt;&gt; DI_OK then exit;<BR>|<BR>| &nbsp;&nbsp;&nbsp;// 마우스에 대한 데이터 포맷을 설정한다.<BR>| &nbsp;&nbsp;&nbsp;HR := 
+DirectInputMouse.SetDataFormat(c_dfDIMouse);<BR>| &nbsp;&nbsp;&nbsp;if HR &lt;&gt; DI_OK then 
+exit;<BR>|<BR>| &nbsp;&nbsp;&nbsp;// 상호 협력 레벨을 설정한다.<BR>| &nbsp;&nbsp;&nbsp;HR := 
+DirectInputMouse.SetCooperativeLevel(Handle,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DISCL_EXCLUSIVE or&nbsp;DISCL_FOREGROUND);<BR>| 
+&nbsp;&nbsp;&nbsp;if HR &lt;&gt; DI_OK then exit;<BR>|<BR>| &nbsp;&nbsp;&nbsp;// 마우스의 접근 권한을 얻는다.<BR>| &nbsp;&nbsp;&nbsp;HR 
+:= DirectInputMouse.Acquire;<BR>| &nbsp;&nbsp;&nbsp;if (HR &lt;&gt; DI_OK) and (HR &lt;&gt; 
+DI_NOEFFECT) then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 실패했을 때 그 원인을 알아 본다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case HR 
+of<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DIERR_NOTINITIALIZED &nbsp;: <BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ShowMessage('Direct 
+Input Error : NOTINITIALIZED');<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DIERR_INVALIDPARAM &nbsp;&nbsp;&nbsp;: <BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ShowMessage('Direct Input Error : INVALIDPARAM');<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DIERR_OTHERAPPHASPRIO : <BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ShowMessage('Direct Input 
+Error : OTHERAPPHASPRIO');<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ShowMessage('Direct Input Error');<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| 
+&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체"><BR>&nbsp;이걸로 Direct Input의 Mouse에 대한 초기화가 모두 끝났다. &nbsp;그럼 순차적으<BR>로 다시 
+대충 설명해 보면..... ( 1 편에서 자세하게 했기 때문에.. )</FONT></P>
+<P><FONT face="굴림체">1) 
+DirectInputCreate(hInstance,DIRECTINPUT_VERSION,DirectInput,nil);</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;Direct Input 객체를 생성하는 함수다. <BR>&nbsp;&nbsp;&nbsp;Keyboard 일 때와 같은 
+명령어다.</FONT></P>
+<P><FONT face="굴림체">2) 
+DirectInput.CreateDevice(GUID_SysMouse,DirectInputMouse,nil);<BR>&nbsp;<BR>&nbsp;&nbsp;&nbsp;사용할 
+디바이스를 생성한다.<BR>&nbsp;&nbsp;&nbsp;GUID_SysMouse가 첫번째 파라메터로 들어 갔기 때문에 IDirectInputDevice<BR>&nbsp;&nbsp;&nbsp;로 
+선언된 변수인 DirectInputMouse은 마우스 디바이스로 생성된다.</FONT></P>
+<P><FONT face="굴림체">3) DirectInputMouse.SetDataFormat(c_dfDIMouse);</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;디바이스에 대한 데이터 포맷을 설정한다.<BR>&nbsp;&nbsp;&nbsp;현재는 마우스 디바이스이므로, 마우스 정보를 위한 
+구조체 포맷이라는 것<BR>&nbsp;&nbsp;&nbsp;을 디바이스에게 알려준다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>4) 
+DirectInputMouse.SetCooperativeLevel(Handle,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DISCL_EXCLUSIVE 
+or DISCL_FOREGROUND);</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;상호 협력 레벨을 설정한다. 키보드 디바이스일 때와는 달리 EXCLUSIVE 로<BR>&nbsp;&nbsp;&nbsp;설정을 한 것을 
+눈여겨 보기 바란다. &nbsp;DISCL_EXCLUSIVE 로 설정을 하면 다<BR>&nbsp;&nbsp;&nbsp;른 프로그램에 대해서는 배타적으로 마우스 정보를 독점할 수가 
+있으며 마<BR>&nbsp;&nbsp;&nbsp;우스 커서는 GDI 환경에서 사라지게 된다. &nbsp;즉 마우스 커서는 자신이 직접<BR>&nbsp;&nbsp;&nbsp;그려주어야 하는데... 모든 게임이 
+그렇듯 디폴트 마우스는 사라지고 자신<BR>&nbsp;&nbsp;&nbsp;의 게임에 맞는 마우스 커서가 떠야 할 것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;물론 DISCL_NONEXCLUSIVE 로도 설정해도 된다. 그렇게 하면 마우스 커서가<BR>&nbsp;&nbsp;&nbsp;눈에 
+보이게 된다. 하지만 마우스를 잡고 난동을 부리면서 아래 위로 커서<BR>&nbsp;&nbsp;&nbsp;를 움직여 보면 원래 원했던 좌표로부터 자꾸 벗어난다(오차가 
+난다)는 것<BR>&nbsp;&nbsp;&nbsp;을 알 수 있을 것이다. ( 여기서 좌표란 논리적으로 변량을 계산해서 나타<BR>&nbsp;&nbsp;&nbsp;내는 마우스 위치를 말한다. 
+)</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;그리고 키보드 할 때 빼 먹은 부분이 있는데, 키보드는 기본적으로 배타적<BR>&nbsp;&nbsp;&nbsp;으로 &nbsp;사용되어 질수가 
+없다. &nbsp;하지만 Direct X 7.0 에서는 키보드도 배타<BR>&nbsp;&nbsp;&nbsp;적으로 사용될 수 있다고 하니 참고로 알아 두자.</FONT></P>
+<P><FONT face="굴림체">5) DirectInputMouse.Acquire;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;디바이스의 접근 권한을 얻는다. 현재는 마우스로 정의되어 있으므로 마우<BR>&nbsp;&nbsp;&nbsp;스에 대한 접근 
+권한이다. Acquire를 호출 하지 않으면 마우스의 데이터를<BR>&nbsp;&nbsp;&nbsp;가져 올 수 없다. 나머지는 키보드일 때와 같다.</FONT></P>
+<P><FONT face="굴림체"><BR>그러면 이번에는 소멸자에 대해서 알아 보자.</FONT></P>
+<P><FONT color=yellow face=굴림체>| procedure &nbsp;&nbsp;TDxInput.Free;<BR>| begin<BR>| 
+&nbsp;&nbsp;&nbsp;// 마우스 접근 권한 해제<BR>| &nbsp;&nbsp;&nbsp;DirectInputMouse.Unacquire;<BR>|<BR>| &nbsp;&nbsp;&nbsp;// Direct 
+Input 디바이스 객체 해제<BR>| &nbsp;&nbsp;&nbsp;DirectInputMouse._Release;<BR>| 
+&nbsp;&nbsp;&nbsp;Pointer(DirectInputMouse) := nil;<BR>|<BR>| &nbsp;&nbsp;&nbsp;// Direct Input 객체 해제<BR>| 
+&nbsp;&nbsp;&nbsp;DirectInput._Release;<BR>| &nbsp;&nbsp;&nbsp;Pointer(DirectInput) := nil;<BR>|<BR>| &nbsp;&nbsp;&nbsp;// 
+선조의 Free를 실행한다. <BR>| &nbsp;&nbsp;&nbsp;Inherited;<BR>| end;</FONT></P>
+<P><FONT face="굴림체">내용은 키보드 일때와 완전히 같다.</FONT></P>
+<P><FONT face="굴림체"><BR>그럼 이제 딱 하나 남은 가장 중요한 함수를 보자.<BR>역시 키보드일 때와 용법은 
+같다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| procedure TDxInput.GetMouseState(var MouseState 
+: TMouseState);<BR>| var<BR>| &nbsp;&nbsp;&nbsp;HR : HResult;<BR>| begin<BR>| &nbsp;&nbsp;&nbsp;HR := 
+DirectInputmouse.GetDeviceState(SizeOf(MouseState),@MouseState);<BR>| &nbsp;&nbsp;&nbsp;if HR = 
+DIERR_INPUTLOST then DirectInputMouse.Acquire;<BR>| end;</FONT></P>
+<P><FONT face="굴림체">1) 
+DirectInputMouse.GetDeviceState(SizeOf(KeyState),@KeyState);</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;디바이스의 상태를 읽는다. 현재는 DirectInputMouse가 마우스로 정의되었<BR>&nbsp;&nbsp;&nbsp;으므로 
+마우스에 대한 정보를 읽어 온다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;키보드일 때와 다른 점은 TMouseState 라는 구조체이다..</FONT></P>
+<P><FONT color=yellow face=굴림체>| type<BR>| &nbsp;&nbsp;&nbsp;TMouseState = 
+TDIMouseState;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;위의 소스에 보면 이런 부분이 있다. DInput 헤더에 있는 TDIMouseState를<BR>&nbsp;&nbsp;&nbsp;그대로 
+사용한 것인데 TDIMouseState 의 구조는 다음과 같다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;TDIMouseState = packed record<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lX: 
+Longint;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lY: Longint;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lZ: Longint;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rgbButtons: 
+Array [0..3] of BYTE;<BR>&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;IX - 마우스가 X 축으로 이동한 변량<BR>&nbsp;&nbsp;&nbsp;IY - 마우스가 Y 축으로 이동한 
+변량<BR>&nbsp;&nbsp;&nbsp;IZ - 마우스가 Z 축으로 이동한 변량 ( 3 차원 마우스 지원용이다. )<BR>&nbsp;&nbsp;&nbsp;rgbButtons[0] - 왼쪽 마우스 
+버튼이 눌러지면 MSB가 1 그렇지 않으면 0<BR>&nbsp;&nbsp;&nbsp;rgbButtons[1] - 오른쪽 마우스 버튼이 눌러지면 MSB가 1 그렇지 않으면 
+0<BR>&nbsp;&nbsp;&nbsp;rgbButtons[2] - 2 버튼 이상의 마우스 지원용<BR>&nbsp;&nbsp;&nbsp;rgbButtons[3] - 2 버튼 이상의 마우스 
+지원용</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;이렇게 이루어져 있다.</FONT></P>
+<P><FONT face="굴림체"><BR>------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(3) Direct Input 의 Mouse 객체 용법</FONT></P>
+<P><FONT face="굴림체">객체를 구현했으니 이제는 사용하는 방법만 남았다.</FONT></P>
+<P><FONT face="굴림체">일단 객체의 선언은 다음처럼 하면 된다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;DxInput : TDxInput;</FONT></P>
+<P><FONT face="굴림체">그리고 생성은 <BR>&nbsp;&nbsp;&nbsp;&nbsp;DxInput := 
+TDxInput.Create(hInstance,Handle);</FONT></P>
+<P><FONT face="굴림체">소멸은<BR>&nbsp;&nbsp;&nbsp;&nbsp;DxInput.Free;<BR>&nbsp;&nbsp;&nbsp;&nbsp;DxInput := nil;</FONT></P>
+<P><FONT face="굴림체">이렇게 사용한다.</FONT></P>
+<P><FONT face="굴림체">그렇다면 용법을 보자...</FONT></P>
+<P><FONT color=yellow face=굴림체>| var<BR>| &nbsp;&nbsp;&nbsp;MouseState : TMouseState;<BR>|<BR>| 
+begin<BR>| &nbsp;&nbsp;&nbsp;// MouseState 에 마우스 상태를 가져온다.<BR>| 
+&nbsp;&nbsp;&nbsp;DxInput.GetMouseState(MouseState);<BR>|<BR>| &nbsp;&nbsp;&nbsp;// 현재의 x, y 변량을 더한다.<BR>| 
+&nbsp;&nbsp;&nbsp;Inc(MousePos.X,MouseState.lX);<BR>| &nbsp;&nbsp;&nbsp;Inc(MousePos.Y,MouseState.lY);<BR>| 
+&nbsp;&nbsp;&nbsp;// 마우스 버튼이 눌려졌는지의 여부를 알아 본다.<BR>| &nbsp;&nbsp;&nbsp;if MouseState.rgbButtons[0] and $80 &gt; 
+0 then<BR>| &nbsp;&nbsp;&nbsp;if MouseState.rgbButtons[1] and $80 &gt; 0 then</FONT></P>
+<P><FONT face="굴림체">보다시피 한 번에 마우스 위치 정보와 &nbsp;마우스 버튼 정보를 얻어 오기 때문에<BR>빠를수 밖에 없다. 그리고 
+윈도우의 메세지등을 거치지 않기고 바로 하드웨어<BR>인터럽트에서 얻어 오기 때문에 부하도 적다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(4) Direct Input 의 Mouse 객체 사용 예제</FONT></P>
+<P><FONT face="굴림체">그럼 실제로 사용을 해보자면....</FONT></P>
+<P><FONT face="굴림체">1. 위에서 만든 Direct Input 객체를 따로 Unit 로 저장한다.</FONT></P>
+<P><FONT face="굴림체">2. 새로운 프로젝트를 만들고, Unit1 에는 방금 만든 Direct Input 객체가 있<BR>&nbsp;&nbsp;&nbsp;는 
+unit를 uses한다. 그리고 Direct Input 헤더인 DInput.Pas 도 uses한다.</FONT></P>
+<P><FONT face="굴림체">3. 폼에는 타이머, 라벨, 버튼을 만든다.</FONT></P>
+<P><FONT face="굴림체">4. TForm1 의 public 에 'DxInput : TDxInput;' 을 추가한다.<BR>&nbsp;&nbsp;&nbsp;그리고 
+'MousePos : TPoint;' 도 추가한다. &nbsp;이것은 마우스 커서의 현위치<BR>&nbsp;&nbsp;&nbsp;를 기억해 두기 위해서 
+필요하다.</FONT></P>
+<P><FONT face="굴림체">5. 버튼의 클릭 이벤트에 다음과 같이 입력한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;DxInput &nbsp;:= 
+TDxInput.Create(hInstance,Handle);<BR>&nbsp;&nbsp;&nbsp;MousePos := 
+Point(0,0);<BR>&nbsp;&nbsp;&nbsp;Timer1.Enabled := TRUE;</FONT></P>
+<P><FONT face="굴림체">6. Form 의 Close 이벤트에 다음과 같이 입력한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;Timer1.Enabled := FALSE;<BR>&nbsp;&nbsp;&nbsp;DxInput.Free;<BR>&nbsp;&nbsp;&nbsp;DxInput 
+:= nil;</FONT></P>
+<P><FONT face="굴림체">7. 타이머 이벤트의 Interval을 1로 하고 이벤트에는 다음과 같이 입력한다.</FONT></P>
+<P><FONT face="굴림체">var<BR>&nbsp;&nbsp;&nbsp;MouseState : TMouseState;<BR>&nbsp;&nbsp;&nbsp;s &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 
+string;<BR>begin<BR>&nbsp;&nbsp;&nbsp;DxInput.GetMouseState(MouseState);<BR>&nbsp;&nbsp;&nbsp;Inc(MousePos.X,MouseState.lX);<BR>&nbsp;&nbsp;&nbsp;Inc(MousePos.Y,MouseState.lY);<BR>&nbsp;&nbsp;&nbsp;s 
+:= Format('(%4d,%4d) ',[MousePos.X,MousePos.Y]);<BR>&nbsp;&nbsp;&nbsp;if 
+MouseState.rgbButtons[0] and $80 &gt; 0 then s := s + 'Left Button ';<BR>&nbsp;&nbsp;&nbsp;if 
+MouseState.rgbButtons[1] and $80 &gt; 0 then s := s + 'Right Button 
+';<BR>&nbsp;&nbsp;&nbsp;Label1.Caption := s;<BR>end;</FONT></P>
+<P><FONT face="굴림체">8. 실행한다.</FONT></P>
+<P><FONT face="굴림체">9. 버튼을 누르면 Direct Input 의 마우스 핸들링이 시작되는데... &nbsp;마우스의<BR>&nbsp;&nbsp;&nbsp;움직임이나 
+버튼의 누름을 표시해 준다. &nbsp;동시에 버튼을 눌러도 역시 결과<BR>&nbsp;&nbsp;&nbsp;는 같다. ( 마우스 좌표의 기준은 Direct Input이 시작할때의 
+마우스 위치<BR>&nbsp;&nbsp;&nbsp;가 (0,0) 으로 설정된다. )</FONT></P>
+<P><FONT face="굴림체"><BR>------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&lt;&lt; 에필로그 &gt;&gt;</FONT></P>
+<P><FONT face="굴림체">&nbsp;지금까지 설명한 것은 Direct X 의 입력 디바이스 부분인 Direct Input 부분<BR>이었습니다. 
+&nbsp;델파이로 게임 만드시려는 분들께 &nbsp;조금이나마 도움이 되었으면<BR>좋겠습니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;지금까지 델파이로 Direct Draw, 멀티미디어 타이머, DIB, Direct Input &nbsp;에<BR>대한 
+강좌를 했는데..... 앞으로 델파이로 하는 Direct Sound, Direct Music,<BR>Direct Play 에 대한 강좌를 더 
+하고 싶습니다..</FONT></P>
+<P><FONT face="굴림체">&nbsp;일요일 하루를 투자해서 2편 분량의 강좌를 했으니, 앞으로도 일요일마다 이<BR>정도 분량의 강좌를 해 나가고 
+싶습니다. 그럼 관심 있으신 분들은 많이 기대<BR>해 주세요..</FONT></P>
+<P><FONT face="굴림체">&nbsp;그럼 마지막으로 한마디 남기겠습니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot; </FONT><FONT color=lime face=굴림체>A mountain is a 
+mountain, Water is water.</FONT><FONT face="굴림체"> 
+&quot;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1999 
+/ 10 / 31</FONT></P>
+<P>&nbsp;</P></body>
+
+</html>

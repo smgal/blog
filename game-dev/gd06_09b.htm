@@ -1,0 +1,146 @@
+<html>
+<head>
+<title>main_game.</title>
+<meta name="generator" content="Namo WebEditor v5.0">
+</head>
+
+<body background="back01.jpg" bgcolor="white" text="black" link="blue" vlink="purple"
+ alink="red">
+
+<div align="left">
+<table cellpadding="0" cellspacing="0" width="640">
+    <tr>
+        <td bgcolor="#605870" valign="top">
+            <p><font size="4"><b>&nbsp;</b></font><font size="4" color="white"><b>∇ 
+            프로그래밍 소품 및 팁</b></font></p>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#605870" height="148">
+            <table align="center" cellpadding="0" cellspacing="0" width="637">
+                <tr>
+                    <td width="477" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ Protected 멤버 함수를 파라미터로</b></font></td>
+                    <td width="84" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">C++</font></td>
+                    <td width="76" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">N/A</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+                            <p>Protected를 멤버 함수를 파라미터로 넘기려면 크게 
+                            두 가지가 필요하다. 첫째는 protected에 대한 권한이 
+                            없을 때 접근하는 방법에 대한 것이고 또 하나는 멤버 
+                            함수를 파라미터로 넘겨서 실행하는 방법에 대한 것이다. </p>
+                            <p>첫 번째에 대한 이야기는 이전 팁에서 언급된 것이기 
+                            때문에 생략하고 두 번째에 대한 것만 이야기 하겠다. 
+                            일반적으로 C에서 함수를 파라미터로 넘기기 위해서는</p>
+                            <ul>
+                                <p><TT><FONT face=fixedsys><FONT color=#0000ff>void</FONT> <FONT color=#000000>Print</FONT><FONT color=#000080>(</FONT><FONT color=#0000ff>void</FONT> <FONT color=#000080>(*</FONT>fnPrint<FONT color=#000080>)(</FONT><FONT color=#0000ff>const</FONT> <FONT color=#0000ff>char</FONT><FONT color=#000080>*))</FONT></FONT></TT></p>
+                            </ul>
+                            <p>와 같은 방법으로 선언하면 되었다. 그런데 class의 
+                            멤버 함수의 경우에는 조금 다른 문법을 사용해야 하는데, 
+                            CA라는 class 멤버 함수를 파라미터로 받는 다음 다음과 
+                            같이 된다..</p>
+                            <ul>
+                                <p><TT><FONT face=fixedsys><FONT color=#0000ff>void</FONT> <FONT color=#000000>Print</FONT><FONT color=#000080>(</FONT><FONT color=#0000ff>void</FONT> <FONT color=#000080>(</FONT>CA::<FONT color=#000080>*</FONT>fnPrint<FONT color=#000080>)(</FONT><FONT color=#0000ff>const</FONT> <FONT color=#0000ff>char</FONT><FONT color=#000080>*))</FONT></FONT></TT></p>
+                            </ul>
+                            <p>앞 쪽에 CA라는 class를 의미하는 namespace 표시를 
+                            추가하는 방법으로 해결되는 것이다. 이렇게 해서 class 
+                            멤버 함수를 파라미터로 보낼 수가 있지만 이렇게 받은 
+                            파라미터를 직접&nbsp;실행하지는 못한다. 위와 같은 
+                            선언이라면 단순한 파라미터일뿐이지 실행 가능한 함수 
+                            형태라고는 볼 수 없기 때문이다. (하지만 C 형태의 
+                            함수 파라미터는 실행까지 가능하다) 그 이유는 class 
+                            멤버 함수는 암묵적으로 this를 포함하여야 하기 때문에 
+                            스스로 실행은 불가능 한 것이다. 그렇다면 결국 this가 
+                            되는 class 인스턴스도 넘겨 주어야 하기 때문에 다음과 
+                            같은 형태가 되어야 한다.</p>
+                            <ul>
+                                <p><TT><FONT face=fixedsys><FONT color=#0000ff>void</FONT> <FONT color=#000000>Print</FONT><FONT color=#000080>(</FONT>CA<FONT color=#000080>*</FONT> pThis<FONT color=#000080>,</FONT> <FONT color=#0000ff>void</FONT> <FONT color=#000080>(</FONT>CA::<FONT color=#000080>*</FONT>fnPrint<FONT color=#000080>)(</FONT><FONT color=#0000ff>const</FONT> <FONT color=#0000ff>char</FONT><FONT color=#000080>*))</FONT></FONT></TT></p>
+                            </ul>
+                            <p>이로서 this와 class 멤버 변수가 모두 전달 되었다. 
+                            하지만 하나의 난관이 더 남아 있다. 이 2개의 파라미터를 
+                            어떻게 조합하느냐는 것이 문제이다. 그 방법도 C의 
+                            경우를 조금 응용해 보면 결론이 나오는데 다음과 같이 
+                            하면 된다.</p>
+                            <ul>
+                                <p><TT><FONT face=fixedsys><FONT color=#000080>(</FONT>pThis<FONT color=#000080>-&gt;*</FONT>fnPrint<FONT color=#000080>)(</FONT><FONT color=#008080>&quot;first 
+                                parameter&quot;</FONT><FONT color=#000080>);</FONT></FONT></TT></p>
+                            </ul>
+                            <p>이 전체를 테스트 하기 위해서 다음의 test case를 
+                            만들어 보았다.</p>
+                            <ul>
+                                <p><TT><FONT face=fixedsys color="#FF9933">01: </FONT><FONT face=fixedsys><FONT color=#993399>#include</FONT> <FONT color=#008080>&lt;iostream&gt;<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">02:</FONT><FONT face=fixedsys><FONT color=#808080><br></FONT> 
+</FONT><FONT face=fixedsys color="#FF9933">03:</FONT><FONT face=fixedsys> <FONT color=#0000ff>class</FONT> CA<br>
+</FONT><FONT face=fixedsys color="#FF9933">04:</FONT><FONT face=fixedsys> <FONT color=#000000>{<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">05:</FONT><FONT face=fixedsys>     &nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff>int</FONT> m_data<FONT color=#000080>;<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">06:</FONT><FONT face=fixedsys><FONT color=#808080><br></FONT> 
+</FONT><FONT face=fixedsys color="#FF9933">07:</FONT><FONT face=fixedsys> <FONT color=#0000ff>protected</FONT><FONT color=#000080>:<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">08:</FONT><FONT face=fixedsys>     &nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff>void</FONT> <FONT color=#000000>_Print</FONT><FONT color=#000080>(</FONT><FONT color=#0000ff>const</FONT> <FONT color=#0000ff>char</FONT><FONT color=#000080>*</FONT> szText<FONT color=#000080>)<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">09:</FONT><FONT face=fixedsys>     &nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#000000>{<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">10:</FONT><FONT face=fixedsys>         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std<FONT color=#000080>::</FONT>cout <FONT color=#000080>&lt;&lt;</FONT> szText <FONT color=#000080>&lt;&lt;</FONT> <FONT color=#008080>&quot;(&quot;</FONT> <FONT color=#000080>&lt;&lt;</FONT> m_data <FONT color=#000080>&lt;&lt;</FONT> <FONT color=#008080>&quot;)&quot;</FONT> <FONT color=#000080>&lt;&lt;</FONT> std<FONT color=#000080>::</FONT>endl<FONT color=#000080>;<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">11:</FONT><FONT face=fixedsys>     &nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#000000>}<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">12:</FONT><FONT face=fixedsys> <FONT color=#0000ff>public</FONT><FONT color=#000080>:<br></FONT> 
+</FONT><FONT face=fixedsys color="#FF9933">13:</FONT><FONT face=fixedsys>     &nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#000000>CA</FONT><FONT color=#000080>(</FONT><FONT color=#0000ff>int</FONT> data<FONT color=#000080>):</FONT> <FONT color=#000000>m_data</FONT><FONT color=#000080>(</FONT>data<FONT color=#000080>)</FONT> <FONT color=#000000>{}</FONT><FONT color=#000080>;<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">14:</FONT><FONT face=fixedsys> <FONT color=#000000>}</FONT><FONT color=#000080>;<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">15:</FONT><FONT face=fixedsys><FONT color=#808080><br></FONT> 
+</FONT><FONT face=fixedsys color="#FF9933">16:</FONT><FONT face=fixedsys> <FONT color=#009900>/////////////////////////////////////////////////////////<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">17: </FONT><FONT face=fixedsys><FONT color=#009900>// 파라미터로 받은 this와 멤버 함수를 조합한다<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">18:</FONT><FONT face=fixedsys> <FONT color=#0000ff>void</FONT> <FONT color=#000000>PrintProxy</FONT><FONT color=#000080>(</FONT>CA<FONT color=#000080>*</FONT> pThis<FONT color=#000080>,</FONT> <FONT color=#0000ff>void</FONT> <FONT color=#000080>(</FONT>CA<FONT color=#000080>::*</FONT>_Print<FONT color=#000080>)(</FONT><FONT color=#0000ff>const</FONT> <FONT color=#0000ff>char</FONT><FONT color=#000080>*),<br></FONT> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff>const</FONT> <FONT color=#0000ff>char</FONT><FONT color=#000080>*</FONT> szText<FONT color=#000080>)<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">19:</FONT><FONT face=fixedsys> <FONT color=#000000>{<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">20:</FONT><FONT face=fixedsys>     &nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#000080>(</FONT>pThis<FONT color=#000080>-&gt;*</FONT>_Print<FONT color=#000080>)(</FONT>szText<FONT color=#000080>);<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">21:</FONT><FONT face=fixedsys> <FONT color=#000000>}</FONT><FONT color=#000080>;<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">22:</FONT><FONT face=fixedsys><FONT color=#808080><br></FONT> 
+</FONT><FONT face=fixedsys color="#FF9933">23:</FONT><FONT face=fixedsys> <FONT color=#009900>/////////////////////////////////////////////////////////<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">24:</FONT><FONT face=fixedsys> <FONT color=#009900>// 파라미터로 받은 this의 protected 멤버 함수를 파라미터로 넘긴다.<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">25:</FONT><FONT face=fixedsys> <FONT color=#0000ff>void</FONT> <FONT color=#000000>PrintProxy</FONT><FONT color=#000080>(</FONT>CA<FONT color=#000080>*</FONT> pThis<FONT color=#000080>,</FONT> <FONT color=#0000ff>const</FONT> <FONT color=#0000ff>char</FONT><FONT color=#000080>*</FONT> szText<FONT color=#000080>)<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">26:</FONT><FONT face=fixedsys> <FONT color=#000000>{<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">27:</FONT><FONT face=fixedsys>     &nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff>class</FONT> CB<FONT color=#000080>:</FONT> <FONT color=#0000ff>public</FONT> CA<br>
+</FONT><FONT face=fixedsys color="#FF9933">28:</FONT><FONT face=fixedsys>     &nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#000000>{<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">29:</FONT><FONT face=fixedsys>     &nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff>public</FONT><FONT color=#000080>:<br></FONT> 
+</FONT><FONT face=fixedsys color="#FF9933">30:</FONT><FONT face=fixedsys>         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#000000>CB</FONT><FONT color=#000080>(</FONT><FONT color=#0000ff>int</FONT> data<FONT color=#000080>):</FONT> <FONT color=#000000>CA</FONT><FONT color=#000080>(</FONT>data<FONT color=#000080>)</FONT> <FONT color=#000000>{}</FONT><FONT color=#000080>;<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">31:</FONT><FONT face=fixedsys>         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff>void</FONT> <FONT color=#000000>Print</FONT><FONT color=#000080>(</FONT><FONT color=#0000ff>const</FONT> <FONT color=#0000ff>char</FONT><FONT color=#000080>*</FONT> szText<FONT color=#000080>)<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">32:</FONT><FONT face=fixedsys>         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#000000>{<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">33:</FONT><FONT face=fixedsys>             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#000000>PrintProxy</FONT><FONT color=#000080>(</FONT><FONT color=#0000ff>this</FONT><FONT color=#000080>,</FONT> <FONT color=#000080>&amp;</FONT>CB<FONT color=#000080>::</FONT>_Print<FONT color=#000080>,</FONT> szText<FONT color=#000080>);<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">34:</FONT><FONT face=fixedsys>         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#000000>}<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">35:</FONT><FONT face=fixedsys>     &nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#000000>}</FONT><FONT color=#000080>;<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">36:</FONT><FONT face=fixedsys><FONT color=#808080><br></FONT> 
+</FONT><FONT face=fixedsys color="#FF9933">37:</FONT><FONT face=fixedsys>     &nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff>static_cast</FONT><FONT color=#000080>&lt;</FONT>CB<FONT color=#000080>*&gt;(</FONT>pThis<FONT color=#000080>)-&gt;</FONT><FONT color=#000000>Print</FONT><FONT color=#000080>(</FONT>szText<FONT color=#000080>);<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">38:</FONT><FONT face=fixedsys><FONT color=#808080> 
+                                </FONT><FONT color=#000000>}<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">39:</FONT><FONT face=fixedsys><FONT color=#808080><br></FONT> 
+</FONT><FONT face=fixedsys color="#FF9933">40:</FONT><FONT face=fixedsys> <FONT color=#009900>/////////////////////////////////////////////////////////<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">41:</FONT><FONT face=fixedsys> <FONT color=#009900>// TEST CASE<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">42:</FONT><FONT face=fixedsys> <FONT color=#0000ff>int</FONT> <FONT color=#000000>main</FONT><FONT color=#000080>(</FONT><FONT color=#0000ff>void</FONT><FONT color=#000080>)<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">43:</FONT><FONT face=fixedsys> <FONT color=#000000>{<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">44:</FONT><FONT face=fixedsys>     &nbsp;&nbsp;&nbsp;&nbsp;CA <FONT color=#000000>a</FONT><FONT color=#000080>(</FONT><FONT color=#008080>100</FONT><FONT color=#000080>);<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">45:</FONT><FONT face=fixedsys><FONT color=#808080><br></FONT> 
+</FONT><FONT face=fixedsys color="#FF9933">46:</FONT><FONT face=fixedsys>     &nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#009900>// a의 protected 함수인 _Print()를 이용해 문자를 출력<br> 
+</FONT></FONT><FONT face=fixedsys color="#FF9933">47:</FONT><FONT face=fixedsys>     &nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#000000>PrintProxy</FONT><FONT color=#000080>(&amp;</FONT>a<FONT color=#000080>,</FONT> <FONT color=#008080>&quot;my message&quot;</FONT><FONT color=#000080>);<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">48:</FONT><FONT face=fixedsys><FONT color=#808080><br></FONT> 
+</FONT><FONT face=fixedsys color="#FF9933">49:</FONT><FONT face=fixedsys>     &nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff>return</FONT> <FONT color=#008080>0</FONT><FONT color=#000080>;<br></FONT>
+</FONT><FONT face=fixedsys color="#FF9933">50:</FONT><FONT face=fixedsys> <FONT color=#000000>}</FONT></FONT></TT></p>
+                            </ul>
+                            <p>&nbsp;</p>
+</td>
+                </tr>
+                <tr>
+                    <td height="2" bgcolor="#605870" colspan="3" width="637">
+                     </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td width="595" bgcolor="#605870" height="2">
+&nbsp;        </td>
+    </tr>
+</table>
+</div>
+
+<p>&nbsp;</p>
+</body>
+
+</html>

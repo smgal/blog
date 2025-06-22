@@ -1,0 +1,208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<title>main_game.</title>
+<meta name="generator" content="Namo WebEditor v5.0">
+</head>
+
+<body background="back01.jpg" bgcolor="white" text="black" link="blue" vlink="purple"
+ alink="red">
+
+<div align="left">
+<table cellpadding="0" cellspacing="0" width="640">
+    <tr>
+        <td bgcolor="#605870" valign="top">
+            <p><font size="4"><b>&nbsp;</b></font><font size="4" color="white"><b>∇ 
+            RPG 강좌</b></font></p>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#605870" height="148">
+            <table align="center" cellpadding="0" cellspacing="0" width="637">
+                <tr>
+                    <td width="477" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ PC와 NPC의 구분</b></font></td>
+                    <td width="84" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">N/A</font></td>
+                    <td width="76" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스無</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+                            <p align="left"><font size="2"><br>PC(Player Character)와 
+                            NPC(Non-Player Character)를 구분하는 가장 큰 기준은 
+                            사용자에 의해 조작이 가능한 캐릭터인가 하는 것이다. 
+                            PC는 대부분 사용자의 입력을 받아 그에 맞는 행동을 
+                            하게 되며 NPC는 자체적인 판단으로 행동한다. 하지만 
+                            그 이외의 행동 방식은 모두 같아야 한다. “오른쪽으로 
+                            움직여라”라는 명령을 받으면 PC나 NPC나 모두 오른쪽으로 
+                            움직여야 하며 “전방에 공격을 하라”라는 명령에 
+                            똑같이 현재 장비된 무기로 공격해야 할 것이다. (어떤 
+                            무기를 어떻게 사용하라고 하는 세부 명령이 필요 없다.) 
+                            즉, 명령은 하나이고 이런 명령을 받는 객체는 각각 
+                            다를 수가 있다는 것이다.</font></p>
+                            <p><font size="2">그렇다면 프로그래밍의 구현에서는 
+                            어떻게 해야 하는가? 방법은 여러 가지가 있겠지만 
+                            그 중에 가장 간단한 방법이 NPC클래스를 상속 받아서 
+                            PC를 구성하고, PC의 메인 행동 함수를 재정의하는 
+                            것이다. 일반적으로는 PC가 NPC의 속성을 모두 포함하며 
+                            거기에다가 추가 속성이 붙도록 구성되는 것이 대부분이기 
+                            때문이다.</font></p>
+                            <p align="left"><font size="3" color="#666600"><b>1. 
+                            PC와 NPC의 구분</b></font></p>
+                            <ul>
+                                <p><font size="2">만약 메인 행동 함수가 DoAction()이라고 
+                                한다면 다음과 같이 메인 루프를 구성할 수 있다.</font></p>
+                            </ul>
+                            <ul>
+                                <div align="left">
+                                    <table cellpadding="0" cellspacing="0" width="590" bgcolor="#F0E8FF">
+                                        <tr>
+                                            <td>
+                                                <p><font size="2" face="굴림체"><br>01: 
+                                                &nbsp;// 클래스 정의<br>02: 
+                                                &nbsp;class CNonPlayerChar<br>03: 
+                                                &nbsp;{<br>04: 
+                                                &nbsp;public:<br>05: 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;virtual 
+                                                int DoAction();<br>06: 
+                                                &nbsp;};<br>07: 
+                                                &nbsp;<br>08: 
+                                                &nbsp;int CNonPlayerChar::DoAction()<br>09: 
+                                                &nbsp;{<br>10: 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;// AI에 
+                                                의해 행동 패턴 결정<br>11: 
+                                                &nbsp;}<br>12: 
+                                                &nbsp;<br>13: 
+                                                &nbsp;class CPlayerChar : public 
+                                                CNonPlayerChar<br>14: 
+                                                &nbsp;{<br>15: 
+                                                &nbsp;public:<br>16: 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;int 
+                                                DoAction();<br>17: 
+                                                &nbsp;};<br>18: 
+                                                &nbsp;<br>19: 
+                                                &nbsp;int CPlayerChar::DoAction()<br>20: 
+                                                &nbsp;{<br>21: 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;// 사용자의 
+                                                입력에 의해 행동 패턴 결정<br>22: 
+                                                &nbsp;}<br>23: 
+                                                &nbsp;<br>24: 
+                                                &nbsp;// 게임 시스템에 정의된 
+                                                캐릭터 리스트<br>25: 
+                                                &nbsp;CNonPlayerChar* Characters[100];<br>26: 
+                                                &nbsp;<br>27: 
+                                                &nbsp;// PC의 생성 방법<br>28: 
+                                                &nbsp;Characters[0] = new CPlayerChar();<br>29: 
+                                                &nbsp;<br>30: 
+                                                &nbsp;// NPC의 생성 방법<br>31: 
+                                                &nbsp;Characters[1] = new CNonPlayerChar 
+                                                ();<br>32: 
+                                                &nbsp;<br>33: 
+                                                &nbsp;// 메인 루프 안에서 실행되는 
+                                                전 캐릭터 행동 함수<br>34: 
+                                                &nbsp;for (int i = 99; i &gt;=0; 
+                                                i--) <br>35: 
+                                                &nbsp;{<br>36: 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;if (Characters[i])<br>37: 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;{<br>38: 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Characters[i]-&gt;DoAction();<br>39: 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Characters[i]-&gt;Show();<br>40: 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;}<br>41: 
+                                                &nbsp;}<br><br></font></p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <p><font size="2">이렇게 하면 PC와 NPC를 구분하지 
+                                않고도 하나의 루프에서 전 캐릭터의 행동 함수를 
+                                모두 부를 수 있다. 참고로 루프를 99부터 0까지 
+                                거꾸로 돌리는 것은 0번 캐릭터인 주인공이 가장 
+                                나중에 출력되어 캐릭터들 중에서는 가장 위쪽에 
+                                찍히도록 하기 위해서다.</font></p>
+                                <p><font size="2">코드 마지막의 캐릭터 메인 
+                                루프는 비단 롤플레잉 게임뿐만 아니라 슈팅 게임에서도 
+                                사용할 수 있다. 주인공 캐릭터, 적 캐릭터, 그리고 
+                                탄환 같은 기타 오브젝트들까지도 모두 하나의 
+                                객체로부터 상속을 받게 되면 위의 구조를 그대로 
+                                가져가서 쓸 수 있다. 물론 슈팅에서는 충돌에 
+                                의한 소멸이 있으므로 DoAction() 멤버 함수에 
+                                자신이 소멸되는지 아닌지를 리턴 값으로 줘야 
+                                할 것이다.</font></p>
+                                <p><font size="2">즉 다음과 같은 구조를 가지는 
+                                것이 가장 바람직하다.</font></p>
+                            </ul>
+                            <ul>
+                                <div align="left">
+                                    <table cellpadding="0" cellspacing="0" width="590" bgcolor="#F0E8FF">
+                                        <tr>
+                                            <td style="font-family:굴림체;">
+                                                <p><font size="2" face="굴림체"><br></font><font size="2">01: 
+                                                &nbsp;// 메인 루프 안에서 실행되는 
+                                                전 캐릭터 행동 함수<br>02: &nbsp;for 
+                                                (int i = MAX_CHARACTER; i &gt;=0; 
+                                                i--) <br>03: &nbsp;{<br>04: 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;if (Characters[i])<br>05: 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;{<br>06: 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if 
+                                                (Characters[i]-&gt;DoAction())<br>07: 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>08: 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Characters[i]-&gt;Show();<br>09: 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>10: 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else<br>11: 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>12: 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;delete 
+                                                Characters[i];<br>13: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Characters[i] 
+                                                = NULL;<br>14: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>15: 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;}<br>16: 
+                                                &nbsp;}</font><font size="2" face="굴림체"><br><br></font></p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <p><font size="2">멤버 함수인 DoAction()에서 
+                                그 캐릭터의 고유 행동을 하고 총돌 체크 등을 
+                                한 후 객체 소멸에 대한 정보를 리턴 값으로 주게 
+                                되는데, 여기서는 TRUE일 때 객체가 계속 유효함을 
+                                나타내고 FALSE일 때 객체가 소멸해야 함을 나타낸다. 
+                                따라서 객체가 계속 유지되고 있을 때는 그 캐릭터를 
+                                화면에 출력해 주고 그렇지 않을 때는 소멸의 과정을 
+                                거친다. (부가적으로 객체의 소멸자에서 소멸용 
+                                오브젝트를 추가로 생성할 수 있다. 예를 들어 
+                                파편과 같은…)</font></p>
+                            </ul>
+                            <p align="left"><font color="#666600"><b>2. 행동 
+                            함수 오버라이딩</b></font></p>
+                            <ul>
+                                <p><font size="2">행동 함수를 오버라이딩(overriding)하는 
+                                방법은 언어에 따라서 조금은 다르다. 만약 MS 
+                                Windows용 게임만을 만든다면 C++의 문법 중에서 
+                                가상(virtual) 함수를 이용해서 이것을 구현하면 
+                                되지만, 미니 게임기나 기타 C++의 지원이 미비한 
+                                임베디드 시스템(Embedded system)에서 게임을 
+                                만들 때는 C의 문법인 함수형 변수를 통해 구현해야 
+                                하는 경우도 있다.</font></p>
+                                <p><font size="2">그 다음&nbsp;부분은 다음 주에나 
+                                쓸련다. 워드 문서의 특정 포맷으로&nbsp;되어 
+                                있는 것을 html의 이&nbsp;포맷을 옮기는 작업이 
+                                너무 노가다다.<br>&nbsp;</font></p>
+                            </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td height="2" bgcolor="#605870" colspan="3" width="637">
+                     </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td width="595" bgcolor="#605870" height="2">
+        </td>
+    </tr>
+</table>
+</div>
+
+</body>
+
+</html>

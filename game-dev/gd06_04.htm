@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<title>main_game.</title>
+<meta name="generator" content="Namo WebEditor v5.0">
+</head>
+
+<body background="back01.jpg" bgcolor="white" text="black" link="blue" vlink="purple"
+ alink="red">
+
+<div align="left">
+<table cellpadding="0" cellspacing="0" width="640">
+    <tr>
+        <td bgcolor="#605870" valign="top">
+            <p><font size="4"><b>&nbsp;</b></font><font size="4" color="white"><b>∇ 
+            프로그래밍 소품 및 팁</b></font></p>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#605870" height="148">
+            <table align="center" cellpadding="0" cellspacing="0" width="637">
+                <tr>
+                    <td width="477" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ 임의의 class의 protected에 접근</b></font></td>
+                    <td width="84" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">C++</font></td>
+                    <td width="76" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">N/A</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+                            <p>남이 만든 class를 사용하는 입장에서는 그 class의 
+                            public만 접근 가능하다는 것은 큰 제약 중에 하나이며 
+                            특히 내부 변수에 대한 디버깅이 필요할 때는 접근 
+                            권한 때문에 많은 불편함을 겪게 된다. 물론 VC++의 
+                            디버깅 환경에서는 별 문제없이 private 값까지 볼 
+                            수 있지만 embedded 환경 등의 열악한 환경에서는 그것 
+                            또한 쉽지 않다.</p>
+                            <p>JAVA나 Delphi의 경우에는 각각 package와 unit이라는 
+                            개념을 넣어서 그 안에 속해 있는 그룹끼리는 자동으로 
+                            friend 선언이 된 것처럼 동작한다. 하지만 C++이 경우에는 
+                            직접 class에 대해 friend 선언을 해주어야 내부 권한에 
+                            대한 접근이 가능하게 되고 만약 추가적인 class에 
+                            대한 접근을 허용하게 하려면 원본 헤더를 수정해야 
+                            하는 불편함이 있다. (특히 자신 소유가 아닌 class에 
+                            대해서는 수정이 불가능 할 수 도 있다)</p>
+                            <p>아래는 일반 함수에서 class를 인자를 받아서 protected의 
+                            멤버 변수에 접근을 시도하는 소스를 구현한 것이다.</p>
+                            <ul>
+<FONT color="#FF9933" face="Fixedsys">01: </FONT><FONT color=#0000ff face="Fixedsys">class</FONT><font face="Fixedsys"> CPlayer<br></font><FONT color="#FF9933" face="Fixedsys">02: 
+                                </FONT><FONT color=#000000 face="Fixedsys">{<br></FONT><FONT color="#FF9933" face="Fixedsys">03: 
+                                </FONT><FONT color=#0000ff face="Fixedsys">protected</FONT><FONT color=#000080 face="Fixedsys">:<br></FONT><FONT color="#FF9933" face="Fixedsys">04: 
+                                </FONT><FONT face=Fixedsys><FONT size=2><SPAN 
+class=416210205-17122005>&nbsp;&nbsp;&nbsp; </SPAN></FONT></FONT><FONT color=#0000ff face="Fixedsys">int</FONT><font face="Fixedsys"> m_hp</font><FONT color=#000080 face="Fixedsys">;<br></FONT><FONT color="#FF9933" face="Fixedsys">05: 
+                                </FONT><FONT color=#0000ff face="Fixedsys">public</FONT><FONT color=#000080 face="Fixedsys">:<br></FONT><FONT color="#FF9933" face="Fixedsys">06: 
+                                </FONT><FONT face=Fixedsys><FONT size=2><SPAN 
+class=416210205-17122005>&nbsp;&nbsp;&nbsp; </SPAN></FONT></FONT><FONT color=#000000 face="Fixedsys">CPlayer</FONT><FONT color=#000080 face="Fixedsys">(</FONT><FONT color=#0000ff face="Fixedsys">int</FONT><font face="Fixedsys"> hp</font><FONT color=#000080 face="Fixedsys">):</FONT><font face="Fixedsys"> </font><FONT color=#000000 face="Fixedsys">m_hp</FONT><FONT color=#000080 face="Fixedsys">(</FONT><font face="Fixedsys">hp</font><FONT color=#000080 face="Fixedsys">)</FONT><font face="Fixedsys"> </font><FONT color=#000000 face="Fixedsys">{}</FONT><FONT color=#000080 face="Fixedsys">;<br></FONT><font face="Fixedsys">
+                                </font><FONT color="#FF9933" face="Fixedsys">07: 
+                                </FONT><FONT color=#000000 face="Fixedsys">}</FONT><FONT color=#000080 face="Fixedsys">;<br></FONT><FONT color="#FF9933" face="Fixedsys">08: 
+                                </FONT><FONT color=#000080 face="Fixedsys"><br></FONT><FONT color="#FF9933" face="Fixedsys">09: 
+                                </FONT><FONT color=#0000ff face="Fixedsys">int</FONT><font face="Fixedsys"> </font><FONT color=#000000 face="Fixedsys">GetInternalHP</FONT><FONT color=#000080 face="Fixedsys">(</FONT><FONT color="blue" face="Fixedsys">const 
+                                </FONT><font face="Fixedsys">CPlayer</font><FONT color=#000080 face="Fixedsys">&amp;</FONT><font face="Fixedsys"> a</font><FONT color=#000080 face="Fixedsys">)<br></FONT><FONT color="#FF9933" face="Fixedsys">10: 
+                                </FONT><FONT color=#000000 face="Fixedsys">{<br></FONT><FONT color="#FF9933" face="Fixedsys">11: 
+                                </FONT><FONT face="Fixedsys"><FONT size=2><SPAN 
+class=416210205-17122005 style="background-color:rgb(255,0,51);">&nbsp;&nbsp;&nbsp; </SPAN></FONT></FONT><FONT color=#0000ff face="Fixedsys"><span style="background-color:rgb(255,0,51);">return</span></FONT><font face="Fixedsys"><span style="background-color:rgb(255,0,51);"> a</span></font><FONT color=#000080 face="Fixedsys"><span style="background-color:rgb(255,0,51);">.</span></FONT><font face="Fixedsys"><span style="background-color:rgb(255,0,51);">m_hp</span></font><FONT color=#000080 face="Fixedsys"><span style="background-color:rgb(255,0,51);">;</span><br></FONT><FONT color="#FF9933" face="Fixedsys">12: 
+                                </FONT><FONT color=#000000 face="Fixedsys">}<br></FONT><FONT color="#FF9933" face="Fixedsys">13: 
+                                </FONT><FONT color=#000000 face="Fixedsys"><br></FONT><FONT color="#FF9933" face="Fixedsys">14: 
+                                </FONT><FONT color=#993399 face="Fixedsys">#include</FONT><font face="Fixedsys"> </font><FONT color=#008080 face="Fixedsys">&lt;iostream&gt;<br></FONT><FONT color="#FF9933" face="Fixedsys">15: 
+                                </FONT><FONT color=#008080 face="Fixedsys"><br></FONT><FONT color="#FF9933" face="Fixedsys">16: 
+                                </FONT><FONT color=#0000ff face="Fixedsys">int</FONT><font face="Fixedsys"> </font><FONT color=#000000 face="Fixedsys">main</FONT><FONT color=#000080 face="Fixedsys">(</FONT><FONT color=#0000ff face="Fixedsys">void</FONT><FONT color=#000080 face="Fixedsys">)<br></FONT><FONT color="#FF9933" face="Fixedsys">17: 
+                                </FONT><FONT color=#000000 face="Fixedsys">{<br></FONT><FONT color="#FF9933" face="Fixedsys">18: 
+                                </FONT><FONT face=Fixedsys><FONT size=2><SPAN 
+class=416210205-17122005>&nbsp;&nbsp;&nbsp; </SPAN></FONT>CPlayer </font><FONT color=#000000 face="Fixedsys">npc</FONT><FONT color=#000080 face="Fixedsys">(</FONT><FONT color=#008080 face="Fixedsys">100</FONT><FONT color=#000080 face="Fixedsys">);<br></FONT><FONT color="#FF9933" face="Fixedsys">19:</FONT><FONT face=Fixedsys><FONT size=2><SPAN 
+class=416210205-17122005>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></FONT>std</font><FONT color=#000080 face="Fixedsys">::</FONT><font face="Fixedsys">cout </font><FONT color=#000080 face="Fixedsys">&lt;&lt;</FONT><font face="Fixedsys"> </font><FONT color=#000000 face="Fixedsys">GetInternalHP</FONT><FONT color=#000080 face="Fixedsys">(</FONT><font face="Fixedsys">npc</font><FONT color=#000080 face="Fixedsys">)</FONT><font face="Fixedsys"> </font><FONT color=#000080 face="Fixedsys">&lt;&lt;</FONT><font face="Fixedsys"> std</font><FONT color=#000080 face="Fixedsys">::</FONT><font face="Fixedsys">endl</font><FONT color=#000080 face="Fixedsys">;<br></FONT><FONT color="#FF9933" face="Fixedsys">20:</FONT><FONT face=Fixedsys><FONT size=2><SPAN 
+class=416210205-17122005>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></FONT></FONT><FONT color=#0000ff face="Fixedsys">return</FONT><font face="Fixedsys"> </font><FONT color=#008080 face="Fixedsys">0</FONT><FONT color=#000080 face="Fixedsys">;<br></FONT><FONT color="#FF9933" face="Fixedsys">21: 
+                                </FONT><FONT color=#000000 face="Fixedsys">}</FONT>
+                            </ul>
+                            <p>11번 라인에서는 전달된 CPlayer class형으로 받은 
+                            파라미터에서 protecte인 멤버 변수를 꺼내려한다. 
+                            당연히 이렇게 하면 에러가 난다.</p>
+                            <p>error C2248: 'm_hp' : cannot access protected 
+                            member declared in class 'CPlayer'</p>
+                            <p>VC++의 경우에는 이런 에러를 내며 g++의 경우에도 
+                            같은 류의 에러를 낼 것이다. 그래서 이 에러를 피하면서 
+                            합법적으로 protected의 멤버 변수에 접근하기 위해서 
+                            다음과 같은 바식을 제안한다.</p>
+                            <ul>
+<FONT color="#FF9933" face="Fixedsys">01: </FONT><FONT color=#0000ff face="Fixedsys">class</FONT><font face="Fixedsys"> CPlayer<br></font><FONT color="#FF9933" face="Fixedsys">02: 
+                                </FONT><FONT color=#000000 face="Fixedsys">{<br></FONT><FONT color="#FF9933" face="Fixedsys">03: 
+                                </FONT><FONT color=#0000ff face="Fixedsys">protected</FONT><FONT color=#000080 face="Fixedsys">:<br></FONT><FONT color="#FF9933" face="Fixedsys">04: 
+                                </FONT><FONT face=Fixedsys><FONT size=2><SPAN 
+class=416210205-17122005>&nbsp;&nbsp;&nbsp; </SPAN></FONT></FONT><FONT color=#0000ff face="Fixedsys">int</FONT><font face="Fixedsys"> m_hp</font><FONT color=#000080 face="Fixedsys">;<br></FONT><FONT color="#FF9933" face="Fixedsys">05: 
+                                </FONT><FONT color=#0000ff face="Fixedsys">public</FONT><FONT color=#000080 face="Fixedsys">:<br></FONT><FONT color="#FF9933" face="Fixedsys">06: 
+                                </FONT><FONT face=Fixedsys><FONT size=2><SPAN 
+class=416210205-17122005>&nbsp;&nbsp;&nbsp; </SPAN></FONT></FONT><FONT color=#000000 face="Fixedsys">CPlayer</FONT><FONT color=#000080 face="Fixedsys">(</FONT><FONT color=#0000ff face="Fixedsys">int</FONT><font face="Fixedsys"> hp</font><FONT color=#000080 face="Fixedsys">):</FONT><font face="Fixedsys"> </font><FONT color=#000000 face="Fixedsys">m_hp</FONT><FONT color=#000080 face="Fixedsys">(</FONT><font face="Fixedsys">hp</font><FONT color=#000080 face="Fixedsys">)</FONT><font face="Fixedsys"> </font><FONT color=#000000 face="Fixedsys">{}</FONT><FONT color=#000080 face="Fixedsys">;<br></FONT><font face="Fixedsys">
+                                </font><FONT color="#FF9933" face="Fixedsys">07: 
+                                </FONT><FONT color=#000000 face="Fixedsys">}</FONT><FONT color=#000080 face="Fixedsys">;<br></FONT><FONT color="#FF9933" face="Fixedsys">08: 
+                                </FONT><FONT color=#000080 face="Fixedsys"><br></FONT><FONT color="#FF9933" face="Fixedsys">09: 
+                                </FONT><FONT color=#0000ff face="Fixedsys">int</FONT><font face="Fixedsys"> </font><FONT color=#000000 face="Fixedsys">GetInternalHP</FONT><FONT color=#000080 face="Fixedsys">(</FONT><FONT color="blue" face="Fixedsys">const 
+                                </FONT><font face="Fixedsys">CPlayer</font><FONT color=#000080 face="Fixedsys">&amp;</FONT><font face="Fixedsys"> a</font><FONT color=#000080 face="Fixedsys">)<br></FONT><FONT color="#FF9933" face="Fixedsys">10: 
+                                </FONT><FONT color=#000000 face="Fixedsys">{<br></FONT><FONT color="#FF9933" face="Fixedsys">11: 
+                                </FONT><FONT face=Fixedsys><FONT size=2><SPAN 
+class=416210205-17122005>&nbsp;&nbsp;&nbsp; </SPAN></FONT></FONT><FONT color=#0000ff face="Fixedsys"><span style="background-color:rgb(153,204,255);">class</span></FONT><font face="Fixedsys"><span style="background-color:rgb(153,204,255);"> CHackedPlayer</span></font><FONT color=#000080 face="Fixedsys"><span style="background-color:rgb(153,204,255);">:</span></FONT><font face="Fixedsys"><span style="background-color:rgb(153,204,255);"> </span></font><FONT color=#0000ff face="Fixedsys"><span style="background-color:rgb(153,204,255);">public</span></FONT><font face="Fixedsys"><span style="background-color:rgb(153,204,255);"> CPlayer</span><br></font><FONT color="#FF9933" face="Fixedsys">12: 
+                                </FONT><FONT face=Fixedsys><FONT size=2><SPAN 
+class=416210205-17122005>&nbsp;&nbsp;&nbsp; </SPAN></FONT></FONT><FONT color="black" face="Fixedsys"><span style="background-color:rgb(153,204,255);">{</span></FONT><FONT color=#000000 face="Fixedsys"><br></FONT><FONT color="#FF9933" face="Fixedsys">13: 
+                                </FONT><FONT face=Fixedsys><FONT size=2><SPAN 
+class=416210205-17122005>&nbsp;&nbsp;&nbsp; </SPAN></FONT></FONT><FONT color=#0000ff face="Fixedsys"><span style="background-color:rgb(153,204,255);">public</span></FONT><FONT color=#000080 face="Fixedsys"><span style="background-color:rgb(153,204,255);">:</span><br></FONT><FONT color="#FF9933" face="Fixedsys">14: 
+                                </FONT><FONT face=Fixedsys><FONT size=2><SPAN 
+class=416210205-17122005>&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+class=416210205-17122005 style="background-color:rgb(153,204,255);">&nbsp;&nbsp;&nbsp; </SPAN></FONT></FONT><FONT color=#0000ff face="Fixedsys"><span style="background-color:rgb(153,204,255);">static</span></FONT><font face="Fixedsys"><span style="background-color:rgb(153,204,255);"> </span></font><FONT color=#0000ff face="Fixedsys"><span style="background-color:rgb(153,204,255);">int</span></FONT><font face="Fixedsys"><span style="background-color:rgb(153,204,255);"> </span></font><FONT color=#000000 face="Fixedsys"><span style="background-color:rgb(153,204,255);">GetHP</span></FONT><FONT color=#000080 face="Fixedsys"><span style="background-color:rgb(153,204,255);">(</span></FONT><FONT color="blue" face="Fixedsys"><span style="background-color:rgb(153,204,255);">const 
+                                </span></FONT><font face="Fixedsys"><span style="background-color:rgb(153,204,255);">CPlayer</span></font><FONT color=#000080 face="Fixedsys"><span style="background-color:rgb(153,204,255);">&amp;</span></FONT><font face="Fixedsys"><span style="background-color:rgb(153,204,255);"> a</span></font><FONT color=#000080 face="Fixedsys"><span style="background-color:rgb(153,204,255);">)</span><br></FONT><FONT color="#FF9933" face="Fixedsys">15: 
+                                </FONT><FONT face=Fixedsys><FONT size=2><SPAN 
+class=416210205-17122005>&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+class=416210205-17122005 style="background-color:rgb(153,204,255);">&nbsp;&nbsp;&nbsp; </SPAN></FONT></FONT><FONT color=#000000 face="Fixedsys"><span style="background-color:rgb(153,204,255);">{</span><br></FONT><FONT color="#FF9933" face="Fixedsys">16: 
+                                </FONT><FONT face=Fixedsys><FONT size=2><SPAN 
+class=416210205-17122005>&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+class=416210205-17122005 style="background-color:rgb(153,204,255);">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </SPAN></FONT></FONT><FONT color=#0000ff face="Fixedsys"><span style="background-color:rgb(153,204,255);">return</span></FONT><font face="Fixedsys"><span style="background-color:rgb(153,204,255);"> </span></font><FONT color=#0000ff face="Fixedsys"><span style="background-color:rgb(153,204,255);">static_cast</span></FONT><FONT color=#000080 face="Fixedsys"><span style="background-color:rgb(153,204,255);">&lt;</span></FONT><FONT color="blue" face="Fixedsys"><span style="background-color:rgb(153,204,255);">const 
+                                </span></FONT><font face="Fixedsys"><span style="background-color:rgb(153,204,255);">CHackedPlayer</span></font><FONT color=#000080 face="Fixedsys"><span style="background-color:rgb(153,204,255);">*&gt;(&amp;</span></FONT><font face="Fixedsys"><span style="background-color:rgb(153,204,255);">a</span></font><FONT color=#000080 face="Fixedsys"><span style="background-color:rgb(153,204,255);">)-&gt;</span></FONT><font face="Fixedsys"><span style="background-color:rgb(153,204,255);">m_hp</span></font><FONT color=#000080 face="Fixedsys"><span style="background-color:rgb(153,204,255);">;<br></span></FONT><FONT color="#FF9933" face="Fixedsys">17: </FONT><FONT face=Fixedsys><FONT size=2><SPAN 
+class=416210205-17122005>&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+class=416210205-17122005 style="background-color:rgb(153,204,255);">&nbsp;&nbsp;&nbsp; </SPAN></FONT></FONT><FONT color=#000000 face="Fixedsys"><span style="background-color:rgb(153,204,255);">}</span><br></FONT><FONT color="#FF9933" face="Fixedsys">18:</FONT><FONT face=Fixedsys><FONT size=2><SPAN 
+class=416210205-17122005>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></FONT></FONT><FONT color=#000000 face="Fixedsys"><span style="background-color:rgb(153,204,255);">}</span></FONT><FONT color=#000080 face="Fixedsys"><span style="background-color:rgb(153,204,255);">;</span><br></FONT><FONT color="#FF9933" face="Fixedsys">19:</FONT><FONT face=Fixedsys><FONT size=2><SPAN 
+class=416210205-17122005>&nbsp;&nbsp;&nbsp; &nbsp;</SPAN></FONT></FONT><FONT color=#0000ff face="Fixedsys">return</FONT><font face="Fixedsys"> CHackedPlayer</font><FONT color=#000080 face="Fixedsys">::</FONT><FONT color=#000000 face="Fixedsys">GetHP</FONT><FONT color=#000080 face="Fixedsys">(</FONT><font face="Fixedsys">a</font><FONT color=#000080 face="Fixedsys">);<br></FONT><FONT color="#FF9933" face="Fixedsys">20: 
+                                </FONT><FONT color=#000000 face="Fixedsys">}<br></FONT><FONT color="#FF9933" face="Fixedsys">21: 
+                                </FONT><FONT color=#000000 face="Fixedsys"><br></FONT><FONT color="#FF9933" face="Fixedsys">22: 
+                                </FONT><FONT color=#993399 face="Fixedsys">#include</FONT><font face="Fixedsys"> </font><FONT color=#008080 face="Fixedsys">&lt;iostream&gt;<br></FONT><FONT color="#FF9933" face="Fixedsys">23: 
+                                </FONT><FONT color=#008080 face="Fixedsys"><br></FONT><FONT color="#FF9933" face="Fixedsys">24: 
+                                </FONT><FONT color=#0000ff face="Fixedsys">int</FONT><font face="Fixedsys"> </font><FONT color=#000000 face="Fixedsys">main</FONT><FONT color=#000080 face="Fixedsys">(</FONT><FONT color=#0000ff face="Fixedsys">void</FONT><FONT color=#000080 face="Fixedsys">)<br></FONT><FONT color="#FF9933" face="Fixedsys">25: 
+                                </FONT><FONT color=#000000 face="Fixedsys">{<br></FONT><FONT color="#FF9933" face="Fixedsys">26: 
+                                </FONT><FONT face=Fixedsys><FONT size=2><SPAN 
+class=416210205-17122005>&nbsp;&nbsp;&nbsp; </SPAN></FONT>CPlayer </font><FONT color=#000000 face="Fixedsys">npc</FONT><FONT color=#000080 face="Fixedsys">(</FONT><FONT color=#008080 face="Fixedsys">100</FONT><FONT color=#000080 face="Fixedsys">);<br></FONT><FONT color="#FF9933" face="Fixedsys">27: 
+                                </FONT><FONT face=Fixedsys><FONT size=2><SPAN 
+class=416210205-17122005>&nbsp;&nbsp;&nbsp; </SPAN></FONT>std</font><FONT color=#000080 face="Fixedsys">::</FONT><font face="Fixedsys">cout </font><FONT color=#000080 face="Fixedsys">&lt;&lt;</FONT><font face="Fixedsys"> </font><FONT color=#000000 face="Fixedsys">GetInternalHP</FONT><FONT color=#000080 face="Fixedsys">(</FONT><font face="Fixedsys">npc</font><FONT color=#000080 face="Fixedsys">)</FONT><font face="Fixedsys"> </font><FONT color=#000080 face="Fixedsys">&lt;&lt;</FONT><font face="Fixedsys"> std</font><FONT color=#000080 face="Fixedsys">::</FONT><font face="Fixedsys">endl</font><FONT color=#000080 face="Fixedsys">;<br></FONT><FONT color="#FF9933" face="Fixedsys">28: 
+                                </FONT><FONT face=Fixedsys><FONT size=2><SPAN 
+class=416210205-17122005>&nbsp;&nbsp;&nbsp; </SPAN></FONT></FONT><FONT color=#0000ff face="Fixedsys">return</FONT><font face="Fixedsys"> </font><FONT color=#008080 face="Fixedsys">0</FONT><FONT color=#000080 face="Fixedsys">;<br></FONT><FONT color="#FF9933" face="Fixedsys">29: 
+                                </FONT><FONT color=#000000 face="Fixedsys">}</FONT>
+                            </ul>
+                            <p>11라인부터 18라인의 부분이 핵심인데, CPlayer로부터 
+                            상속받은 CHackedPlayer는 합법적으로 CPlayer의 protected를 
+                            꺼낼 수 있고, CHackedPlayer에서 public static으로 
+                            선언된 함수는 일반 함수와 같으면서도 CPlayer의 protected를 
+                            꺼낼 수 있다. 그리고 문법적인 문제를 피하기 위해서 
+                            CPlayer를 CHackedPlayer로 static cast를 했는데, 
+                            이 두 class는 실제로 아무 것도 더해지지 않았으므로 
+                            그 구조가 동일하며 static cast로 호환이 가능하게 
+                            된다.</p>
+                            <p>보통은 이렇게까지 하면서 접근 불가를 선언해둔 
+                            곳에 접근해야 할 이유는 없을 것이다. 하지만 인생이 
+                            그리 쉬운 것은 아니지 않은가. 먹고 살자면 이렇게 
+                            해야할 이유도 있을 것이다. (남 이야기는 아니다. 
+                            내가 필요해서 우물을 판 것이다)<br>&nbsp;</p>
+</td>
+                </tr>
+                <tr>
+                    <td height="2" bgcolor="#605870" colspan="3" width="637">
+                     </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td width="595" bgcolor="#605870" height="2">
+&nbsp;        </td>
+    </tr>
+</table>
+</div>
+
+<p>&nbsp;</p>
+</body>
+
+</html>

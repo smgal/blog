@@ -1,0 +1,229 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>MMX Technology 에 의한 무분기 스프라이트 기법</TITLE>
+<META name="generator" content="Namo WebEditor v5.0">
+<STYLE><!--
+.leading200 { line-height: 200% }
+.leading180 { line-height: 180% }
+.leading150 { line-height: 150% }
+.leading100 { line-height: 100% }
+-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="navy" text="white" link="blue" vlink="purple" alink="red">
+
+<P><font color="black"><span style="background-color:white;">이것은 1999년 하이텔 
+게임 제작 동호회에 올렸던 강좌입니다.</span></font></P>
+<p align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="gd_data/gd20c_lec_07.zip"><span style="background-color:white;">바이너리 
+데이터</span></a></p>
+<p><font color="#CCFF00">#####################################################</font></p>
+<p>
+
+<FONT face="굴림체">안녕하세요.. 안영기입니다.</FONT></p>
+<P><FONT face="굴림체">다름 아니라 이번에는 MMX Technology 를 이용하여 DX 상에서 고속 스프라이트를<BR>
+찍는 법을 설명하고자 합니다.</FONT></P>
+<P><FONT face="굴림체">흔히 DX 256 컬러 모드에서 표면을 Lock 하여 그곳에 스프라이트를 쓰고자 한다면<BR>
+압축 스프라이트를 쓰던지 아니면 직접 1 byte 씩 투명색인지 아닌지를 체크해<BR>
+가며 점 단위 연산을 하는 것이 보통이었습니다.</FONT></P>
+<P><FONT face="굴림체">이에, 제가 소개 하고자 하는 팁은 투명색인지 판별조차 하지않고서도 8 개의<BR>
+스프라이트 픽셀을 동시에 전송하는 방법입니다.</FONT></P>
+<P><FONT face="굴림체">일단 예전처럼 투명색인지 아닌지 판별하는 부분이 없어졌으므로 'je', 'jz' 라는<BR>
+명령어로 인한 분기의 부하를 줄이고 1 byte 씩 하던 전송을 한번에 8 bytes 씩<BR>
+가능하게 해준다는 것에 그 의의를 둘 수가 있습니다.</FONT></P>
+<P><FONT face="굴림체"><BR>
+풀소스에 들어가기 전에 핵심 부분만 추려보면 다음과 같습니다.</FONT></P>
+<P><FONT face="굴림체">----------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체"><BR>
+&nbsp;&gt;&gt; 전제...</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;esi &nbsp;&nbsp;&nbsp;&nbsp;: 스프라이트 데이터<BR>
+&nbsp;&nbsp;&nbsp;edi &nbsp;&nbsp;&nbsp;&nbsp;: Lock 된 Direct Draw Surface 의 미리 계산된 주소<BR>
+&nbsp;&nbsp;&nbsp;pMask &nbsp;&nbsp;: char pMask[8] 로 정의되어 있으며 8개의 byte 가 모두 투명색<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Index 로 채워져 있다.</FONT></P>
+<P><FONT face="굴림체"><BR>
+&nbsp;&gt;&gt; 코드</FONT></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;mov &nbsp;&nbsp;ebx, pMask<BR>
+&nbsp;&nbsp;&nbsp;movq &nbsp;mm4, [ebx] &nbsp;&nbsp;&nbsp;&nbsp;// mm4 에 투명색 번호를 넣는다</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;mov &nbsp;&nbsp;ecx, Size.X &nbsp;&nbsp;&nbsp;// Size.X 에는 X 스프라이트의 x 사이즈가 들어감<BR>
+&nbsp;&nbsp;&nbsp;shr &nbsp;&nbsp;ecx, 3 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 동시에 8개의 점을 연산하므로</font></P>
+<P><font face="굴림체" color="lime">LOOP_X:<BR>
+&nbsp;&nbsp;&nbsp;movq &nbsp;mm0, [edi] &nbsp;&nbsp;&nbsp;&nbsp;// mm0 은 Destination<BR>
+&nbsp;&nbsp;&nbsp;movq &nbsp;mm1, [esi] &nbsp;&nbsp;&nbsp;&nbsp;// mm1 은 Source<BR>
+&nbsp;&nbsp;&nbsp;movq &nbsp;mm2, mm1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// mm2 에 Source 데이터를 복사<BR>
+&nbsp;&nbsp;&nbsp;pcmpeqb mm2, mm4 &nbsp;&nbsp;&nbsp;&nbsp;// mm2 에 투명색에 따른 마스크를 생성<BR>
+&nbsp;&nbsp;&nbsp;movq &nbsp;mm3, mm2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// mm3 에 마스크를 하나 더복사<BR>
+&nbsp;&nbsp;&nbsp;pandn mm2, mm1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Source 스프라이트 부분만 복사<BR>
+&nbsp;&nbsp;&nbsp;pand &nbsp;mm3, mm0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Destination 의 갱신될 부분만 제거<BR>
+&nbsp;&nbsp;&nbsp;por &nbsp;&nbsp;mm2, mm3 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Source 와 Destination 을 결합<BR>
+&nbsp;&nbsp;&nbsp;movq &nbsp;[edi], mm2 &nbsp;&nbsp;&nbsp;&nbsp;// Destination 에 결과를 씀</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;add &nbsp;&nbsp;esi, 8 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// &nbsp;한번에 8 bytes 를 동시에 처리했으므로<BR>
+&nbsp;&nbsp;&nbsp;add &nbsp;&nbsp;edi, 8</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;loop &nbsp;LOOP_X</font></P>
+<P><FONT face="굴림체"><BR>
+&nbsp;&gt;&gt; 설명</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;MMX Technology 는 FPU 의 스택 프레임을 절대 번지로 사용하여 8 bytes 짜리<BR>
+&nbsp;&nbsp;&nbsp;레지스터인 mm0 에서 mm7 까지의 8 개의 레지스터를 사용하는 기술입니다.<BR>
+&nbsp;&nbsp;&nbsp;그리고 DSP 적인 요소가 많아서 ( 곱하고 동시에 더한다던지.. ) 멀티미디어<BR>
+&nbsp;&nbsp;&nbsp;계산에 적합하다고들 하죠.. 하지만 넓은 의미의 멀티미디어의 한분야인<BR>
+&nbsp;&nbsp;&nbsp;게임에서 역시 MMX Technology 는 아주 유용하게 쓰이는데 그 중 한 부분이<BR>
+&nbsp;&nbsp;&nbsp;바로 이제 설명하려는 '무분기 스프라이트 출력'입니다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~~~~~~~~~~~~~~~~~~~~~~~~<BR>
+&nbsp;&nbsp;&nbsp;위의 소스에서 보시다시피 8 bytes 를 동시에 전송하면서도 한점 한점이<BR>
+&nbsp;&nbsp;&nbsp;투명색인지 아닌지를 체크하지 않고 바로 연산을 합니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;예전 같으면,</FONT></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov &nbsp;ecx, Size.X</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;LOOP_X:</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cmp &nbsp;ptr byte [esi], TRANSPARENCY_COLOR<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;je &nbsp;&nbsp;SKIP</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov &nbsp;ptr byte [edi], al</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;SKIP:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inc &nbsp;esi</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loop LOOP_X</font></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;이런 식이 되어서 점의 수만큼 'cmp'를 해야만 했었습니다.</FONT></P>
+<P><FONT face="굴림체"><BR>
+&nbsp;&gt;&gt; 코드분석</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;가장 코어 부분만 보면 다음과 같습니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;- movq &nbsp;mm0, [edi]</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mm0 레지스터에 edi 가 가리키는 데이터중 8 bytes 를 가져 옵니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;예&gt; &nbsp;&nbsp;mm0 &nbsp;&nbsp;=&gt; &nbsp;&nbsp;43 2D 1A E4 54 78 20 CA</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;- movq &nbsp;mm1, [esi]</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mm0 레지스터에 esi 가 가리키는 데이터중 8 bytes 를 가져 옵니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;예&gt; &nbsp;&nbsp;mm2 &nbsp;&nbsp;=&gt; &nbsp;10 2F F8 80 80 3D 80 CE</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;- movq &nbsp;mm2, mm1</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mm2 레지스터에 mm1 레지스터의 내용을 카피합니다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;소스 데이터에서 투명색에 대한 정보를 얻기 위해서입니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;- pcmpeqb mm2, mm4</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;위에 보시면 이미 mm4 에는 1byte 짜리 마스크로 8bytes 가 채워져 있습니다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'pcmpeqb' 명령은 byte 단위로 8 개의 각 byte 가 같은지 같지 않은지를<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;판별합니다. 그래서 만약 값이 같다면 그 byte는 모두 1로 채우고 그렇지<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;않다면 모두 0으로 채웁니다/</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;예&gt; &nbsp;&nbsp;&nbsp;&nbsp;mm2 &nbsp;&nbsp;=&gt; &nbsp;&nbsp;10 2F F8 80 80 3D 80 CE<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mm4 &nbsp;&nbsp;=&gt; &nbsp;&nbsp;80 80 80 80 80 80 80 80 &nbsp;&nbsp;( 투명색이 0x80 일때 )</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;결과 &nbsp;&nbsp;mm2 &nbsp;&nbsp;=&gt; &nbsp;&nbsp;00 00 00 FF FF 00 FF 00</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;- movq &nbsp;mm3, mm2</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;이렇게 만들어진 마스크를 mm3 에 하나 더 복사합니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;- pandn mm2, mm1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Source 스프라이트 부분만 복사</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'pandn' 명령어는 mm2 를 반전한후 그 mm2 와 mm1 를 and 해서 mm2 로<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;넣습니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;예&gt; &nbsp;&nbsp;&nbsp;&nbsp;mm2 &nbsp;&nbsp;&nbsp;=&gt; &nbsp;&nbsp;00 00 00 FF FF 00 FF 00<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mm2 &nbsp;&nbsp;&nbsp;=&gt; &nbsp;&nbsp;FF FF FF 00 00 FF 00 FF &nbsp;( 반전 )<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mm1 &nbsp;&nbsp;&nbsp;=&gt; &nbsp;&nbsp;10 2F F8 80 80 3D80 CE</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;결과 &nbsp;&nbsp;mm2 &nbsp;&nbsp;&nbsp;=&gt; &nbsp;&nbsp;10 2F F8 00 00 3D 00 CE &nbsp;( mm2 &amp; mm1 )</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;결과에서 보시면 아시겠지만 원 스프라이트 데이터에서 투명색 부분만<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'00' 이 되었다는 것을 알 것입니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;- pand &nbsp;mm3, mm0</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'pand' 명령어는 mm3 와 mm0 를 and 연산하여 mm3 에 넣습니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;예&gt; &nbsp;&nbsp;&nbsp;&nbsp;mm3 &nbsp;&nbsp;&nbsp;=&gt; &nbsp;&nbsp;00 00 00 FF FF 00 FF 00<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mm0 &nbsp;&nbsp;&nbsp;=&gt; &nbsp;&nbsp;43 2D 1A E4 54 78 20 CA</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;결과 &nbsp;&nbsp;mm3 &nbsp;&nbsp;&nbsp;=&gt; &nbsp;&nbsp;00 00 00 E4 54 00 20 00</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;- por &nbsp;&nbsp;mm2, mm3</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'por' 명령어는 mm2 와 mm3 를 or 연산하여 mm2 에 넣습니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;예&gt; &nbsp;&nbsp;&nbsp;&nbsp;mm3 &nbsp;&nbsp;&nbsp;=&gt; &nbsp;&nbsp;00 00 00 E4 54 00 20 00<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mm2 &nbsp;&nbsp;&nbsp;=&gt; &nbsp;&nbsp;10 2F F8 00 00 3D 00 CE</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;결과 &nbsp;&nbsp;mm2 &nbsp;&nbsp;&nbsp;=&gt; &nbsp;&nbsp;10 2F F8 E4 54 3D 20 CE</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;- movq &nbsp;[edi], mm2</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;edi 가 가리키는 주소에 mm2 의 내용 8 bytes 를 쓴다.</FONT></P>
+<P><FONT face="굴림체"><BR>
+&nbsp;&nbsp;&nbsp;이렇게 해서 결국은 아래의 결과를 냅니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[edi] &nbsp;&nbsp;=&gt; &nbsp;&nbsp;43 2D 1A E4 54 78 20 CA ( 배경 )<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[esi] &nbsp;&nbsp;=&gt; &nbsp;&nbsp;10 2F F8 80 80 3D 80 CE ( 스프라이트, 투명색 80 )</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[edi] &nbsp;&nbsp;=&gt; &nbsp;&nbsp;10 2F F8 E4 54 3D 20 CE<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~~ ~~ &nbsp;&nbsp;&nbsp;~~ &nbsp;&nbsp;&nbsp;( 투명색이었던 부분만<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;배경으로 치환 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</FONT></P>
+<P><FONT face="굴림체">----------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">제 나름대로는 열심히 설명을 드린다고 하긴 했는데 제대로 이해가 되셨는지<BR>
+모르겠네요...</FONT></P>
+<P><FONT face="굴림체">그리고 제가 8 bit 컬러 모드에 대해서만 설명했는데.. 16bit 모드나 트루컬러<BR>
+모드에서도 똑같이 적용됩니다. 단 'pcmpeqb' 라는 명령어가 2bytes, 4bytes 씩<BR>
+비교하는 'pcmpeqw', 'pcmpeqd' 로 수정하시면 됩니다.</FONT></P>
+<P><FONT face="굴림체">그리고 아래는 소스입니다. 제가 도스 때는 종종 C 버전도 같이 올리곤 했는데<BR>
+윈도우로 가면서부터는 제가 테스트해볼 C 컴파일러가 없어서 그냥 '델파이'<BR>
+소스로만 올립니다. 뜻이 있으신 C 유저 분들은 번역해서 잘 사용해 보세요..</FONT></P>
+<P><FONT face="굴림체">그리고 델파이로된 실행 테스트 파일과 풀 소스는 자료실에 올리겠습니다.</FONT></P>
+<P><FONT face="굴림체">시간이 된다면 MMX 코드로 3D 행렬 한번에 계산 하는 거나 아니면 MMX 고속<BR>
+알파 블렌딩 기술도 써 보겠습니다.... 아니면 Direct Music 쪽이 될런지도..</FONT></P>
+<P><FONT face="굴림체">그럼.. SMgal.</FONT></P>
+<P><FONT face="굴림체"><BR>
+----------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">여기는 각각 서피스에서 직접 읽었지만 실제론 스프라이트가 유저 데이터형으로<BR>
+들어가게 되겠죠... ( 이건 테스트라서 Surface 사용했음.. )</FONT></P>
+<P><font face="굴림체" color="yellow">procedure &nbsp;&nbsp;SpriteCopy(DestX, DestY : integer;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SourX, SourY : integer;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Size &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: TPoint;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sour, Dest &nbsp;&nbsp;: IDirectDrawSurface);<BR>
+const<BR>
+&nbsp;&nbsp;&nbsp;TRANSPARENCY_VALUE &nbsp;= 80; // 투명색이 80번 인덱스이다.<BR>
+var<BR>
+&nbsp;&nbsp;&nbsp;SourDesc, DestDesc &nbsp;: TDDSurfaceDesc;<BR>
+&nbsp;&nbsp;&nbsp;pSour, pDest, pMask : PByte;<BR>
+&nbsp;&nbsp;&nbsp;Transparency &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: array[1..8] of byte;<BR>
+begin</font></P>
+<P><font face="굴림체" color="yellow">&nbsp;&nbsp;&nbsp;FillChar(Transparency,8,TRANSPARENCY_VALUE);</font></P>
+<P><font face="굴림체" color="yellow">&nbsp;&nbsp;&nbsp;SourDesc.dwSize := SizeOf(TDDSurfaceDesc);<BR>
+&nbsp;&nbsp;&nbsp;with Basic do repeat<BR>
+&nbsp;&nbsp;&nbsp;until MakeItSo(Sour.Lock(PRect(nil)^,SourDesc,DDLOCK_SURFACEMEMORYPTR +<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDLOCK_WAIT,0));</font></P>
+<P><font face="굴림체" color="yellow">&nbsp;&nbsp;&nbsp;DestDesc.dwSize := SizeOf(TDDSurfaceDesc);<BR>
+&nbsp;&nbsp;&nbsp;with Basic do repeat<BR>
+&nbsp;&nbsp;&nbsp;until MakeItSo(Dest.Lock(PRect(nil)^,DestDesc,DDLOCK_SURFACEMEMORYPTR +<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDLOCK_WAIT,0));</font></P>
+<P><font face="굴림체" color="yellow">&nbsp;&nbsp;&nbsp;pSour := PByte(DWORD(SourDesc.lpSurface) + SourY*SourDesc.lPitch + SourX);<BR>
+&nbsp;&nbsp;&nbsp;pDest := PByte(DWORD(DestDesc.lpSurface) + DestY*DestDesc.lPitch + DestX);<BR>
+&nbsp;&nbsp;&nbsp;pMask := Pointer(@Transparency);</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;asm<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;push &nbsp;esi<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;push &nbsp;edi</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov &nbsp;&nbsp;esi, pMask<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;db $0F,$6F,$26 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/// movq &nbsp;mm4, [esi]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// &nbsp;mm4 에 투명색 번호를 넣는다<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov &nbsp;&nbsp;esi, pSour<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov &nbsp;&nbsp;edi, pDest</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov &nbsp;&nbsp;ecx, Size.Y</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;@@LOOP_Y:</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;push &nbsp;ecx</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov &nbsp;&nbsp;ecx, Size.X<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;shr &nbsp;&nbsp;ecx, 3 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 동시에 8개의 점을 연산하므로</font></P>
+<P><font face="굴림체" color="lime"><BR>
+&nbsp;&nbsp;&nbsp;@@LOOP_X:</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;db $0F,$6F,$07 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/// movq &nbsp;mm0, [edi]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// &nbsp;mm0 은 Destination<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;db $0F,$6F,$0E &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/// movq &nbsp;mm1, [esi]<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// &nbsp;mm1 은 Source<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;db $0F,$6F,$D1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/// movq &nbsp;mm2, mm1<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// &nbsp;mm2 에 Source 데이터를 복사<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;db $0F,$74,$D4 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/// pcmpeqb mm2, mm4<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// &nbsp;mm2 에 투명색에 따른 마스크를 생성<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;db $0F,$6F,$DA &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/// movq &nbsp;mm3, mm2<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// &nbsp;mm3 에 마스크를 하나 더 복사<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;db $0F,$DF,$D1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/// pandn mm2, mm1<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// &nbsp;Source 스프라이트 부분만을 남김<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;db $0F,$DB,$D8 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/// pand &nbsp;mm3, mm0<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// &nbsp;Destination 의 갱신될 부분만 제거<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;db $0F,$EB,$D3 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/// por &nbsp;&nbsp;mm2, mm3<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// &nbsp;Source 와 Destination 을 결합<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;db $0F,$7F,$17 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/// movq &nbsp;[edi], mm2<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// &nbsp;Destination 에 결과를 씀</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add &nbsp;&nbsp;esi, 8<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// &nbsp;한번에 8 bytes 를 동시에 처리했으므로<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add &nbsp;&nbsp;edi, 8</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loop &nbsp;@@LOOP_X</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add &nbsp;&nbsp;esi, SourDesc.lPitch<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sub &nbsp;&nbsp;esi, Size.X<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add &nbsp;&nbsp;edi, DestDesc.lPitch<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sub &nbsp;&nbsp;edi, Size.X</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pop &nbsp;&nbsp;ecx<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loop &nbsp;@@LOOP_Y</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;db $0F,$77 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/// emms</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pop &nbsp;&nbsp;edi<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pop &nbsp;&nbsp;esi</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;end;</font></P>
+<P><font face="굴림체" color="yellow">&nbsp;&nbsp;&nbsp;Sour.UnLock(SourDesc.lpSurface);<BR>
+&nbsp;&nbsp;&nbsp;Dest.UnLock(DestDesc.lpSurface);</font></P>
+<P><font face="굴림체" color="yellow">end;</font></P>
+<P><FONT face="굴림체">----------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;</FONT><font face="굴림체" color="aqua"> A Mountain is a mountain, Water is water </font><FONT face="굴림체">&quot;</FONT></P>
+<P><FONT face="굴림체"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;copyright SMgal 1999/05/24</FONT></P>
+<P>&nbsp;</P>
+</body>
+</HTML>

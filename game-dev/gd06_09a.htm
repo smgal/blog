@@ -1,0 +1,121 @@
+<html>
+<head>
+<title>main_game.</title>
+<meta name="generator" content="Namo WebEditor v5.0">
+</head>
+
+<body background="back01.jpg" bgcolor="white" text="black" link="blue" vlink="purple"
+ alink="red">
+
+<div align="left">
+<table cellpadding="0" cellspacing="0" width="640">
+    <tr>
+        <td bgcolor="#605870" valign="top">
+            <p><font size="4"><b>&nbsp;</b></font><font size="4" color="white"><b>∇ 
+            프로그래밍 소품 및 팁</b></font></p>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#605870" height="148">
+            <table align="center" cellpadding="0" cellspacing="0" width="637">
+                <tr>
+                    <td width="477" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ Assertion catch하기</b></font></td>
+                    <td width="84" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">C++</font></td>
+                    <td width="76" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">N/A</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+                            <p>외부 라이브러리가 release 모드로 된 것이 아니라서 
+                            예상치 못한 assertion을 만나는 경우가 있다. 그렇다고 
+                            외부 라이브러리의 소스를 재컴파일 할수 있는 상황이 
+                            아니라면 사태는 더욱 심각해진다. VC++이라면 표준 
+                            C++ 형식이 아닌 자체적인 예외 처리 기법을 이용해 
+                            해결할 수 있겠지만 그 코드가 VC++뿐만 아니라 다른 
+                            플랫폼에서도 구동되어야 하는 것이라면 표준 C++ 문법 
+                            이외에는 사용해서는 안된다. </p>
+                            <p>실제로 이런 일을 만나게 되었고 그때 내가 작성한 
+                            코드는 다음과 같다.</p>
+                            <ul>
+<FONT color="#FF9933" face="Fixedsys">01: </FONT><FONT color=#009900 face="Fixedsys">///////////////////////////////////////////////////////<br></FONT><FONT color="#FF9933" face="Fixedsys">02: </FONT><FONT color=#009900 face="Fixedsys">// HEADER<br></FONT><FONT color="#FF9933" face="Fixedsys">03: </FONT><FONT color=#009900 face="Fixedsys"><br></FONT><FONT color="#FF9933" face="Fixedsys">04: </FONT><FONT color=#993399 face="Fixedsys">#include</FONT><font face="Fixedsys"> </font><FONT color=#008080 face="Fixedsys">&lt;csetjmp&gt;<br></FONT><FONT color="#FF9933" face="Fixedsys">05: </FONT><FONT color=#993399 face="Fixedsys">#include</FONT><font face="Fixedsys"> </font><FONT color=#008080 face="Fixedsys">&lt;csignal&gt;<br></FONT><FONT color="#FF9933" face="Fixedsys">06: </FONT><FONT color=#993399 face="Fixedsys">#include</FONT><font face="Fixedsys"> </font><FONT color=#008080 face="Fixedsys">&lt;cassert&gt;<br></FONT><FONT color="#FF9933" face="Fixedsys">07: </FONT><FONT color=#993399 face="Fixedsys">#include</FONT><font face="Fixedsys"> </font><FONT color=#008080 face="Fixedsys">&lt;cstdio&gt;<br></FONT><FONT color="#FF9933" face="Fixedsys">08: </FONT><FONT color=#008080 face="Fixedsys"><br></FONT><FONT color="#FF9933" face="Fixedsys">09: </FONT><FONT color=#993399 face="Fixedsys">#define</FONT><font face="Fixedsys"> ASSERT_TRY      </font><FONT color=#0000ff face="Fixedsys">if</FONT><font face="Fixedsys"> </font><FONT color=#000080 face="Fixedsys">(</FONT><FONT color=#000000 face="Fixedsys">setjmp</FONT><FONT color=#000080 face="Fixedsys">(</FONT><font face="Fixedsys">g_env</font><FONT color=#000080 face="Fixedsys">)</FONT><font face="Fixedsys"> </font><FONT color=#000080 face="Fixedsys">==</FONT><font face="Fixedsys"> </font><FONT color=#008080 face="Fixedsys">0</FONT><FONT color=#000080 face="Fixedsys">)<br></FONT><FONT color="#FF9933" face="Fixedsys">10: </FONT><FONT color=#993399 face="Fixedsys">#define</FONT><font face="Fixedsys"> ASSERT_CATCH    </font><FONT color=#0000ff face="Fixedsys">else<br></FONT><FONT color="#FF9933" face="Fixedsys">11: </FONT><FONT color=#993399 face="Fixedsys">#define</FONT><font face="Fixedsys"> USE_ASSERT_TRY  </font><FONT color=#000000 face="Fixedsys">signal</FONT><FONT color=#000080 face="Fixedsys">(</FONT><font face="Fixedsys">SIGABRT</font><FONT color=#000080 face="Fixedsys">,</FONT><font face="Fixedsys"> AbortHandler</font><FONT color=#000080 face="Fixedsys">);<br></FONT><FONT color="#FF9933" face="Fixedsys">12: </FONT><FONT color=#000080 face="Fixedsys"><br></FONT><FONT color="#FF9933" face="Fixedsys">13: </FONT><FONT color=#009900 face="Fixedsys">///////////////////////////////////////////////////////<br></FONT><FONT color="#FF9933" face="Fixedsys">14: </FONT><FONT color=#009900 face="Fixedsys">// IMPLEMENTAION<br></FONT><FONT color="#FF9933" face="Fixedsys">15: </FONT><FONT color=#009900 face="Fixedsys"><br></FONT><FONT color="#FF9933" face="Fixedsys">16: </FONT><font face="Fixedsys">jmp_buf g_env</font><FONT color=#000080 face="Fixedsys">;<br></FONT><FONT color="#FF9933" face="Fixedsys">17: </FONT><FONT color=#000080 face="Fixedsys"><br></FONT><FONT color="#FF9933" face="Fixedsys">18: </FONT><FONT color=#993399 face="Fixedsys">#if</FONT><font face="Fixedsys"> </font><FONT color=#000000 face="Fixedsys">defined</FONT><FONT color=#000080 face="Fixedsys">(</FONT><font face="Fixedsys">WIN32</font><FONT color=#000080 face="Fixedsys">)<br></FONT><FONT color="#FF9933" face="Fixedsys">19: </FONT><FONT color=#993399 face="Fixedsys">#define</FONT><font face="Fixedsys"> CDECL </font><FONT color=#0000ff face="Fixedsys">__cdecl<br></FONT><FONT color="#FF9933" face="Fixedsys">20: </FONT><FONT color=#993399 face="Fixedsys">#else<br></FONT><FONT color="#FF9933" face="Fixedsys">21: </FONT><FONT color=#993399 face="Fixedsys">#define</FONT><font face="Fixedsys"> CDECL<br></font><FONT color="#FF9933" face="Fixedsys">22: </FONT><FONT color=#993399 face="Fixedsys">#endif<br></FONT><FONT color="#FF9933" face="Fixedsys">23: </FONT><FONT color=#993399 face="Fixedsys"><br></FONT><FONT color="#FF9933" face="Fixedsys">24: </FONT><FONT color=#0000ff face="Fixedsys">void</FONT><font face="Fixedsys"> CDECL </font><FONT color=#000000 face="Fixedsys">AbortHandler</FONT><FONT color=#000080 face="Fixedsys">(</FONT><FONT color=#0000ff face="Fixedsys">int</FONT><font face="Fixedsys"> num</font><FONT color=#000080 face="Fixedsys">)<br></FONT><font face="Fixedsys">
+</font><FONT color="#FF9933" face="Fixedsys">25: </FONT><FONT color=#000000 face="Fixedsys">{<br></FONT><font face="Fixedsys">
+    </font><FONT color="#FF9933" face="Fixedsys">26: </FONT><font face="Fixedsys">&nbsp;&nbsp;&nbsp;&nbsp;USE_ASSERT_TRY<br></font><FONT color="#FF9933" face="Fixedsys">27: &nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#000000 face="Fixedsys">longjmp</FONT><FONT color=#000080 face="Fixedsys">(</FONT><font face="Fixedsys">g_env</font><FONT color=#000080 face="Fixedsys">,</FONT><font face="Fixedsys"> </font><FONT color=#008080 face="Fixedsys">1</FONT><FONT color=#000080 face="Fixedsys">);<br></FONT><FONT color="#FF9933" face="Fixedsys">28: </FONT><FONT color=#000000 face="Fixedsys">}<br></FONT><FONT color="#FF9933" face="Fixedsys">29: </FONT><FONT color=#000000 face="Fixedsys"><br></FONT><font face="Fixedsys">
+
+</font><FONT color="#FF9933" face="Fixedsys">30: </FONT><FONT color=#009900 face="Fixedsys">///////////////////////////////////////////////////////<br></FONT><font face="Fixedsys">
+</font><FONT color="#FF9933" face="Fixedsys">31: </FONT><FONT color=#009900 face="Fixedsys">// TEST CASE<br></FONT><FONT color="#FF9933" face="Fixedsys">32: </FONT><FONT color=#009900 face="Fixedsys"><br></FONT><font face="Fixedsys">
+
+</font><FONT color="#FF9933" face="Fixedsys">33: </FONT><FONT color=#0000ff face="Fixedsys">int</FONT><font face="Fixedsys"> </font><FONT color=#000000 face="Fixedsys">TestFunction</FONT><FONT color=#000080 face="Fixedsys">(</FONT><FONT color=#0000ff face="Fixedsys">int</FONT><font face="Fixedsys"> data</font><FONT color=#000080 face="Fixedsys">)<br></FONT><font face="Fixedsys">
+</font><FONT color="#FF9933" face="Fixedsys">34: </FONT><FONT color=#000000 face="Fixedsys">{<br></FONT><font face="Fixedsys">
+    </font><FONT color="#FF9933" face="Fixedsys">35: &nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#000000 face="Fixedsys">assert</FONT><FONT color=#000080 face="Fixedsys">(</FONT><font face="Fixedsys">data </font><FONT color=#000080 face="Fixedsys">!=</FONT><font face="Fixedsys"> </font><FONT color=#008080 face="Fixedsys">50</FONT><FONT color=#000080 face="Fixedsys">);<br></FONT><font face="Fixedsys">
+
+    </font><FONT color="#FF9933" face="Fixedsys">36: &nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff face="Fixedsys">return</FONT><font face="Fixedsys"> data</font><FONT color=#000080 face="Fixedsys">;<br></FONT><font face="Fixedsys">
+</font><FONT color="#FF9933" face="Fixedsys">37: </FONT><FONT color=#000000 face="Fixedsys">}<br></FONT><font face="Fixedsys">
+
+</font><FONT color="#FF9933" face="Fixedsys">38: </FONT><font face="Fixedsys"><br></font><FONT color="#FF9933" face="Fixedsys">39: </FONT><FONT color=#0000ff face="Fixedsys">void</FONT><font face="Fixedsys"> </font><FONT color=#000000 face="Fixedsys">AssertionTest</FONT><FONT color=#000080 face="Fixedsys">(</FONT><FONT color=#0000ff face="Fixedsys">void</FONT><FONT color=#000080 face="Fixedsys">)<br></FONT><font face="Fixedsys">
+</font><FONT color="#FF9933" face="Fixedsys">40: </FONT><FONT color=#000000 face="Fixedsys">{<br></FONT><font face="Fixedsys">
+    </font><FONT color="#FF9933" face="Fixedsys">41: &nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff face="Fixedsys">int</FONT><font face="Fixedsys"> sum </font><FONT color=#000080 face="Fixedsys">=</FONT><font face="Fixedsys"> </font><FONT color=#008080 face="Fixedsys">0</FONT><FONT color=#000080 face="Fixedsys">;<br></FONT><FONT color="#FF9933" face="Fixedsys">42: </FONT><FONT color=#000080 face="Fixedsys"><br></FONT><font face="Fixedsys">
+
+    </font><FONT color="#FF9933" face="Fixedsys">43: &nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff face="Fixedsys">for</FONT><font face="Fixedsys"> </font><FONT color=#000080 face="Fixedsys">(</FONT><FONT color=#0000ff face="Fixedsys">int</FONT><font face="Fixedsys"> i </font><FONT color=#000080 face="Fixedsys">=</FONT><font face="Fixedsys"> </font><FONT color=#008080 face="Fixedsys">1</FONT><FONT color=#000080 face="Fixedsys">;</FONT><font face="Fixedsys"> i </font><FONT color=#000080 face="Fixedsys">&lt;=</FONT><font face="Fixedsys"> </font><FONT color=#008080 face="Fixedsys">100</FONT><FONT color=#000080 face="Fixedsys">;</FONT><font face="Fixedsys"> i</font><FONT color=#000080 face="Fixedsys">++)<br></FONT><font face="Fixedsys">
+    </font><FONT color="#FF9933" face="Fixedsys">44: </FONT><font face="Fixedsys">&nbsp;&nbsp;&nbsp;&nbsp;</font><FONT color=#000000 face="Fixedsys">{<br></FONT><font face="Fixedsys">
+        </font><FONT color="#FF9933" face="Fixedsys">45: </FONT><font face="Fixedsys">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ASSERT_TRY<br>
+        </font><FONT color="#FF9933" face="Fixedsys">46: </FONT><font face="Fixedsys">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><FONT color=#000000 face="Fixedsys">{<br></FONT><font face="Fixedsys">
+            </font><FONT color="#FF9933" face="Fixedsys">47: </FONT><font face="Fixedsys">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sum </font><FONT color=#000080 face="Fixedsys">+=</FONT><font face="Fixedsys"> </font><FONT color=#000000 face="Fixedsys">TestFunction</FONT><FONT color=#000080 face="Fixedsys">(</FONT><font face="Fixedsys">i</font><FONT color=#000080 face="Fixedsys">);<br></FONT><font face="Fixedsys">
+        </font><FONT color="#FF9933" face="Fixedsys">48: </FONT><font face="Fixedsys">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><FONT color=#000000 face="Fixedsys">}<br></FONT><font face="Fixedsys">
+        </font><FONT color="#FF9933" face="Fixedsys">49: </FONT><font face="Fixedsys">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ASSERT_CATCH<br>
+        </font><FONT color="#FF9933" face="Fixedsys">50: </FONT><font face="Fixedsys">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><FONT color=#000000 face="Fixedsys">{<br></FONT><font face="Fixedsys">
+            </font><FONT color="#FF9933" face="Fixedsys">51: </FONT><font face="Fixedsys">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><FONT color=#000000 face="Fixedsys">printf</FONT><FONT color=#000080 face="Fixedsys">(</FONT><FONT color=#008080 face="Fixedsys">&quot;i = %d일 때 assertion 발생\n&quot;</FONT><FONT color=#000080 face="Fixedsys">,</FONT><font face="Fixedsys"> i</font><FONT color=#000080 face="Fixedsys">);<br></FONT><font face="Fixedsys">
+        </font><FONT color="#FF9933" face="Fixedsys">52: </FONT><font face="Fixedsys">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><FONT color=#000000 face="Fixedsys">}<br></FONT><font face="Fixedsys">
+    </font><FONT color="#FF9933" face="Fixedsys">53: </FONT><font face="Fixedsys">&nbsp;&nbsp;&nbsp;&nbsp;</font><FONT color=#000000 face="Fixedsys">}<br></FONT><FONT color="#FF9933" face="Fixedsys">54: </FONT><FONT color=#000000 face="Fixedsys"><br></FONT><font face="Fixedsys">
+
+    </font><FONT color="#FF9933" face="Fixedsys">55: </FONT><font face="Fixedsys">&nbsp;&nbsp;&nbsp;&nbsp;</font><FONT color=#000000 face="Fixedsys">printf</FONT><FONT color=#000080 face="Fixedsys">(</FONT><FONT color=#008080 face="Fixedsys">&quot;\nsum = %d\n&quot;</FONT><FONT color=#000080 face="Fixedsys">,</FONT><font face="Fixedsys"> sum</font><FONT color=#000080 face="Fixedsys">);<br></FONT><font face="Fixedsys">
+</font><FONT color="#FF9933" face="Fixedsys">56: </FONT><FONT color=#000000 face="Fixedsys">}<br></FONT><font face="Fixedsys">
+
+</font><FONT color="#FF9933" face="Fixedsys">57: </FONT><font face="Fixedsys"><br></font><FONT color="#FF9933" face="Fixedsys">58: </FONT><FONT color=#0000ff face="Fixedsys">int</FONT><font face="Fixedsys"> </font><FONT color=#000000 face="Fixedsys">main</FONT><FONT color=#000080 face="Fixedsys">(</FONT><FONT color=#0000ff face="Fixedsys">void</FONT><FONT color=#000080 face="Fixedsys">)<br></FONT><font face="Fixedsys">
+</font><FONT color="#FF9933" face="Fixedsys">59: </FONT><FONT color=#000000 face="Fixedsys">{<br></FONT><font face="Fixedsys">
+    </font><FONT color="#FF9933" face="Fixedsys">60: </FONT><font face="Fixedsys">&nbsp;&nbsp;&nbsp;&nbsp;USE_ASSERT_TRY<br></font><FONT color="#FF9933" face="Fixedsys">61: </FONT><font face="Fixedsys"><br></font><FONT color="#FF9933" face="Fixedsys">62: &nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#000000 face="Fixedsys">AssertionTest</FONT><FONT color=#000080 face="Fixedsys">();<br></FONT><font face="Fixedsys">
+
+   </font><FONT color="#FF9933" face="Fixedsys">63: </FONT><font face="Fixedsys"><br> </font><FONT color="#FF9933" face="Fixedsys">64: </FONT><font face="Fixedsys">&nbsp;&nbsp;&nbsp;&nbsp;</font><FONT color=#0000ff face="Fixedsys">return</FONT><font face="Fixedsys"> </font><FONT color=#008080 face="Fixedsys">0</FONT><FONT color=#000080 face="Fixedsys">;<br></FONT><font face="Fixedsys">
+</font><FONT color="#FF9933" face="Fixedsys">65: </FONT><FONT color=#000000 face="Fixedsys">}</FONT>
+                            </ul>
+                            <p>실제로 사용되는 것은 <font face="Fixedsys">ASSERT_TRY</font>, 
+                            <font face="Fixedsys">ASSERT_CATCH</font>, <font face="Fixedsys">USE_ASSERT_TRY</font>의 
+                            3개의 매크로이다.</p>
+                            <p><font face="Fixedsys">USE_ASSERT_TRY:<br></font>assertion 
+                            catch 기능을 사용하겠다는 선언이다. 만약 이것이 
+                            선언되지 않는다면 관련 매크로는 모두 무시된다. 이것을 
+                            선언하는 시점 이후로만 관련 매크로가 활성화된다.</p>
+                            <p><font face="Fixedsys">ASSERT_TRY:<br></font>일반적으로 
+                            사용되는 try - catch 구문의 try와 동일한 용법이다. 
+                            이 내부에서 assertion이 일어났을 때 catch 구문으로 
+                            점프한다.</p>
+                            <p><font face="Fixedsys">ASSERT_CATCH:<br></font>일반적인 
+                            try - catch 구문에서 catch에 해당한다. 단지 error 
+                            handling을 위한 class를 받는 부분은 빠져 있는데 
+                            그것이 필요하다면 추가하면 된다. (하지만 다중 파라미터에 
+                            대한 catch가 될런지는 의문)</p>
+                            <p>사실 내용은 전혀 C++이 아니고 C에서 사용된 error 
+                            handling 기법을 사용하였다. (VC++의 디버그 모드에서 
+                            테스트 하면, assert에 대한 것을 중간에 IDE가 먼저 
+                            감지를 하는데 그땐 '무시'를 눌러 주면 된다.)<br>&nbsp;</p>
+</td>
+                </tr>
+                <tr>
+                    <td height="2" bgcolor="#605870" colspan="3" width="637">
+                     </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td width="595" bgcolor="#605870" height="2">
+&nbsp;        </td>
+    </tr>
+</table>
+</div>
+
+<p>&nbsp;</p>
+</body>
+
+</html>

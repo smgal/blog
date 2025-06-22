@@ -1,0 +1,1380 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>Untitled</TITLE>
+<META name="generator" content="Namo WebEditor v5.0">
+<STYLE><!--
+.leading200 { line-height: 200% }
+.leading180 { line-height: 180% }
+.leading150 { line-height: 150% }
+.leading100 { line-height: 100% }
+-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="navy" text="white" link="blue" vlink="purple" alink="red">
+
+<P><font color="black"><span style="background-color:white;">이것은 1998년 1월 
+31일까지 하이텔 게임 제작 동호회에 올렸던 강좌 8회분 입니다.</span></font></P>
+<p align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="gd_data/gd20c_lec_01.zip"><span style="background-color:white;">바이너리 
+데이터</span></a></p>
+<p><font color="#CCFF00">#####################################################</font></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;하이텔 게임제작 동호회 ( GO GMA )</FONT></p>
+<P><FONT face="굴림체">------------------------------------------------------------------------<BR>
+### DIRECT X 트루컬러 게임 (0) - 프롤로그<BR>
+------------------------------------------------------------------------<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;작성자 : 안영기 ( HiTEL ID : SMgal )</FONT></P>
+<P><FONT face="굴림체"><BR>
+&nbsp;제가 게제동에 활동을 하면서 무언가 기록을 남기고 싶은 마음에 &nbsp;이런 강좌<BR>
+를 하기로 마음 먹었습니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;현재 윈도우용 게임을 만들기 위해서 누구나 할 것 없이 사용하려 하는 것이<BR>
+바로이 '다이렉트 X'( 이후 DX 로 표기 ) 입니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;하지만 이것은 우리나라에 제대로 된 번역본이 없기 때문에 처음 시작하려는<BR>
+분들에게는 함께 제공되는 영문 헬프 파일이 두렵기는 어쩔 수 없는 노릇인데<BR>
+다가 번역본 마저 어색한 구절을 사용하여 우리들의 인상을 찌푸리게 하는 것<BR>
+에는 틀림없는 사실입니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;제가 이번 강좌에 그 많은 모드 중에서 트루컬러를 하는냐 하면, 상대적으로<BR>
+프로그래밍이 쉬운 모드인데다가 &nbsp;앞으로 해가 갈 수록 고기종의 추세이고 그<BR>
+래픽 카드의 발전도 한몫 단단히 하여 앞 선 미래에는 &nbsp;트루컬러게임도 부지<BR>
+기수로 나올 것이라는 저의 예상에서입니다.<BR>
+( 제 주관적 입장에서는 트루컬러 3D 네트워크 게임이 최고봉이 될 때가 반드<BR>
+&nbsp;&nbsp;시 올 것 같은 느낌입니다만..... )</FONT></P>
+<P><FONT face="굴림체">&nbsp;여기서 다루는 트루컬러란 바로 24bit 컬러만을 따지겠습니다. &nbsp;어째서 요새<BR>
+만만치 않게 지원하는 32bit 컬러로 강좌하지 않느냐고 물으신다면 저는 당당<BR>
+하게 이렇게 말하겠습니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&quot; 우리집 ET4000 은 640 * 480 * 24bit 가 최고 사양입니다. &quot; 라고..</FONT></P>
+<P><FONT face="굴림체">&nbsp;하지만 24bit 프로그래밍이 가능한 사람은 별다른 노력 없이 16bit 하이컬러<BR>
+나 32bit 트루컬러를 다루게 될 것임을 확신하기 때문에 &nbsp;그쪽에 대한 언급은<BR>
+거의 하지 않을 예정입니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;언어는 &quot;델파이 3&quot; 으로 만들 것이고 모든 소스와 리소스들은 게제동 자료실<BR>
+에 등록이 될겁니다.. ( 강좌 끝나갈 무렵에.. )</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&nbsp;그럼 앞으로의 강좌 커리큐럼입니다.</FONT></P>
+<P><FONT face="굴림체">&lt; 정규 강좌 &gt;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;1. 다이렉트 X 트루컬러 초기화...<BR>
+&nbsp;&nbsp;&nbsp;2. 다이렉트 X 에 대한 핸들러 설치... ( 예외, 에러, 이벤트... )<BR>
+&nbsp;&nbsp;&nbsp;3. 다이렉트 X DDERROR_SURFACELOST 에 대한 대비<BR>
+&nbsp;&nbsp;&nbsp;4. 다이렉트 X내장 메소드를 이용한 기본적인 이미지 찍기<BR>
+&nbsp;&nbsp;&nbsp;5. 게임을 위한 기본 클래스 구성(1)<BR>
+&nbsp;&nbsp;&nbsp;6. 게임을 위한 기본 클래스 구성(2)<BR>
+&nbsp;&nbsp;&nbsp;7. Lock() 을 이용하여 직접 비디오 메모리에 찍기<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ 반투명 효과 만들기</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">강좌에 앞서 주의점....</FONT></P>
+<P><FONT face="굴림체">1. 이 강좌를 타 동호회에 허락 없이 게제하는 행위를 미워할 것입니다.<BR>
+2. 제가 이후 강좌에 반말을 쓰게 될것임을 미리 알려 드리는 바입니다.<BR>
+3. 다이렉트 X -&gt; DX, &nbsp;저 -&gt; 필자 &nbsp;등으로 호칭 변화가 있을 것입니다.</FONT></P>
+<p>&nbsp;</p>
+<P><font color="#CCFF00">#####################################################</font></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;하이텔 게임 제작 동호회 ( GO GMA )</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------<BR>### 
+DIRECT X 트루컬러 게임 (1) - 다이렉트 X 트루컬러 
+초기화<BR>------------------------------------------------------------------------<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;작성자 
+: 안영기 ( HiTEL ID : SMgal )</FONT></P>
+<P><FONT face="굴림체"><BR>&nbsp;이제 DX의 가장 기초가 되는 'DX 초기화'를 시작한다. &nbsp;프롤로그에서 예고한<BR>바와 같이 언어는 
+'델파이 3' 이며 이하의 버전에서는 정확한 수행을 예상 할<BR>수가 없다. 그리고 MS 에서 제공된 DDRAW.PAS 를 이용해서 
+DDRAW.DLL 을 연결<BR>할 것이며 '델파이 2 언리쉬드' 의 저자가 만든 DDUTILS.PAS ( DX에서 비트맵<BR>과 팔레트에 
+대한 함수를 쉽게 만든 유닛 ) 를 사용하며 모든 것을 진행해 나<BR>갈 것이다. ( 이 파일들은 추후에 자료실에 등록 예정 
+)</FONT></P>
+<P><FONT face="굴림체">&nbsp;그리고 여기에 나오는 초기화 코드는 '델파이 2 언리쉬드' 라는 책에서 배운<BR>것이니 만큼 상당히 유사한 
+코드가 많으며 함수명도 원형을 따른 것이 많다는<BR>것을 미리 밝혀 두는 바이다. &nbsp;하지만 나머지 DX 스펙에 관한 자료는 모두 
+DX<BR>헬프에 언급된 원서를 번역하여 독자적으로 기술하여 여러분께 설명하는 것이<BR>다. 그 이유는 국내 번역서에서 누락되거나 오역한 
+부분이 있을지도 모른다는<BR>필자의 기우 때문이기도 하다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;다시 한 번 노파심에서 말씀 드리는 것이지만 이 강좌는 DX 중하급자를 위한<BR>것이면 델파이 사용에 무리가 
+없는 자를 기준으로 한다. &nbsp;따라서 델파이 문법<BR>이나 사용법은 전혀 언급하지 않을 것이며 &nbsp;DX 기본 함수 등도 가볍게 무시하<BR>고 
+넘어간다..</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(1) 새로운 프로젝트의 시작</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;먼저 New Application 에서 새로운 프로젝트를 시작한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;폼은 마음대로 구성해도 무방하나 실제 폼은 DX 상에서 전혀 나타나지 않을<BR>&nbsp;것이므로 화면 크기를 줄인 
+채 구석에 두는 것이 좋을 것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;폼을 만들고 해주어야 하는 것은 단 한가지이다. 폼의 Name 속성은 'Basic'<BR>&nbsp;으로 바꾸어라. 
+&nbsp;이건 필자의 코드 습관이겠지만 앞으로 설명될 폼의 이름이<BR>&nbsp;모두 Basic 이란 이름의 객체 일 것이기 때문이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;Save Project As 라는 곳에서 프로젝트를 세이브한다. 이때의 *.DPR 
+이름은<BR>&nbsp;'DX24Bit1.Pas' 로 하고 유닛은 'MainUnt1'으로 해주길 바란다.<BR>&nbsp;앞으로의 강의 버전에 따라 예제 소스는 
+번호가 증가할 것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;그럼 만들어지는 소스는 다음과 같을 것이다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;program Dx24bit1;<BR>|<BR>| &nbsp;uses<BR>| 
+&nbsp;&nbsp;&nbsp;Forms,<BR>| &nbsp;&nbsp;&nbsp;MainUnt1 in 'MainUnt1.pas' {Basic};<BR>|<BR>| &nbsp;{$R 
+*.RES}<BR>|<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;Application.Initialize;<BR>| 
+&nbsp;&nbsp;&nbsp;Application.CreateForm(TBasic, Basic);<BR>| &nbsp;&nbsp;&nbsp;Application.Run;<BR>| 
+&nbsp;end.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(2) TBasic 객체의 조성</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이제는 모든 것이 'MainUnt1.Pas'에서 이루어진다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;interface 아래에 다음과 같은 것을 추가하자.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;uses<BR>| &nbsp;&nbsp;&nbsp;&nbsp;Windows, Messages, SysUtils, 
+Classes, Graphics, Controls, Forms,<BR>| &nbsp;&nbsp;&nbsp;&nbsp;Dialogs, DDraw, DDUtils;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~~~~~~~~~~~~~~~ &lt;- 밑줄 그은 거 추가 하란 말씀..</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;위에도 설명했지만 DDraw 는 DDRAW.DLL 을 사용하기 위한 것이고, &nbsp;DDUtils<BR>&nbsp;는 
+비트맵과 팔레트를 좀 더 쉽게 사용하고자 만들어진 유닛으로 &nbsp;필자가 만<BR>&nbsp;든 것이 아니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;그 아래엔 다음과 같은 상수를 선언하자.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;const<BR>| &nbsp;&nbsp;&nbsp;&nbsp;MAX_IMAGE_SURFACE = 1; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 읽어 들일 이미지 표면의 수<BR>| &nbsp;&nbsp;&nbsp;&nbsp;BitmapName &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 'Test'; &nbsp;&nbsp;&nbsp;// 이미지가 있는 
+비트맵 이름<BR>| &nbsp;&nbsp;&nbsp;&nbsp;MAX_X_LINE &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 640; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 만들 화면의 가로 크기<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;MAX_Y_LINE &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 480; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 만들 화면의 세로 크기<BR>| &nbsp;&nbsp;&nbsp;&nbsp;BPP &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 
+3; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 픽셀당 바이트.. 24 / 8 이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;그렇다면 바로 아래에는</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;type<BR>| &nbsp;&nbsp;&nbsp;&nbsp;TBasic = class(TForm)<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;........</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이런 구문이 있을 것이다.. 이제는 이것을 아래와 같이 채운다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;type<BR>| &nbsp;&nbsp;&nbsp;&nbsp;TBasic = class(TForm)<BR>|<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;private<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;function &nbsp;GetBitmapName(i : integer) : string;<BR>|<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;public<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FPixelFormat &nbsp;&nbsp;: (pfRGB, pfBGR);<BR>|<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectDraw &nbsp;&nbsp;&nbsp;&nbsp;: IDirectDraw2;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PrimarySurface : 
+IDirectDrawSurface2;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BackBuffer &nbsp;&nbsp;&nbsp;&nbsp;: IDirectDrawSurface2;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: array[1..MAX_IMAGE_SURFACE] of<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDirectDrawSurface2;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>|<BR>| 
+&nbsp;var<BR>| &nbsp;&nbsp;&nbsp;&nbsp;Basic: TBasic;<BR>|<BR>| &nbsp;implementation<BR>| 
+&nbsp;.....................</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;위의 내용을 하나하나 설명하자면...</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;1) function &nbsp;GetBitmapName(i : integer) : 
+string;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- 이것은 i 라는 숫자에 대한 BitmapName의 정보를 
+리턴한<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;다. 만약 i 가 1 이라면 'Test1.Bmp'를 리턴 할 
+것이다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;이것은 항상 EXE 실행 디렉토리를 기준으로 비트맵을 
+지<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;정하게 된다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;2) FPixelFormat - 이것은 24bit 트루컬러의 픽셀 포맷에 대한 정보를 
+담는<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private 변수이다. 이때 가질 수 있는 경우의 값은 
+두가<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;지로써 RGB 포맷과 BGR 포맷이 있다. &nbsp;각각의 포맷은 그<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;래픽 
+카드에 전적으로 기인한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;3) DirectDraw &nbsp;&nbsp;&nbsp;&nbsp;: IDirectDraw2;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- 이것은 
+가장 핵심이 되는 DirectDraw 의 객체 변수이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;4) PrimarySurface : IDirectDrawSurface2;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BackBuffer 
+&nbsp;&nbsp;&nbsp;&nbsp;: IDirectDrawSurface2;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- 이것은 기본 버퍼와 백 버퍼에 대한 DirectDraw 
+Surface<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;객체이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;5) Image &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: array[1..MAX_IMAGE_SURFACE] of 
+IDirectDrawSurface2;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- 이것은 스프라이트나 이미지를 찍을 때 사용되는 
+비트맵<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;을 저장해 놓는 표면 공간으로, 비디오 메모리가 부족할<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;때는 
+자동으로 메모리의 한 영역으로 설정된다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;위에서 우리가 함수 하나를 선언만 해 놓은 채로 두었으니, 마저 만들고 넘<BR>&nbsp;어 가는 것이 도리일 것 
+같다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;function TBasic.GetBitmapName(i : integer) : 
+string;<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;GetBitmapName := 
+ExtractFilePath(Application.ExeName)<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ BitmapName + 
+IntToStr(i) + '.BMP';<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이 함수는 implementation 영역에 아무 곳이나 두면 된다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(3) OnCreate 이벤트 설정</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이제 DX 객체 생성을 위해 코드를 작성 할 때이다.<BR>&nbsp;Object Inspector 의 Events 
+탭을 누른 후에 OnCreate 이벤트를 더블 클릭한<BR>&nbsp;다. 그러면 아래와 같은 코드가 당연히 나타난다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure TBasic.FormCreate(Sender: 
+TObject);<BR>| &nbsp;begin<BR>|<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;물론 그 안을 채우는 것은 우리에게 남겨진 막중한 사명임을 상기하자.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure TBasic.FormCreate(Sender: 
+TObject);<BR>| &nbsp;begin<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if DirectDrawCreate2(nil,DirectDraw,nil) 
+&lt;&gt; DD_OK then<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Raise Exception.Create('DirectDraw 객체 생성 
+실패');<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;Color &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= clBlack;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;BorderStyle := bsNone;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;Cursor &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= crNone;<BR>|<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;우리가 해줄 것은 이것이 전부이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;DirectDrawCreate2 의 세 번째 인수는 항상 nil( = NULL)이며 첫 번째 인수<BR>&nbsp;도 
+nil 로 사용하게 될 것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;우리가 고려할 것은 두 번째 인수로써 IDirectDraw2 로 선언된 객체가 레퍼<BR>&nbsp;런스로 넘어가게 
+된다. C 를 사용하신 분이라면 포인터로 넘겨줬다는 기억이<BR>&nbsp;남아 있을 것이다. 하지만 파스칼은 C 와는 달리 대부분의 포인터를 
+레퍼런<BR>&nbsp;스형으로 넘겨주기 때문에 &nbsp;앞으로의 인수 전달에도 포인터는 거의 사용되지<BR>&nbsp;않을 것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;DirectDrawCreate2 는 리턴 값으로 HResult를 가지는데 DD_OK 가 아니면 
+어<BR>&nbsp;떠한 이유에서도 호출 실패로 간주할 수 있으므로 &nbsp;예외를 일으키도록 해 놓<BR>&nbsp;았다. Terminate 를 시키지 않는 이유는 
+프로그램의 신뢰성을 위한 것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;그리고 나머지 3줄은 만들어질 폼의 상태를 나타내는 것으로 각각 '폼의 색<BR>&nbsp;상을 검게', '폼의 
+외곽선을 없게', '폼 위에 커서 제거' 를 나타낸다. 어짜<BR>&nbsp;피 DX 에서 풀 화면을 만들어 버리면 사이즈에 대한 정보는 무의미하므로 
+여<BR>&nbsp;기에 넣을 필요가 없다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(4) OnShow 이벤트 설정</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이번의 이벤트가 DX 초기화의 가장 중요한 부분이다.<BR>&nbsp;역시, Object Inspector 의 
+Events 탭을 누른 후에 OnShow 이벤트를 더블 클<BR>&nbsp;릭한다. 그러면 아래와 같은 코드가 나타난다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure TBasic.FormShow(Sender: 
+TObject);<BR>| &nbsp;begin<BR>|<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;여기서는 변수의 선언이 필요하다. 다음과 같이 적도록 한다. &nbsp;타입에 대한<BR>&nbsp;설명은 그 변수가 사용될 
+때 같이 하겠다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;var<BR>| &nbsp;&nbsp;&nbsp;&nbsp;i &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: integer;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;DDSurfaceDesc : TDDSurfaceDesc;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;DDSCaps &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: TDDSCaps;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;DDPixelFormat : TDDPixelFormat;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;ColorKey &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 
+TDDColorKey;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;다음은 넣어야 할 코드를 순차적으로 나열하고 설명하겠다.</FONT></P>
+<P><FONT face="굴림체"><BR></FONT><FONT color=yellow face=굴림체>| &nbsp;&nbsp;&nbsp;&nbsp;if not 
+Assigned(DirectDraw) then exit;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;만약 DirectDraw 객체가 생성되어 있지 않으면 함수를 끝낸다.<BR>&nbsp;&nbsp;이것은 모든 경우를 대비하기 
+위한 방법이다.</FONT></P>
+<P><FONT face="굴림체"><BR></FONT><FONT color=yellow face=굴림체>| &nbsp;&nbsp;&nbsp;&nbsp;if 
+DirectDraw.SetCooperativeLevel(Handle,DDSCL_EXCLUSIVE or<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDSCL_FULLSCREEN or DDSCL_ALLOWREBOOT) &lt;&gt; DD_OK 
+then<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Raise Exception.Create('배타적 풀 스크린 얻기 실패');</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;배타적 풀 스크린 모드로 설정한다.<BR>&nbsp;첫 번째 인수인 Handle 은 폼에 대한 핸들이며, 두 번째 
+인수는 다음과 같은<BR>&nbsp;것들로 or 연산으로 결합할 수 있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDSCL_ALLOWMODEX &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 모드 X ( 320*200 또는 320*240 ) 를 
+가능하게<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;한다. 우리에겐 플랜 모드로 더 잘 알려져 
+있다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDSCL_ALLOWREBOOT &nbsp;&nbsp;&nbsp;&nbsp;: 풀 스크린 모드에서 Ctrl+Alt+Del 로 
+리부팅이<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가능하게 한다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDSCL_EXCLUSIVE &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 배타적 
+스크린 모드를 요구한다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDSCL_FULLSCREEN &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: GDI 를 완전 무시하는 풀 화면 배타 모드를 
+지<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;시한다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDSCL_NORMAL &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 일반적인 윈도우 
+애플리케이션처럼 실행한다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DX 창모드에 
+사용한다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDSCL_NOWINDOWCHANGES : 활성 상태에서 &nbsp;DirectDraw 가 &nbsp;태스크 
+전환이<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;불가능하게 하도록 지시한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;** 결합시 주의 점</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&gt; DDSCL_EXCLUSIVE 와 DDSCL_NORMAL 은 같이 사용할 수 
+없다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&gt; DDSCL_EXCLUSIVE 는 DDSCL_FULLSCREEN 을 항상 수반한다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3&gt; 
+DDSCL_ALLOWMODEX 는 DDSCL_EXCLUSIVE 와 DDSCL_FULLSCREEN 과 &nbsp;함께<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;사용된다. 물론 
+DDSCL_NORMAL 은 사용할 수 없다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;위에서 만든 CooperativeLevel 은 배타적 풀 스크린이며 리부팅이 가능하게<BR>&nbsp;설정되었다. 
+실행 중 Ctrl+Alt+Del 로 리부팅이 가능하게 한 것은 필자의 경<BR>&nbsp;험에 따라 DX 에서 실수를 하면 다운되는 수가 많고 GDI 
+전환이 안되어 리셋<BR>&nbsp;을 눌러야 하는 번거로움을 많이 경험했기 때문이다. 하지만 게임을 완성 하<BR>&nbsp;고 나서는 리부팅이 안되게 해 놓는 
+게 Temp Data 보안을 위해 좋을 것이다.</FONT></P>
+<P><FONT face="굴림체"><BR></FONT><FONT color=yellow face=굴림체>| &nbsp;&nbsp;&nbsp;&nbsp;if 
+DirectDraw.SetDisplayMode(MAX_X_LINE,MAX_Y_LINE,24,0,0)<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&gt; DD_OK 
+then<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Raise Exception.Create('640 x 480 x 24bit 모드 실패');</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이것이 바로 트루컬러로 만드는 명령이다. 첫 번째와 두 번째는 각각 X와 Y<BR>&nbsp;의 길이를 알려주는 
+것으로 현재는 640 * 480 이다. 세 번째 인수는 Bit Per<BR>&nbsp;Pixel 로 24이다.<BR>&nbsp;( 24bit 컬러이므로. 그리고 
+당연히 256컬러 일 때는 8 이다. )<BR>&nbsp;네 번째 인수는 Refresh Rate 로 0 이 들어가면 이 메소드의 IDirectDraw 
+인<BR>&nbsp;터페이스 버전이 사용되게 된다. 그리고 다섯 번째 인수는 항상 0 이다.</FONT></P>
+<P><FONT face="굴림체"><BR></FONT><FONT color=yellow face=굴림체>| 
+&nbsp;&nbsp;&nbsp;&nbsp;FillChar(DDSurfaceDesc,SizeOf(DDSurfaceDesc),0);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;with DDSurfaceDesc 
+do begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dwSize &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= SizeOf(DDSurfaceDesc);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dwFlags &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= DDSD_CAPS or DDSD_BACKBUFFERCOUNT;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ddSCaps.dwCaps &nbsp;&nbsp;&nbsp;:= DDSCAPS_COMPLEX or DDSCAPS_FLIP or<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDSCAPS_PRIMARYSURFACE;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dwBackBufferCount := 1;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if 
+DirectDraw.CreateSurface(DDSurfaceDesc,PrimarySurface,nil)<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&gt; DD_OK 
+then<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Raise Exception.Create('복합 화상 공간 생성 실패');</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이제는 표면을 생성하는 일이다.<BR>&nbsp;&nbsp;TDDSurfaceDesc 에 대한 타입 구조는 내용이 많은데다가 
+거의 모든 DX 서적<BR>&nbsp;에서 언급하고 있으므로 여기서는 생략하고 필요한 부분만 짚고 넘어 가도록<BR>&nbsp;한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;우선 FillChar 로 DDSurfaceDesc 를 0 으로 만든다. 이렇게 한 주된 이유는<BR>&nbsp;혹시 
+라도 모를 돌발 사태를 미연에 방지하기 위한 것이다. 여기에서 dwSize<BR>&nbsp;라고 된 레코드를 주의해야 한다. &nbsp;여기는 항상 &nbsp;그 타입의 
+크기가 들어가야<BR>&nbsp;하는데, 보통 잊어버리고 생략하는 수가 많다. 그렇게 되면 정말 알 수 없는<BR>&nbsp;버그를 키우는 셈이 되거나 &nbsp;전혀 
+이상이 없어 보이지만 다운이 되는 불행한<BR>&nbsp;사태를 초래하게 된다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;다음의 dwFlag 도 참 재미있는 용도이다. TDDSurfaceDesc 의 레코드 중에서<BR>&nbsp;현재 
+유효한 값을 가지는 레코드만 지정해 주는 것이다. 필자가 윈도우 프로<BR>&nbsp;그래밍을 입문하면서 재미있게 느꼈던 게 &nbsp;바로 앞에 나온 레코드의 
+size 표<BR>&nbsp;기와 flag 표기였다. 귀찮기도 하지만 어떻게 보면 미래를 위해 융통성을 충<BR>&nbsp;분히 고려한 발상이었기 때문이다. 
+&nbsp;자, DDSD_CAPS or DDSD_BACKBUFFERCOUNT<BR>&nbsp;를 지정한 후에 아래 두 줄에는 ddSCaps 와 
+dwBackBufferCount 만이 값이 할<BR>&nbsp;당되지 않았는가 !</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;ddSCaps.dwCaps 는 표면 생성에 대한 &nbsp;정보를 넣어 준다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDSCAPS_COMPLEX &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: '복합 표면'을 만든다. &nbsp;복합 표면은 하나 
+이<BR>&nbsp;&nbsp;&nbsp;&nbsp;상의 후면을 가지고 있으며 부가적인 후면들은<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Primary 와 연결되어 
+있다. 때문에 Primary 를<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;제거하면 종속된 후면들도 같이 
+제거된다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDSCAPS_FLIP &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 플리핑 구조를 가지는 표면을 
+만든다,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDSCAPS_PRIMARYSURFACE : 유저에게 직접 보이는 표면( Primary ) 을 
+만<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;만들게 지시한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;dwBackBufferCount 는 후면 버퍼의 개수를 넣는다. 현재는 1 개로 설정했다.<BR>&nbsp;만약 2 
+로 설정했다면 트리플 버퍼링을 하게 된다. &nbsp;( 트리플 버퍼링에 대해<BR>&nbsp;서는 Help 를 참고하기 바란다. )</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이렇게 정의한 DDSurfaceDesc 로 표면을 생성하는 방법은 다음과 같다.<BR>&nbsp;아래와 같이 하면 
+PrimarySurface 라는 변수가 복합 표면을 가리키게 된다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectDraw.CreateSurface(DDSurfaceDesc,PrimarySurface,nil)</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;인수 설명은 필요 없을 정도로 간단하다. 단 3번째 인수가 nil 이 아니라면<BR>&nbsp;현재의 DX 버전에는 
+에러를 발생시킨다.</FONT></P>
+<P><FONT face="굴림체"><BR></FONT><FONT color=yellow face=굴림체>| &nbsp;&nbsp;&nbsp;&nbsp;DDSCaps.dwCaps := 
+DDSCAPS_BACKBUFFER;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if 
+PrimarySurface.GetAttachedSurface(DDSCaps,BackBuffer)<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&gt; DD_OK then<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Raise Exception.Create('후면 버퍼 생성 실패');</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;위의 것도 이전 것과 마찬가지의 방법이다. DDSCaps.dwCaps 에서 후면을 지<BR>&nbsp;시하는 
+DDSCAPS_BACKBUFFER 가 대입된 것 말고는 별반 다를 게 없다. 하지만<BR>&nbsp;함수에 있어서는 &nbsp;커다란 변화가 있다. &nbsp;그것은 바로 
+PrimarySurface 객체가<BR>&nbsp;복합 표면으로 초기화 되었기 때문에 IDirectDrawSurface2 에 정의된 메소드<BR>&nbsp;를 
+사용할 수 있다는 것이다. 그 메소드의 첫째 주자가 &nbsp;GetAttachedSurface<BR>&nbsp;라는 바로위의 함수이다. &nbsp;이것은 DDSCaps 
+에 명시된 표면을 얻는 함수로써<BR>&nbsp;현재는 후면 버퍼가 &nbsp;그 대상으로 지정되었기 때문에 &nbsp;BackBuffer 에는 후면<BR>&nbsp;버퍼로 초기화 
+되게 되는 것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;사실 여기까지면 DX 초기화와 Cooperative Level을 얻고 모드 바꾸기, 그리<BR>&nbsp;고 2개의 
+플리핑 가능한 복합 화상 표면을 만들기는 끝이 난 셈이다. 이어지<BR>&nbsp;는 나머지 초기화는 모두 부수적인 것들이다.</FONT></P>
+<P>&nbsp;</P>
+<P><FONT color=yellow face=굴림체>| 
+&nbsp;&nbsp;&nbsp;&nbsp;FillChar(DDPixelFormat,sizeof(DDPixelFormat),0);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;DDPixelFormat.dwSize := sizeof(DDPixelFormat);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if 
+PrimarySurface.GetPixelFormat(DDPixelFormat) &lt;&gt; DD_OK then<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Raise Exception.Create('픽셀 포맷 읽기 실패');<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if 
+DDPixelFormat.dwRBitMask = $00FF0000 then<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FPixelFormat := pfRGB<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;else if DDPixelFormat.dwRBitMask = $000000FF then<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FPixelFormat 
+:= pfBGR<BR>| &nbsp;&nbsp;&nbsp;&nbsp;else<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Raise Exception.Create('픽셀 포맷 판독 
+실패');</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이 부분은 생성한 24bit 트루컬러에 대한 픽셀 포맷을 판별하는 부분이다.<BR>&nbsp;중요한 부분이지만 의외로 
+잘 모르는 사람도 많은 것 같아서 &nbsp;약간의 설명을<BR>&nbsp;부가시키겠다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;24bit 트루컬러에서는 그래픽 카드에 기인하는 2개의 픽셀 모드가 있다.<BR>&nbsp;각각 RGB 와 BGR 로 
+대표되는 것으로 다음과 같은 구조를 가진다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&lt; RGB 구조 &gt; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt; BGR 구조 
+&gt;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Red &nbsp;&nbsp;&nbsp;00FF0000h &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Red 
+&nbsp;&nbsp;&nbsp;000000FFh<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Green &nbsp;0000FF00h &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Green 
+&nbsp;0000FF00h<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Blue &nbsp;&nbsp;000000FFh &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Blue &nbsp;&nbsp;00FF0000h</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;( 24bit 트루컬러는, 16bit 하이컬러나 32bit 트루컬러와는 달리 알파 픽셀<BR>&nbsp;&nbsp;&nbsp;&nbsp;을 
+가지지 않는다. &nbsp;따라서 Texture Map Format 이나 Off-Screen Surface<BR>&nbsp;&nbsp;&nbsp;&nbsp;Format 모두 이 두 가지밖에 
+없다. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이것들을 알아내서 도대체 어디에 써먹느냐고 &nbsp;의문을 가지실 분이 &nbsp;계실지<BR>&nbsp;모르겠지만, 이것들은 
+DirectDrawSurface 의 내부 메소드에서는 아무 상관없<BR>&nbsp;이 작동되더라도 &nbsp;Lock 을 하여 사용자가 직접 메모리를 제어해야 
+하는 경우<BR>&nbsp;에는 완전히 다른 결과가 나와 버릴 수 있기 때문에 꼭 알아야 한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;위의 함수는 이해하기 쉬울 테니 그냥 넘어가도록 한다.</FONT></P>
+<P><FONT face="굴림체"><BR></FONT><FONT color=yellow face=굴림체>| &nbsp;&nbsp;&nbsp;&nbsp;for i := 1 to 
+MAX_IMAGE_SURFACE do begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Image[i] := 
+DDLoadBitmap(DirectDraw,GetBitmapName(i),0,0);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;스프라이트로 사용할 예제 비트맵을 로드한다. &nbsp;위에 사용된 비트맵 함수는<BR>&nbsp;DDUtils.Pas 에 
+정의 된 것으로 &nbsp;상당히 유용한 함수라고 생각된다. &nbsp;왜냐면<BR>&nbsp;'리소스 -&gt; 실행 디렉토리 -&gt; 가능한 모든 패스' 순으로 
+비트맵을 찾아 가므<BR>&nbsp;로, 게임 완성 단계에 비트맵을 리소스 단계에서 실행 파일에 넣더라도 전혀<BR>&nbsp;소스의 수정이 필요치 
+않다.<BR>&nbsp;&nbsp;이번 예제에서는 'Test1.Bmp' 하나만 사용될 것이다.</FONT></P>
+<P><FONT face="굴림체"><BR></FONT><FONT color=yellow face=굴림체>| &nbsp;&nbsp;&nbsp;&nbsp;for i := 1 to 
+MAX_IMAGE_SURFACE do begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ColorKey.dwColorSpaceLowValue := 0;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ColorKey.dwColorSpaceHighValue := 0;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if 
+Image[i].SetColorKey(DDCKEY_SRCBLT,ColorKey) &lt;&gt; DD_OK then<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Raise Exception.Create('투명색 지정 실패');<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이것은 도스 때 스프라이트에는 볼 수 없던 기능인 투명색 정의 기능이다.<BR>&nbsp;여기서 정의된 투명색( 
+영어로는 Color Key ) 은 사용자가 원하면 일반 출력<BR>&nbsp;에서 바로 지원해 버린다. &nbsp;dwColorSpaceLowValue 와 
+dwColorSpaceHighValue<BR>&nbsp;는 투명색으로 지정할 단계의 최소 값과 최대 값을 지정하는 DWORD의 레코드<BR>&nbsp;이다. 
+&nbsp;필자의 경험으로는 0 번이나 00FFFFFFh 의 한 단계만을 두는 것이 가<BR>&nbsp;장 편하다고 생각된다. &nbsp;물론 출력될 검은 색은 
+00000001 정도로 해 두는 게<BR>&nbsp;좋지 않을까 생각한다. ( 이해가 안되면 직접 실험 해보라... )</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;위에서는 각각의 비트맵을 저장한 이미지 버퍼에다가 &nbsp;DDCKEY_SRCBLT 를 지<BR>&nbsp;정했는데 이것은, 
+&nbsp;투명색이 정의 된 blit 연산이 실행될 때 &nbsp;이미지 소스의<BR>&nbsp;투명색을 적용하여 스프라이트를 찍게 된다. 다시 말하면 스프라이트를 
+찍을<BR>&nbsp;때 찍을 그림에 투명색을 적용하여 스프라이트를 표시하게 되는데 이 방법은<BR>&nbsp;도스 때의 스프라이트 찍기와 동일하다고 생각하면 
+이해가 빠를 것이다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(5) OnDestroy 이벤트 설정</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;마지막 이벤트인 OnDestroy 를 더블클릭한다. 그리고 마찬가지로 다음과 같<BR>&nbsp;은 코드를 
+작성한다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure TBasic.FormDestroy(Sender: 
+TObject);<BR>| &nbsp;var<BR>| &nbsp;&nbsp;&nbsp;&nbsp;i : integer;<BR>| &nbsp;begin<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if 
+Assigned(PrimarySurface) then PrimarySurface.Release;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 복합 화상 표면을 제거한다.<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;for i := 1 to 
+MAX_IMAGE_SURFACE do begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Assigned(Image[i]) then 
+Image[i].Release;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 비트맵 이미지 표면을 
+제거한다.<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if Assigned(DirectDraw) then DirectDraw.Release;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;DirectDraw := nil; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 마지막으로 DX 객체를 제거한다.<BR>|<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;별다른 설명이 필요 없을 만큼 뻔한 진행이다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&nbsp;이렇게 DX 의 트루컬러 초기화가 끝났다.<BR>&nbsp;이것을 실행 시켜 보면 과연 어떤 결과가 나올까.. 놀라지 
+마시라..<BR>아무것도 없는 깜깜한 화면이 당신을 기쁘게 맞아 줄 것이다. 그 사실에 너무<BR>슬퍼하거나 노여워 말라. &nbsp;다른 미스 
+타이핑으로 에러가 나서 다운이 안된 것<BR>만으로도 삶에 대한 가치를 충분히 만끽할 수 있을 테니까. 종료는 
+Alt+F4..</FONT></P>
+<P><FONT face="굴림체">&nbsp;다음은 초기화에 따른 예외, 에러, 기타 이벤트 에 대한 것을 다루겠다.</FONT></P>
+<P>&nbsp;</P><P><font color="#CCFF00">#####################################################</font></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;하이텔 게임 제작 동호회 ( GO GMA )</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------<BR>### 
+DIRECT X 트루컬러 게임 (2) - 다이렉트 X 에 대한 핸들러 
+설치<BR>------------------------------------------------------------------------<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;작성자 
+: 안영기 ( HiTEL ID : SMgal )</FONT></P>
+<P><FONT face="굴림체"><BR>&nbsp;DX 에 대한 기본적인 초기화는 이미 끝났다. 하지만 하나의 게임을 만들기에<BR>는 턱없이 부족한 
+것이 사실이다. &nbsp;그래서 이번에 다룰 것은 DX 의 예외 핸들<BR>러와 플리핑에 따른 이벤트 핸들러이다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(1) 두번째 프로젝트의 시작</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;먼저 이전에 제작한 DX24Bit1.Dpr 을 읽어 들인다. &nbsp;Save Project As 를 
+선<BR>&nbsp;택하여 저장시에 이름을 DX24Bit2.Dpr 로 바꾼다. &nbsp;Save As 로 MainUnt1.Pas<BR>&nbsp;도 
+MainUnt2.Pas 로 바꾼다. &nbsp;이 절차는 강좌의 버전이 하나 더 &nbsp;올라갔음을<BR>&nbsp;말해주는 것이다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(2) TBasic 클래스에서 추가할 필드와 메소드</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;C 를 하시는 분이라면 '필드와 메소드'라는 말보다는 '멤버와 멤버 함수'라<BR>&nbsp;는 말에 더 익숙할런지는 
+모르겠지만 델파이는 엄연히 파스칼의 객체 지향을<BR>&nbsp;따르므로 용어도 파스칼에서 파생된 것으로 골랐다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;당신이 추가 입력해야 할 새로운 필드와 메소드는 아래와 같다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;type<BR>| &nbsp;&nbsp;&nbsp;&nbsp;TBasic = class(TForm)<BR>|<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure FormMinimize(Sender: TObject);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure 
+FormOnRestore(Sender: TObject);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure FormKeyDown(Sender: 
+TObject; var Key: Word;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shift: TShiftState);<BR>|<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;private<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FPreviousFlipping : boolean;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FFlippingEnabled &nbsp;: boolean;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure 
+ExceptionHandler(Sender : TObject; Error : Exception);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure 
+HandleMessage(var Msg : TMsg; var Handled : boolean);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure 
+IdleHandler(Sender : TObject; var Done : boolean);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure 
+SetFlippingEnabled(Value : boolean);<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;public<BR>|<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure UpdateDisplay(is_commandable : boolean);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property 
+&nbsp;FlippingEnabled : boolean read FFlippingEnabled<BR></FONT></P>
+<P><FONT color=yellow face=굴림체>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write SetFlippingEnabled;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;새로 추가된 부분은 &nbsp;예외 핸들러와 플리핑에 대한 이벤트 핸들러로 구성되<BR>&nbsp;어 
+있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이번에도 각각의 함수의 소스를 추가 시키는 형태로 설명을 하겠다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(3) 플리핑에 관한 함수와 프로퍼티</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;다음으로 다룰 것은 플리핑 관련 함수들이다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;FlippingEnabled : boolean read 
+FFlippingEnabled<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write 
+SetFlippingEnabled;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;위와 같이 FlippingEnabled 는 읽을 때는 FFlippingEnabled 에서 바로 
+읽고<BR>&nbsp;, 쓸 때는 SetFlippingEnabled 함수를 호출하는 property 로 선언되었다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;그럼, 문제의 SetFlippingEnabled 를 보도록 하자.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure TBasic.SetFlippingEnabled(Value : 
+boolean);<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if Value &lt;&gt; FFlippingEnabled then 
+begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FFlippingEnabled := Value;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if FFlippingEnabled 
+then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Application.OnMessage := HandleMessage;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Application.OnIdle := IdleHandler;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end else begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Application.OnMessage := nil;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Application.OnIdle := 
+nil;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;Value 가 현재의 것과 다를 때는 변화를 주는데, 그 대상은 OnMessage 이벤<BR>&nbsp;트와 
+OnIdle 이벤트이다. 이것은 프로그램이 대기하는 동안에 발생하기 ㎖문<BR>&nbsp;에 최적의 플리핑 속도를 내기 위해서는 꼭 필요한 요소이다. 
+&nbsp;Timer 이벤트<BR>&nbsp;도 있지 않느냐 하시겠지만 이것이 더 효율적이라고 필자는 생각한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;Value 가 TRUE 일 때는 두 가지의 이벤트가 모두 지정되어 프로그램은 바쁘<BR>&nbsp;게 플리핑을 
+해댈테고, FALSE 로 지정되어 있다면 두 가지 이벤트는 더 이상<BR>&nbsp;동작을 하지 않도록 한다. &nbsp;이것은 GDI 화면이 필요한 예외 
+메세지등에서 요<BR>&nbsp;긴하게 사용되며 플리핑 때문에 메세지가 금방 가려져 버리는 상황을 방지할<BR>&nbsp;수 있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;위에 지정한 OnMessage 와 OnIdle 에 대한 소스는 다음과 같다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure TBasic.HandleMessage(var Msg : TMsg; 
+var Handled : boolean);<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;UpdateDisplay(TRUE);<BR>| 
+&nbsp;end;<BR>|<BR>| &nbsp;procedure TBasic.IdleHandler(Sender : TObject; var Done : 
+boolean);<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;UpdateDisplay(TRUE);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;Done := FALSE;<BR>| 
+&nbsp;end;<BR>|<BR>| &nbsp;procedure TBasic.UpdateDisplay(is_commandable : boolean);<BR>| 
+&nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;PrimarySurface.Flip(nil,DDFLIP_WAIT);<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;TBasic.IdleHandler 에서 눈 여겨 볼 것은 Done 이라는 레퍼런스 변수를 지<BR>&nbsp;정한 
+것이다. 여기서는 FALSE 로 했는데, 이것은 VCL 이 윈도우 메세지를 기<BR>&nbsp;다리는 것을 막는다고 한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이 두 함수는 모두 공통적으로 &nbsp;UpdateDisplay 라는 화면 갱신 함수를 부르<BR>&nbsp;도록 되어있다. 
+UpdateDisplay 는 보다시피 DirectDrawSurface 의 Flip 함수<BR>&nbsp;를 부르고 있다. &nbsp;Flip 함수야 말로 가장 
+핵심적인 함수 중 하나로써 두개의<BR>&nbsp;화면을 전환하는 역할을 한다. 만약 두개의 화면이 모두 비디오 메모리에 선<BR>&nbsp;언되었다면 그래픽 
+시작 번지 주소를 바꾸는 과정이 될것이며 백버퍼가 비디<BR>&nbsp;오 메모리 부족으로 인해 메모리에 만들어졌다면 &nbsp;Blt 함수와 같은 
+동작으로<BR>&nbsp;비디오 메모리에 고속 복사를 하게 된다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;Flip 함수의 첫 째 인수는 백 버퍼가 primary 가 되지 않을 때 실제로 플립<BR>&nbsp;시킬 
+DirectDrawSurface 의 주소를 넣는 것으로써, &nbsp;이번의 강좌에서는 항상<BR>&nbsp;nil 을 쓴다. 그리고 두 번째 인수는 
+DDFLIP_WAIT 를 넣거나 아무 값을 안넣<BR>&nbsp;는 두 가지의 방법이 있으며 위의 용법처럼 DDFLIP_WAIT 를 넣는다면 
+플리핑<BR>&nbsp;이 될 때까지 대기했다가 플리핑을 시킨다. &nbsp;대기가 되는 이유에는 모니터의<BR>&nbsp;수직 복귀 ( Vertical Retrace ) 
+를 기다리기 때문이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;만약 트리플 버퍼링을 쓴다면 Flip 에 대기를 두지 않은 채로 &nbsp;while 의 조<BR>&nbsp;건으로 수직 복귀 
+시작 유무를 체크하는 GetVerticalBlankStatus 를 두어 대<BR>&nbsp;기하는 동안에 3번째 버퍼에 무언가를 작업한다면 &nbsp;얼마간의 
+이득을 얻을 수<BR>&nbsp;있지 않을까 생각한다.</FONT></P>
+<P><FONT face="굴림체"><BR>------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(4) OnCreate 이벤트에 추가 사항</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;Application.OnException := 
+ExceptionHandler;<BR>| &nbsp;&nbsp;Application.OnMinimize &nbsp;:= FormMinimize;<BR>| 
+&nbsp;&nbsp;Application.OnRestore &nbsp;&nbsp;:= FormOnRestore;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;위의 3 줄을 직접 TBasic.FormCreate(Sender: TObject) 에 추가시키기 
+바란<BR>&nbsp;다. &nbsp;첫 번째 줄은 예외가 발생했을 때 실행시키는 함수를 지정한 것이고 나<BR>&nbsp;머지 두 줄은 &nbsp;폼이 최소화되었을 때와 다시 
+복구 되었을 때에 대한 이벤트<BR>&nbsp;로써 직접적으로 지원하는 폼의 이벤트는 아니기 때문에 이렇게 핸들러 형식<BR>&nbsp;으로 선언하게 되었다. 
+이렇게 하는 이유는, DX 의 풀 화면이 최소화 된다는<BR>&nbsp;것은 윈도우 처음의 모드로 돌아간다는 의미와 함께 DX 에서 선언한 모든 
+화<BR>&nbsp;상 공간의 상실을 의미하기 때문에 이것을 제어할 무언가가 요구되어서이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;그렇다면 위에 언급된 FormMinimize 와 FormOnRestore 를 짚고 넘어가는 것<BR>&nbsp;이 
+매너일테니 소스를 살펴 보기로 하자.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure TBasic.FormMinimize(Sender: 
+TObject);<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;FPreviousFlipping := FlippingEnabled;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;FlippingEnabled &nbsp;&nbsp;:= FALSE;<BR>| &nbsp;end;<BR>|<BR>| &nbsp;procedure 
+TBasic.FormOnRestore(Sender: TObject);<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;FlippingEnabled &nbsp;&nbsp;:= 
+FPreviousFlipping;<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;폼이 최소화 되면 이전의 플리핑 상태를 기억하고 &nbsp;플리핑을 불가능하게 한<BR>&nbsp;다. 마찬가지로 폼이 다시 
+복구가 되면 기억해 두었던 플리핑 상태로 세팅한<BR>&nbsp;다. 왜 이렇게 번거로운 과정을 거치는가 하면 &nbsp;폼이 최소화되었을때는 실제<BR>&nbsp;로 
+게임을 안하는 것이기 때문에 &nbsp;게임에서 오는 부하를 &nbsp;최대한으로 줄여서<BR>&nbsp;다른 애플리케이션의 수행 소도를 높이자는데 그 취지가 
+있다.<BR>&nbsp;&nbsp;또한, 프로그램이 방대해지면 여기에다가 다른 많은 기능을 넣는 것이 가능<BR>&nbsp;하다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(5) OnKeyDown 이벤트 만들기</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;폼의 Object Inspector 의 Events 의 OnKeyDown 이벤트를 더블 
+클릭한다.<BR>&nbsp;&nbsp;그리고 아래의 소스를 입력한다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure TBasic.FormKeyDown(Sender: TObject; 
+var Key: Word;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shift: 
+TShiftState);<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if ssAlt in Shift then Key := 0;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if 
+key = VK_ESCAPE then Close;<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;첫째 줄은 Alt+F4 로 종료하는 것을 막는 루틴이다. &nbsp;Alt 로 지정되는 대부<BR>&nbsp;분의 시스템 키를 
+막는다.<BR>&nbsp;&nbsp;( 하지만 Alt+Tab 과 Ctrl+Alt+Del 은 듣지 않는다. )<BR>&nbsp;&nbsp;두번째의 줄은 ESC 키를 눌렀을 때 종료가 
+되도록 바꾸어 놓는다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(6) 예외 핸들러 만들기</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;위의 OnCreate 에서 언급한 Application.OnException := 
+ExceptionHandler;<BR>&nbsp;이라는 구문의 의문을풀때가 왔다. 이것은 Raise 로 프로그래머가 발생시키<BR>&nbsp;는 예외와 델파이 
+자체에서 에러 발생시에 생성되는 예외를 처리하게 된다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;그럼 소스를 먼저 제시하고 설명에 들어가겠다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure TBasic.ExceptionHandler(Sender : 
+TObject; Error : Exception);<BR>| &nbsp;var<BR>| &nbsp;&nbsp;&nbsp;&nbsp;WasEnabled : boolean;<BR>| 
+&nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;MessageBeep(0);<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;WasEnabled &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= 
+FlippingEnabled;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;FlippingEnabled := FALSE;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if 
+Assigned(DirectDraw) then DirectDraw.FlipToGDISurface;<BR>|<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;MessageDlg(Error.Message,mtError,[mbOK],0);<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;FlippingEnabled := 
+WasEnabled;<BR>|<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;예외 핸들러의 원형은 처음부터 정의되어진 것으로 Error 에는 예외의 정보<BR>&nbsp;가 들어가 
+있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;먼저 윈도우 디폴트 음을 발생 시킨 후 ( 보통 '삑-' 하는 음 ) &nbsp;현재의 플<BR>&nbsp;리핑 상태를 
+저장하고 &nbsp;플리핑이 불가능하게 한다. &nbsp;만약 DirectDraw 객체가<BR>&nbsp;초기화 되어 있다면 FlipToGDISurface 를 실행한다. 
+&nbsp;초기화 검사를 하는 이<BR>&nbsp;유는, 예외가 DirectDraw 객체가 생성되기 전에 발생할 수도 있기 
+때문이다.<BR>&nbsp;FlipToGDISurface 는 실행 직전의 GDI 화면을 Primary 에 복사한다. &nbsp;이것을<BR>&nbsp;사용해야만 
+MessageDlg 를 정확하게 유저가 볼 수 있게 된다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(7) OnShow 와 OnDestroy 이벤트에 추가 사항</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;TBasic.FormShow 에서 마지막 줄에</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FlippingEnabled := TRUE;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;를 넣는다. &nbsp;이 과정이 있고 나서야 비로소 플리핑이 시작되고 게임 화면을<BR>&nbsp;유저가 볼 수 있게 
+된다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;TBasic.FormDestroy 에서는 다음의 두줄이 추가된다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FlippingEnabled := FALSE; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 제일 앞줄에 
+넣는다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Application.OnException := nil; &nbsp;&nbsp;// 제일 뒤쪽에 넣는다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;폼이 OnDestroy 메세지를 받는다는 의미가 &nbsp;게임의 종료를 의미하므로 제일<BR>&nbsp;첫 줄에 플리핑을 
+없애는 메세지를 넣어야 하는 것이다.<BR>&nbsp;&nbsp;그리고 DirectDraw 객체까지 모두 없어지고 난 최후에 넣는 코드가 바로 둘<BR>&nbsp;째 줄에 
+있는 예외 핸들러 제거이다.</FONT></P>
+<P>&nbsp;</P><P><font color="#CCFF00">#####################################################</font></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;하이텔 게임 제작 동호회 ( GO GMA )</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------<BR>### 
+DIRECT X 트루컬러 게임 (3) - 다이렉트 X SURFACELOST 에 대한 
+대비<BR>------------------------------------------------------------------------<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;작성자 
+: 안영기 ( HiTEL ID : SMgal )</FONT></P>
+<P><FONT face="굴림체"><BR>&nbsp;이제 DX 를 어느 정도 구축하고 간단한 게임을 만들기에도 충분한 코드가 만<BR>들어져 있는 
+상태이다. 하지만 DX 는 이 정도로 초기화를 끝낼 정도로 만만하<BR>지 않은 것이 사실이다. &nbsp;그래서 이번에는 어떠한 형태로든 사라져 버린 
+표면<BR>을 다시 복구하는 코드를 넣는 것이 주된 관건이다. &nbsp;또한 기본적으로 표면을<BR>고정하여 직접 메모리 주소를 얻을 수 있는 함수를 
+만들어 보겠다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;일반 윈도우 게임 제작에 익숙한 분이라면 &nbsp;예상치 못한 유저의 행동으로 인<BR>해 화면이 일부 또는 전부가 
+지워지는 현상을 처음에 경험해보게 된다. GDI로<BR>그려진 화면은 자동 복구 기능이 없으므로 항상 윈도우의 WM_PAINT 를 
+받아서<BR>다시 그림을 그려줬던 기억을 가지고 계신 분이 많으리라 생각한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;DX 는 기본적으로 창모드에서 클리퍼 객체를 지원하므로 이런 점에선 문제가<BR>없지만 한 가지 중대한 문제를 
+안고 있다. &nbsp;태스크 전환등으로 화면의 모드가<BR>바뀌어 버리게되면 &nbsp;DX 에서 할당한 표면은 &nbsp;모두 메모리를 잃어 버리게 되는<BR>것이 
+그것이다. &nbsp;아예 작업 전환 키인 Alt+Tab 같은것이 먹지 않도록 하는 방<BR>법이 VC++ 게임에는 주로 사용되지만, 피하는게 능사는 
+아니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;만약 DX 가 표면을 잃어 버렸는데도 불구하고 Blt 함수등을 사용하려 한다면<BR>DX 는 에러나 예외 
+대신에 DDERROR_SURFACELOST 를 리턴하게 되고 프로그래머<BR>는 대부분의 DX 함수에다가 DDERROR_SURFACELOST 에 
+대한 대비를 해야한다.<BR>여기서 대비라고 하는 것은, &nbsp;DX 함수 실행시의 리턴에 저 메세지가 리턴되면<BR>표면을 복구 시키고 잃어버린 
+이미지 버퍼를 다시 읽는 작업을 시키면 된다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(1) 세번째 프로젝트의 시작</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;먼저 이전에 제작한 DX24Bit2.Dpr 을 읽어 들인다. &nbsp;Save Project As 를 
+선<BR>&nbsp;택하여 저장시에 이름을 DX24Bit3.Dpr 로 바꾼다. &nbsp;Save As 로 MainUnt2.Pas<BR>&nbsp;도 
+MainUnt3.Pas 로 바꾼다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(2) TBasic 클래스에서 추가할 필드와 메소드</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;당신이 추가 입력해야 할 새로운 필드와 메소드는 아래와 같다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;type<BR>| &nbsp;&nbsp;&nbsp;&nbsp;TBasic = class(TForm)<BR>|<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure FormPaint(Sender: TObject);<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;private<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIsLocked &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: boolean;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;function &nbsp;RestoreSurfaces : 
+HResult;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure DrawSurfaces;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;public<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LockDesc &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: TDDSurfaceDesc;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure 
+DrawScreen;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;function &nbsp;MakeItSo(DDResult : HResult) : boolean;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure LockBackGround;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure UnlockBackGround;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;새로 추가된 부분은 화상 복구 시키는 부분과 화면을 고정하고 해제하는 두<BR>&nbsp;부분으로 되어 
+있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이번에도 역시 각각의 함수의 소스를 추가 시키는 형태로 설명을 하겠다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(3) 화상 복구에 대한 함수들</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;앞에서도 언급했듯이 대부분의 DX 함수들은 &nbsp;항상 표면을 잃어 버리지 않았<BR>&nbsp;는지를 검사해야 한다. ( 
+&nbsp;더 자세히 말하면 DDERROR_SURFACELOST 를 리턴할<BR>&nbsp;수 있는 모든 함수가 대상이 된다. )</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;소스로 예를 들자면 다음과 같은 형식이 될 것이다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;if PrimarySurface.Flip(nil,DDFLIP_WAIT) = 
+DDERROR_SURFACELOST then<BR>| &nbsp;&nbsp;&nbsp;&nbsp;복구하는 코드();</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;하지만 표면에 대한 DX 함수마다 이런 복구 코드를 검사하고 표면을 잃었을<BR>&nbsp;때는 표면을 살려내게 
+만든다면 이것은 여간의 번거로운 작업이 아닐 것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;그래서 만들어진 것이 다음에 나오는 MakeItSo 이다. 이 함수의 이름은 '델<BR>&nbsp;파이 2 언리쉬드' 
+라는 책의 저자가 지은 그대로사용했다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;function TBasic.MakeItSo(DDResult : HResult) : 
+boolean;<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;case DDResult of<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DD_OK &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 
+Result := TRUE;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDERR_SURFACELOST : Result := RestoreSurfaces 
+&lt;&gt; DD_OK;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Result := DDResult &lt;&gt; 
+DDERR_WASSTILLDRAWING;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;MakeItSo 는 함수의 리턴 값을 인수로 받아서 그것이 DDERR_SURFACELOST 일<BR>&nbsp;때는 
+RestoreSurfaces 를 호출하여 화상을 복구하고, DDERR_WASSTILLDRAWING<BR>&nbsp;만 아니라면 항상 TRUE 를 리턴 
+하도록 되어 있다. &nbsp;만약 화상을 복구하라는<BR>&nbsp;메세지를 받고 성공적으로 복구 시켰다면 FALSE 가 리턴된다는 것을 잘 알아<BR>&nbsp;두어야 
+한다. 이것은 조금있다가 다시 설명하기로 하고 우선 RestoreSurface<BR>&nbsp;라는 함수부터 살펴보자.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;function TBasic.RestoreSurfaces : 
+HResult;<BR>| &nbsp;var<BR>| &nbsp;&nbsp;&nbsp;&nbsp;i : integer;<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;Result := 
+PrimarySurface.Restore;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if Result = DD_OK then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for i 
+:= 1 to MAX_IMAGE_SURFACE do begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Result := 
+Image[i].Restore;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Result &lt;&gt; DD_OK then begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Result = DD_OK 
+then DrawSurfaces;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;end;<BR>|<BR>| &nbsp;procedure 
+TBasic.DrawSurfaces;<BR>| &nbsp;var<BR>| &nbsp;&nbsp;&nbsp;&nbsp;i : integer;<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;for i 
+:= 1 to MAX_IMAGE_SURFACE do begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDReloadBitmap(Image[i],GetBitmapName(i));<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| 
+&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;MakeItSo 에서 불려진 RestoreSurface 는 Primary 를 복구하고 나머지 이미<BR>&nbsp;지 
+버퍼들도 복구 시킨다. &nbsp;그리고 이것이 모두 성공적이었다면 DrawSurface<BR>&nbsp;를 호출하여 데이타를 잃어 버린 이미지 버퍼를 다시 
+채운다.<BR>&nbsp;&nbsp;DDReloadBitmap 은 DDUtils.Pas 에 포함되어 있는 함수로써 &nbsp;비트맵을 이미<BR>&nbsp;지 버퍼에 올리는 역할을 
+한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;그러면 여기에서 새롭게 등장한 DX 함수인 Restore 를 살펴보자.<BR>&nbsp;&nbsp;이 함수는 해제되어 버린 
+DirectDrawSurface 객체에 대해 &nbsp;표면을 복구하는<BR>&nbsp;역할을 한다. PrimarySurface 는 처음에 복합 화상 표면으로 
+정의 되었기 때<BR>&nbsp;문에 PrimarySurface.Restore 만 해주면 나머지 연관된 백 버퍼들도 같이 복<BR>&nbsp;구가 된다. ( 복합 
+화상 표면의 장점이다. )</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;나머지는 특별히 성명할 부분은 없다. 더 자세하게 surface lost 에 대해서<BR>&nbsp;알고 싶다면 
+Help 파일을 부르면 된다.</FONT></P>
+<P><FONT face="굴림체"><BR>&nbsp;&nbsp;그렇다면 이번에는 MakeItSo 가 도대체 어떻게 사용되는지를 알아보자.<BR>&nbsp;위에서도 말했듯이 
+&nbsp;MakeItSo(PrimarySurface.Flip(nil,DDFLIP_WAIT)) 를 호<BR>&nbsp;출했을 때, 만약 표면을 잃어 버린 상태라면 
+플리핑은 행해지지 않고 MakeIt<BR>&nbsp;So 에서 화상 복구를 위한 작업만을 하게 된다. 그대신 FALSE 가 리턴된다고<BR>&nbsp;말했었다. 
+&nbsp;이럴 때는 실제로 MakeItSo 가 끝나고 나서 플리핑 함수를 한 번<BR>&nbsp;더 실행해줘야 실제로 플리핑이 일어나게 된다. 그래서 우리는 
+앞으로 이 함<BR>&nbsp;수를 이런 식으로만 사용하기로 한다 !!</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;&nbsp;&nbsp;repeat<BR>| &nbsp;&nbsp;&nbsp;&nbsp;until 
+MakeItSo(PrimarySurface.Flip(nil,DDFLIP_WAIT));</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이렇게 하면 정확한 플리핑이 일어나야지만 &nbsp;repeat until 루프를 탈출하게<BR>&nbsp;되는 것이다. 
+경우를 따져보자.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;1&gt; MakeItSo 가 TRUE 를 리턴</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 무조건 한번만 실행하고 루프를 나온다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MakeItSo 내의 함수가 성공했을 때, 
+화상 복구가 실패했을 때, 이외에<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;에러가 발생했을 때</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;2&gt; &nbsp;MakeItSo 가 FALSE 를 리턴</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 다시 MakeItSo 내의 함수를 실행한다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;화상 복구가 성공했을 때,DX 
+부하 때문에 지연될 때</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;화상 복구가 실패하거나 그 이외 다른 에러에 대해서 TRUE 를 발생 시켜 루<BR>&nbsp;프에서 빼내는 이유는 
+무한 루프를 방지하기 위해서이다. &nbsp;반대로 화상 복구<BR>&nbsp;가 성공했을 때와 DX 지연에 대해 FALSE 를 발생 하는 것도, 
+&nbsp;MakeItSo 내의<BR>&nbsp;함수를 한 번 더 실행 시키기 위해서이다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(4) OnPaint 이벤트 설정</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;어떠한 이유에 있어라도 윈도우 화면의 갱신이 필요한 부분이 생길 때는 이<BR>&nbsp;이벤트가 폼에 알려지게 
+된다. 이미 우리는 화면을 다시 읽어 들이는 루틴인<BR>&nbsp;DrawSurfaces 를 만들어 두었다. &nbsp;그래서 이 이벤트에는 
+&nbsp;DirectDraw 객체가<BR>&nbsp;유효하다면 DrawSurfaces 를 호출하게만 해두면 모든 것이 끝난다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure TBasic.FormPaint(Sender: 
+TObject);<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if Assigned(DirectDraw) then<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DrawSurfaces;<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(5) 화면 고정과 해제에 대한 함수</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이 함수들은 도스 때처럼 직접 화면에 대한 메모리 포인터를 얻어 사용자의<BR>&nbsp;임의대로 조작을 할 수 있게 
+한다. &nbsp;자신만의 이미지 테크닉을 발휘할 수 있<BR>&nbsp;는 좋은 방법이긴 하지만 &nbsp;그래픽 카드에 따른 하드웨어 가속 기능을 사용할<BR>&nbsp;수 
+없다는 단점을 안고있다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure TBasic.LockBackGround;<BR>| 
+&nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if not FIsLocked then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LockDesc.dwSize := 
+SizeOf(TDDSurfaceDesc);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;until 
+MakeItSo(BackBuffer.Lock(Rect(0,0,MAX_X_LINE,MAX_Y_LINE),<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LockDesc,DDLOCK_SURFACEMEMORYPTR +<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDLOCK_WAIT, 0));<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIsLocked := TRUE;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;end;<BR>|<BR>| &nbsp;procedure TBasic.UnlockBackGround;<BR>| 
+&nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if FIsLocked then begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BackBuffer.UnLock(LockDesc.lpSurface);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIsLocked := 
+FALSE;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;위의 두 함수는 표면을 고정하고 해제하는 함수이다.<BR>&nbsp;TBasic.LockBackGround 부터 
+살펴보자. 이번 강좌에 새로 만든 private 변수<BR>&nbsp;인 FIsLocked 는 표면이 고정되었을 ㎖만 TRUE 를 가진다. 따라서 먼저 
+이미<BR>&nbsp;고정되었는 가를 확인하여, 그렇지 않다면 표면 고정 작업을 시작하게 된다.<BR>&nbsp;LockDesc 는 Lock 함수를 위해 따로 
+만든 TDDSurfaceDesc 변수로서, Lock 에<BR>&nbsp;서 돌아오는 리턴 값이 나중에 중요하게 쓰이기 때문에 &nbsp;별도로 public 
+선언<BR>&nbsp;을 한것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;중요한 값이란, LockDesc.lpSurface 와 LockDesc.lPitch 를 말하는 
+것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;LockDesc.lpSurface 는 우리가 알고 싶어하던 표면 메모리의 시작번지, &nbsp;즉<BR>&nbsp;(0,0) 
+의 주소로써, 도스때의 A000:0000 주소라고 생각하면 된다. 물론 변수<BR>&nbsp;앞에 lp 가 붙은 걸로 봐서 long pointer 인 4 
+bytes 포인터 변수이다. 그래<BR>&nbsp;서 DWORD 로 선언한 값으로 LockDesc.lpSurface 를 받을 수 
+있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;LockDesc.lPitch 는 표면의 논리적 가로 폭이다. 도스에서 베사를 다루어보<BR>&nbsp;신 분이라면 
+640 의 가로 길이를 논리폭만 1024 로 늘여 뱅크 전환의 계산을<BR>&nbsp;간단하게 하려 하신 분이 있을런자 모르겠다. 이렇게 하면 실제의 
+화면의 사<BR>&nbsp;이즈는 가로 640 이지만 메모리 상으로는 가로가 1024 가 된다. &nbsp;따라서 640<BR>&nbsp;* 480 * 256 color 
+에서 (0,0) 과 (0,1) 의 번지 차이가 640 이 아닌 1024가<BR>&nbsp;되었을 것이다. LockDesc.lPitch 역시 이런 
+개념이다. 일부 카드의 경우에는<BR>&nbsp;DX 스스로가 가로가 640 이라도 1024 로 내부 논리폭을 잡아준다. 그래서 이<BR>&nbsp;변수에는 ( 
+가로의 논리폭 * byte per pixel ) 이 들어가게 된다. 그 때문에<BR>&nbsp;(0,0) 과 (0,1) 의 번지 차이는 lPitch 만큼 
+생기게 된다. 이해가 되신 분이<BR>&nbsp;라면 지금쯤, &quot; 아하... 그럼 y 좌표 하나 늘어날때마다 lPitch 를 더해주면<BR>&nbsp;되는군.. 
+&quot; 이라고 생각하거나, 더 나가서 &quot; 음... 그럼 (x,y) 에 대한 번지<BR>&nbsp;계산은 ( longint(LockDesc.lpSurface) 
++ y * LockDesc.lPitch + x * 3 ) 가<BR>&nbsp;되겠군... &quot; 하고 생각할 것이다. &nbsp;그래서 도스랑 같은 개념이라고 할 수 
+있<BR>&nbsp;다. 게다가 비디오 카드에 상관없이 뱅크가 필요 없는 선형 메모리로 애뮬레<BR>&nbsp;이션 하기 때문에 프로그래머로선 반가운 일이다. 
+&nbsp;( 하지만 잘 짜여진 도스<BR>&nbsp;에서 보단 어쩔 수 없이 느리게 되겠지만.... )</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(6) 추가 사항에 대한 이전 이벤트 개선</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;1) TBasic.FormShow 에서..</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;여기서는 FlippingEnabled := TRUE; &nbsp;바로 앞에 몇 줄의 코드를 넣어 
+주<BR>&nbsp;&nbsp;&nbsp;&nbsp;어야 한다. 이 코드는 백 버퍼를 지우는 역할을 하는데 일부 그래픽 카드<BR>&nbsp;&nbsp;&nbsp;&nbsp;에서는 초기화 때 백 버퍼를 지우지 않는 
+것이 발견되었기 때문이다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;( 예를 들면 ATI MACH 64 .. )</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;&nbsp;&nbsp;LockBackGround;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;pVideo := 
+PDWORD(LockDesc.lpSurface);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;for i := 0 to pred(MAX_Y_LINE) do 
+begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FillChar(pVideo^,MAX_X_LINE * BPP,0);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inc(longint(pVideo),LockDesc.lPitch);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;UnlockBackGround;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;만약에 이 코드가 문제를 일으킨다면 삭제 해주어도 좋다. &nbsp;실제 게임을<BR>&nbsp;&nbsp;&nbsp;&nbsp;만드려면 어짜피 
+백버퍼를 지우는 과정이 한 번 이상 들어가기 때문이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;2) TBasic.UpdateDisplay 에서..</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;여기는 플리핑 함수에 대해 MakeItSo 를 넣어 주어야 한다. 용법은 위에<BR>&nbsp;&nbsp;&nbsp;&nbsp;서 언급한 
+그대로이며, &nbsp;그 앞에는 실제 그림을 그리는 DrawScreen 이 코<BR>&nbsp;&nbsp;&nbsp;&nbsp;드에 추가되었다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure TBasic.UpdateDisplay(is_commandable 
+: boolean);<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;DrawScreen;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;repeat<BR>| &nbsp;&nbsp;&nbsp;&nbsp;until 
+MakeItSo(PrimarySurface.Flip(nil,DDFLIP_WAIT));<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;현재의 DrawScreen 은 화면 ( 300,200 ) 에 녹색의 점 하나를 달랑 
+찍는<BR>&nbsp;&nbsp;&nbsp;&nbsp;허무한 결과를 낳게 된다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure TBasic.DrawScreen;<BR>| &nbsp;begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;LockBackGround;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;PDWORD(DWORD(LockDesc.lpSurface)+LockDesc.lPitch*200+300*BPP)^<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= 
+$0000FF00;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;UnlockBackGround;<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lock 을 사용하여 점을 찍는 부분은 &nbsp;나중에 다시 자세하게 다루게 되니<BR>&nbsp;&nbsp;&nbsp;&nbsp;지금은 
+그러려니.. 하며 넘어가기 바란다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;3) 예외 핸들러의 갱신</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;이제 Lock 이라는 개념이 하나 더 생겼으니 표면이 Lock 되어 있는 상황<BR>&nbsp;&nbsp;&nbsp;&nbsp;에서도 
+플리핑처럼 같은 과정을 해주어야 한다. 만약 표면이 고정되어 있<BR>&nbsp;&nbsp;&nbsp;&nbsp;는 상태에서 &nbsp;GDI 의 그래픽 함수나 DX 의 Blt 함수류를 
+사용하게 된다면<BR>&nbsp;&nbsp;&nbsp;&nbsp;당장 다운이 되어 버리는결과가 된다. &nbsp;그래서 항상 GDI 를 표시하기 위<BR>&nbsp;&nbsp;&nbsp;&nbsp;해서 표면의 Lock 을 
+해제하여야 하기 때문이다. 이 부분도 역시 Lock 을<BR>&nbsp;&nbsp;&nbsp;&nbsp;다루는 부분에서 더 자세히 언급하도록하겠다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure TBasic.ExceptionHandler(Sender : 
+TObject; Error : Exception);<BR>| &nbsp;var<BR>| &nbsp;&nbsp;&nbsp;&nbsp;WasEnabled : boolean;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;WasLocked &nbsp;: boolean;<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;{ 예외 메세지를 보이기 전에 GDI로 전환 }<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;MessageBeep(0);<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;WasEnabled &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= FlippingEnabled;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;FlippingEnabled := FALSE;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;WasLocked &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= FIsLocked;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;if WasLocked then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UnlockBackGround;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if Assigned(DirectDraw) then 
+DirectDraw.FlipToGDISurface;<BR>|<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;MessageDlg(Error.Message,mtError,[mbOK],0);<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if WasLocked then 
+begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LockBackGround;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;FlippingEnabled := 
+WasEnabled;<BR>|<BR>| &nbsp;end;</FONT></P>
+<P>&nbsp;</P><P><font color="#CCFF00">#####################################################</font></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;하이텔 게임 제작 동호회 ( GO GMA )</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------<BR>### 
+DIRECT X 트루컬러 게임 (4) - 다이렉트 X 기본적인 이미지 
+찍기<BR>------------------------------------------------------------------------<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;작성자 
+: 안영기 ( HiTEL ID : SMgal )</FONT></P>
+<P><FONT face="굴림체"><BR>&nbsp;DX 에 대한 모든 초기화는 끝났다.<BR>&nbsp;아마도 여기까지의 부분은 트루컬러와는 상관 없는 부분이 
+대부분이었다. 그<BR>리고 &nbsp;누구나 없이 DX 를 쓰고자 하는 사람이라면 거의 유사한 방법으로 초기<BR>화를 하리라고 
+생각한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;여기서부터는 게임의 독특한 게임 기법을 발휘할 기회가 생길 것이다. 이 강<BR>좌에서는 DX 에서 지원하는 
+메소드를 이용해서 화면을 찍어본다. &nbsp;DX 의 내장<BR>메소드는 그래픽 카드에 따른 하드웨어 가속 기능을 지원하기 때문에 잘만 
+사<BR>용한다면 도스 부럽지 않은 속도가 가능하다고 본다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;이제부터는 나머지 모든 소스는 그대로 둔 채, DrawScreen 만을 수정하여 사<BR>용하는 방법을 쓸 
+것이다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(1) 네번째 프로젝트의 시작</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;먼저 이전에 제작한 DX24Bit3.Dpr 을 읽어 들인다. &nbsp;Save Project As 를 
+선<BR>&nbsp;택하여 저장시에 이름을 DX24Bit4.Dpr 로 바꾼다. &nbsp;Save As 로 MainUnt3.Pas<BR>&nbsp;도 
+MainUnt4.Pas 로 바꾼다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(2) TBasic 클래스에서 추가할 필드와 메소드</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;없다! ( 냉정하군.. )<BR>&nbsp;조금 전에도 말했지만 이제는 DrawScreen 만을 개조하여 사용할 
+것이기 때문<BR>&nbsp;이다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(3) 우리가 화면에 찍을 첫번째 이미지</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;자료실에 함께 올라온 테스트용 프로그램에는 Test1.Bmp 와 Test2.Bmp 라는<BR>&nbsp;예제 비트맵이 
+있다. 우리는 이제부터 이 비트맵으로 모든 것을 처리하게 될<BR>&nbsp;것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;참고로 말해 두자면, Test1.Bmp 는 필자가 만들었던 게임인 대변 파이터 등<BR>&nbsp;에 나왔던 
+스프라이트들이 있고 &nbsp;Test2.Bmp 에는 역시 필자가 만들었던 대변<BR>&nbsp;파이터의 배경 화면이 들어 있다. ( 이 그림들은 모두 공동 
+제작자였던 네토<BR>&nbsp;( 박성진 : NeoTouch )가 제작한 그림들이다. )</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이전에 DrawScreen 의 코드는 모두 삭제다음의 것으로 교체한다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure TBasic.DrawScreen;<BR>| &nbsp;begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;repeat<BR>| &nbsp;&nbsp;&nbsp;&nbsp;until 
+MakeItSo(BackBuffer.BltFast(random(600),random(400),Image[1],<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rect(0,26,52,95),DDBLTFAST_SRCCOLORKEY));<BR>| 
+&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;설명은 뒤로 미루고 우선 실행부터 시켜보자. 아마 '대변 파이터'의 네토가<BR>&nbsp;화면에 랜덤으로 찍힐 
+것이다. 여기서 주목해야 할 재미있는 점이라면, 비디<BR>&nbsp;오 램이 1M 인 카드와 2M 인 카드가 각각 다른 결과를 나타낸다는 
+것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;한 화면을 표시할 수 있는 메모리부터 우선 계산해 보자. 640 * 480 * 3 을<BR>&nbsp;하면 
+921,600 bytes 가 필요하다는 계산이 나온다. &nbsp;1024 로 나누어 보면 결<BR>&nbsp;국 900 KB 가 든다는 얘기이다. 그러므로 
+비디오 램 용량이 1M 라면 primary<BR>&nbsp;는 비디오 메모리가 되지만 &nbsp;백 버퍼는 비디오 메모리 부족으로 일반 RAM 영<BR>&nbsp;역에 
+생성이 되고 결국 Flip 이라는 과정은 백 버퍼를 primary 로 복사를 하<BR>&nbsp;는 것이 된다. 따라서 네토의 이미지는 도스 때 가상 
+버퍼를 쓰는 것처럼 이<BR>&nbsp;미지가 화면에 추가 되듯이 찍히게 된다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;하지만 비디오 램이 2M 이상이라면 900 KB 짜리 &nbsp;두 개의 표면이 모두 비디<BR>&nbsp;오 램 상에 확보가 
+되고 Flip 이라는 과정은 &nbsp;그래픽 시작 주소를 바꾸어 주<BR>&nbsp;는 형식이 되어 두 화면이 각각 이미지가 찍히며 빠른 전환이 일어나는 
+것처<BR>&nbsp;럼 보이게 된다. &nbsp;( 필자도 처음엔 이론만으로 알고 있던 것이라 직접 딴 그<BR>&nbsp;래픽 카드에서 눈으로 확인 하고서야 이 글을 
+자신있게 적을 수 있었다. )</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;그럼.. 처음 나온 DX 함수인 BltFast 에 대해서 설명하겠다.<BR>&nbsp;이 함수는 복사할 이미지의 
+투명색 또는 복사되는 곳의 투명색에 따라 &nbsp;블록<BR>&nbsp;전송을 행하는 함수이다. 그리고 항상 1 : 1 사이즈로 전송하는 점과 클리핑<BR>&nbsp;이 
+되지 않는다는 점이 Blt 함수와 크게 다른 점이며 이로 인해 얻는 속도의<BR>&nbsp;이득은 10% 정도라고 알려져 있다. 하지만 하드웨어 가속이 
+사용될 경우에는<BR>&nbsp;두 가지의 속도차이는 없다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;함수의 원형은 &nbsp;function &nbsp;BltFast(DWORD, DWORD, var 
+IDirectDrawSurface,<BR>&nbsp;TRect, DWORD) : HResult; 이다. 처음의 DWORD 는 찍혀질 (x,y) 좌표이고 
+다<BR>&nbsp;음의 인수는 원본 이미지가 있는 표면, 그 다음은 원본 이미지의 TRect 형의<BR>&nbsp;사각 구간, 그리고 마지막의 DWORD 는 
+전송하는 타입을 설정하는 부분이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&lt; 전송 타입 &gt;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDBLTFAST_DESTCOLORKEY<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 전송될 곳의 투명색을 
+적용한다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDBLTFAST_NOCOLORKEY<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 투명색 없이 그냥 
+찍는다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDBLTFAST_SRCCOLORKEY<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 전송하는 곳의 투명색을 
+적용한다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDBLTFAST_WAIT<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 만약 함수에서 에러 또는 대기가 발생하더라도 계속 
+실행한다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(4) 우리가 화면에 찍을 두번째 이미지</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;우리가 처음 찍은 이미지는 그래픽 카드의 메모리에 따른 Flip 방법을 나타<BR>&nbsp;내 주는 수준에 
+불과했다. 그리고 기본적인 블록 전송 함수인 BltFast 에 대<BR>&nbsp;해서도 다루어 보았다. &nbsp;이번에 찍을 이미지 역시 별로 새로울 게 없는 
+것으<BR>&nbsp;로서, Blt 함수로 이미지를 확대해 보는 예제를 만들어 보겠다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure TBasic.DrawScreen;<BR>| &nbsp;begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;repeat<BR>| &nbsp;&nbsp;&nbsp;&nbsp;until MakeItSo(BackBuffer.Blt(<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rect(0,0,random(52*3)+52,random(95*3)+95),Image[1],<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rect(0,26,52,95),DDBLT_KEYSRC,PDDBLTFX(nil)^));<BR>| 
+&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이전의 DrawScreen 함수를 이렇게 다시 바꾸어 써 보자. &nbsp;이것을 실행 시키<BR>&nbsp;면 &nbsp;네토의 
+그림이 가로 세로 불규칙한 형태로 늘어나서 찍힐 것이다. &nbsp;이런<BR>&nbsp;기능은 BltFast 에는 없었다. &nbsp;그래서 Blt 함수에서는 
+BltFast 가 찍힐 곳의<BR>&nbsp;(x,y) 좌표만을 넘겨 주는 것에 반해 이 함수는 가로 세로 길이 정보까지 담<BR>&nbsp;을 수 있는 
+TRect 형으로 찍힐 곳의 좌표를 넘겨 주게 된다. &nbsp;그러면 알아서<BR>&nbsp;이미지를 원래 것에서 늘이거나 줄여서 그 사각형에 자동으로 맞추어 
+준다.<BR>&nbsp;BltFast 에서 DDBLTFAST_SRCCOLORKEY 에 해당하는 것은 DDBLT_KEYSRC 이다.<BR>&nbsp;찍힐 곳의 
+투명색을 적용하려면 DDBLT_KEYDEST 를 사용하면 된다. Blt 의 전<BR>&nbsp;송 타입 설정은 꽤나 많으니 각자의 책이나 Help 를 
+참고하기 바란다. &nbsp;그리<BR>&nbsp;고 마지막에 넣어주는 인수는 TDDBLTFX 형 변수의 주소를 넘겨주는 것이지만<BR>&nbsp;우리는 이 정보를 필요로 
+하지 않으므로 nil 이 담겨진 변수를 넣어야 한다.<BR>&nbsp;하지만 바로 nil 을 쓰면 &nbsp;파스칼의 강력한 타입 체크 덕분에 에러를 
+내고만<BR>&nbsp;다. &nbsp;그래서 편법을 동원하여 nil 을 TDDBLTFX 형의 포인터라고 속인 후 '^'<BR>&nbsp;로 변수가 있는 것처럼 만들어 
+낸다. 필자는 주로 이런 방법으로 컴파일러를<BR>&nbsp;속이지만(?) 이것이 정확한 방법인지는 알 수가 없다. 최소한 에러는 안나니<BR>&nbsp;문제는 
+없을 듯 싶다.</FONT></P>
+<P>&nbsp;</P><P><font color="#CCFF00">#####################################################</font></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;하이텔 게임 제작 동호회 ( GO GMA )</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------<BR>### 
+DIRECT X 트루컬러 게임 (5) - 게임을 위한 기본 클래스 
+구성(1)<BR>------------------------------------------------------------------------<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;작성자 
+: 안영기 ( HiTEL ID : SMgal )</FONT></P>
+<P><FONT face="굴림체"><BR>&nbsp;이제까지 다룬 것은 DX 에서 기본적로 하여야 할 모든 부분을 모두 언급했다<BR>고 본다. &nbsp;( 물론 
+수박 겉핥기 식으로 넘어갔지만 자세한 공부에 대한 책임은<BR>여러분들에게 있는 것이다. )</FONT></P>
+<P><FONT face="굴림체">&nbsp;이번의 강좌는 원래의 강의 계획에도 없었고 &nbsp;강의 취지에도 맞지 않는 부분<BR>이지만 다음 부분 강의로 
+넘어가기 위해서는 꼭 있어야 한다고 생각하기에 이<BR>렇게 '5장' 이라는 부분으로 할당을 했다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;다름이 아니라 제목과 같이 '게임 클래스' 구성이다. &nbsp;도스때나 &nbsp;윈도우때나<BR>DX 때나 먼 
+미래에서나... &nbsp;모두 이번에 작성할 클래스와 같은 것을 만들어야<BR>하기때문에 게임 클래스 구성에 대한 이해를 돕고자 간단하게 나마 필자가 
+뚝<BR>딱 거려 본 것들이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;이번에는 새로운 유닛이 하나 필요하게 된다. &nbsp;이 클래스들을 정의하고 그것<BR>에 따른 메소드의 코드도 함께 
+들어가는 유닛이다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(1) 다섯번째 프로젝트의 시작</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;먼저 이전에 제작한 DX24Bit4.Dpr 을 읽어 들인다. &nbsp;Save Project As 를 
+선<BR>&nbsp;택하여 저장시에 이름을 DX24Bit5.Dpr 로 바꾼다. &nbsp;Save As 로 MainUnt4.Pas<BR>&nbsp;도 
+MainUnt5.Pas 로 바꾼다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;File 메뉴에서 New 를 선택하고 다시 Unit 를 선택하여 새로운 유닛을 하나<BR>&nbsp;생성한다. 아마도 
+설렁한 몇 줄의 코드만이 나타날 것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;먼저 이 유닛을 MainUnt5.Pas 에 연결하기 위해서 &nbsp;MainUnt5.Pas 의 소스의<BR>&nbsp;유닛 
+선언 부분에 SubUnit5 를 추가한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;다음에는 SubUnit5.Pas 부분에서 MainUnt5.Pas 를 선언하기 위해서 유닛 선<BR>&nbsp;언 
+부분을 고쳐야 하는데... 꼭 implementaion 부분에 uses MainUnt5; 를 해<BR>&nbsp;애만 한다. 그렇지 않으면 
+Circular Reference 에 걸리기 때문이다. ( 이 부<BR>&nbsp;분은 파스칼의 유닛 구조의 특성 때문이기 때문에 &nbsp;C 유저는 깊이 알 
+필요는<BR>&nbsp;없을 것 같다. 참고로 C 는 이런 것을 extern 으로 해결한다. )</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;그리고 SubUnit5.Pas 의 interface 부분에 아래의 것을 추가한다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;uses<BR>| &nbsp;&nbsp;&nbsp;&nbsp;Windows, DDraw;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이렇게 하면 새로운 유닛에 대한 모든 기본적인 선언은 끝나게 된다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(2) SubUnit5.Pas 에 쓰일 타입과 상수 선언</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;type<BR>| &nbsp;&nbsp;&nbsp;&nbsp;TTileInfo = (tiFireBall, 
+tiFlame, tiEnergyBall, tiNeTo1, tiNeTo2,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tiDemon);<BR>|<BR>| &nbsp;const<BR>| &nbsp;&nbsp;&nbsp;&nbsp;TileInfo : array[TTileInfo] 
+of TRect = (<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Left : &nbsp;&nbsp;0; Top : &nbsp;&nbsp;0; Right : &nbsp;27; Bottom : 
+&nbsp;11),<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Left : &nbsp;30; Top : &nbsp;&nbsp;0; Right : &nbsp;70; Bottom : &nbsp;22),<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Left : &nbsp;73; Top : &nbsp;&nbsp;0; Right : &nbsp;84; Bottom : &nbsp;11),<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Left : 
+&nbsp;&nbsp;0; Top : &nbsp;26; Right : &nbsp;52; Bottom : &nbsp;95),<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Left : &nbsp;56; Top : &nbsp;26; 
+Right : 108; Bottom : &nbsp;95),<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Left : &nbsp;&nbsp;7; Top : &nbsp;99; Right : 257; 
+Bottom : 369)<BR>| &nbsp;&nbsp;&nbsp;&nbsp;);</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;위의 타입과 상수 지정은 image[1]에 저장된 비트맵 그림에 대한 경계 영역<BR>&nbsp;의 지정이다. 6 
+개의 타일 정보에 대한 경계 좌표는 필자가 디럭스 페인터에<BR>&nbsp;서 노가다로 알아낸 좌표들이다. ( ^_^ )</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;각각의 enum 형 타일에 대한 설명은 다음과 같다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tiFireBall &nbsp;&nbsp;: 네토가 발사하는 화염탄<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tiFlame &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 네토의 
+필살기인 파란 불꽃<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tiEnergyBall : 적 보스가 발사하는 작은 에너지 구<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tiNeTo1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 네토의 
+그림 프레임 1<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tiNeTo2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: &nbsp;&nbsp;&nbsp;&quot; &nbsp;&nbsp;&nbsp;&nbsp;&quot; &nbsp;&nbsp;&nbsp;&quot; &nbsp;&nbsp;&nbsp;2<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tiDemon &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 적 
+보스의 그림 ( 거대 캐릭터임.. )</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;참고로 tiDemon 의 그림은 필자의 게임인 '대변 파이터'에서는 용량 문제로<BR>&nbsp;상반신만 나왔던 
+불우한 캐릭터이지만 이번에는 본 모습을 드러낸다. 기대하<BR>&nbsp;셔도 좋을 것이다.. 후후..</FONT></P>
+<P><FONT face="굴림체"><BR>&nbsp;1) TCharacter 정의</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;type<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;PCharacter = 
+^TCharacter;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;TCharacter = object<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;constructor 
+create(number : TTileInfo; x, y, HP : integer);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destructor 
+&nbsp;destroy;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure &nbsp;&nbsp;DisplaySelf; virtual;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;function 
+&nbsp;&nbsp;&nbsp;DoAction : boolean; virtual;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;private<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_number &nbsp;&nbsp;: 
+TTileInfo;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_x_size &nbsp;&nbsp;: integer;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_y_size &nbsp;&nbsp;: 
+integer;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_x, m_y &nbsp;&nbsp;: integer;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_sx, m_sy : real;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_HP &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: integer;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_Tile &nbsp;&nbsp;&nbsp;&nbsp;: TRect;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure 
+setmX (x : integer);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure setmY (y : integer);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure setmSX(x : real);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure setmSY(y : 
+real);<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;public<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mNumber : TTileInfo &nbsp;read 
+m_number write m_number;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mXSize &nbsp;: integer &nbsp;&nbsp;&nbsp;read 
+m_x_size write m_x_size;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mYSize &nbsp;: integer &nbsp;&nbsp;&nbsp;read 
+m_y_size write m_y_size;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mX &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: integer &nbsp;&nbsp;&nbsp;read m_x 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write setmX;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mY &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: integer &nbsp;&nbsp;&nbsp;read m_ywrite 
+setmY;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mSX &nbsp;&nbsp;&nbsp;&nbsp;: real &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read m_sx &nbsp;&nbsp;&nbsp;&nbsp;write 
+setmSX;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mSY &nbsp;&nbsp;&nbsp;&nbsp;: real &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read m_sy &nbsp;&nbsp;&nbsp;&nbsp;write 
+setmSY;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mHP &nbsp;&nbsp;&nbsp;&nbsp;: integer &nbsp;&nbsp;&nbsp;read m_HP &nbsp;&nbsp;&nbsp;&nbsp;write 
+m_HP;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mTile &nbsp;&nbsp;: TRect &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read m_Tile &nbsp;&nbsp;write 
+m_Tile;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이것이 바로 모든 캐릭터의 최고 선조( superclass ) 인 TCharacter 이다.<BR>&nbsp;&nbsp;각각의 
+설명은 다음과 같다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;constructor create(number : TTileInfo; x, y, HP : 
+integer);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 생성자이다. 타일 정보와생성시 (x,y) 와 체력을 인수로 받는다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destructor &nbsp;destroy;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 소멸자이다. 여기서는 코드가 필요 없고 다만 
+가상 메소드 테이블을<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;제거하는 정도의 기능만을 할 것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure &nbsp;&nbsp;DisplaySelf; virtual;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 자신을 화면에 
+표시한다. virtual 로 선언되어서 후손에서 재정의가<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가능하게 되어 있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;function &nbsp;&nbsp;&nbsp;DoAction : boolean; virtual;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 그 
+캐릭터가 하는 모든 행동을 하게 한다. &nbsp;FALSE 가 리턴된다면 그<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;캐릭터가 소멸되어야 하는 조건임을 알려준다. &nbsp;역시 
+virtual 로 선<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;언되었기 때문에 후손에서 재정의가 가능할 뿐만 아니라 &nbsp;무조건 재<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;정의 되어야 
+하는 함수이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;그럼 이번에는 public 선언 부분이다. &nbsp;여기는 모두 private 부분의 필드들<BR>&nbsp;을 제어하기 
+위한 property 들로 구성되어 있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mNumber : TTileInfo &nbsp;read m_number write 
+m_number;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: m_number 를 바로 읽고 쓰는 property 이다. m_number 는 자신의 
+타<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;일 정보를 알 수 있는 TTileInfo 형 변수이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mXSize &nbsp;: integer &nbsp;&nbsp;&nbsp;read m_x_size write 
+m_x_size;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mYSize &nbsp;: integer &nbsp;&nbsp;&nbsp;read m_y_size write 
+m_y_size;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 자신의 X 와 Y 길이를 integer 형으로 지정하는 변수인 m_x_size 
+와<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_y_size 를 읽고 쓰게 하는 property 이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mX &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: integer &nbsp;&nbsp;&nbsp;read m_x &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write 
+setmX;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mY &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: integer &nbsp;&nbsp;&nbsp;read m_y &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write 
+setmY;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 현재의 화면 상의 자신의 좌표인 (m_x,m_y) 에 대한 정보를 읽고 쓰<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;는 
+property 로, &nbsp;읽을 때는 바로 변수에 접근하지만 쓸 때는 setmX<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;와 setmY를실행시킨다. &nbsp;그 함수들은 
+m_x 와 m_y 가 불가능한 곳에<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;지정되지 않게 하는 기능을 가지고 있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mSX &nbsp;&nbsp;&nbsp;&nbsp;: real &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read m_sx &nbsp;&nbsp;&nbsp;&nbsp;write 
+setmSX;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mSY &nbsp;&nbsp;&nbsp;&nbsp;: real &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read m_sy &nbsp;&nbsp;&nbsp;&nbsp;write 
+setmSY;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 현재의 화면상의 자신의 좌표에 대한 real 형의 정확한 정보를 가지<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;고 있는 두 개의 
+변수인 m_sx 와 m_sy 를 읽고 기록한다. 나중에 후<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;손에서 정의되는 속도와 가속도에 대한 것을 고려하기 위해 만든 
+것<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;으로써, 여기서 real 값으로 지정하더라도 항상 m_x 와 m_y 에 정수<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;형으로 영향을 
+미친다. setmSX 와 setmSY 는 위의 예와 같다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mHP &nbsp;&nbsp;&nbsp;&nbsp;: integer &nbsp;&nbsp;&nbsp;read m_HP &nbsp;&nbsp;&nbsp;&nbsp;write 
+m_HP;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 현재 자신의 &nbsp;Hit Point ( &lt;- 다용도로 사용 가능 ) 를 가지고 
+있는<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;정수형 변수인 m_HP 에 대해 읽고 쓰는 property 이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mTile &nbsp;&nbsp;: TRect &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read m_Tile &nbsp;&nbsp;write 
+m_Tile;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 자신의 원형 이미지가 있는 &nbsp;image[1] 상에서의 TRect 형 좌표를 기<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;억하는 
+m_Tile 을 읽고 쓰는 변수이다.</FONT></P>
+<P><FONT face="굴림체"><BR>&nbsp;2) 그럼 다음에는 TCharacter 로부터 파생된 TObjects 에 대해서 
+논해보자.<BR>&nbsp;&nbsp;역시 type 부분에 계속해서 쓰면 된다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;&nbsp;&nbsp;PObjects = ^TObjects;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;TObjects = 
+object(TCharacter)<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;constructor create(number : TTileInfo; x, y, 
+HP : integer;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vx, vy, ax, ay : real);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destructor &nbsp;destroy;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;function &nbsp;&nbsp;&nbsp;DoAction : boolean; 
+&nbsp;virtual;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;private<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_vx, m_vy : real;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_ax, 
+m_ay : real;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;public<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mVX : real &nbsp;read m_vx 
+&nbsp;write m_vx;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mVY : real &nbsp;read m_vy &nbsp;write m_vy;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mAX : real &nbsp;read m_ax &nbsp;write m_ax;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mAY : 
+real &nbsp;read m_ay &nbsp;write m_ay;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;TObjects = object(TCharacter) 라는 부분에서 알 수 있듯이 TObjects 
+객체<BR>&nbsp;는 TCharacter 의 모든 것을 상속 받는다. &nbsp;이 객체의 쓰임은 주로 불똥이나<BR>&nbsp;에너지 볼 같이 창조자에게서 떨어져 
+나가 &nbsp;자연의 운동 법칙에 의해 행동이<BR>&nbsp;결정되는 객체들에게 적용된다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;constructor create(number : TTileInfo; x, y, HP : 
+integer;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vx, vy, ax, ay : real);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 생성자에서는 위의 
+TCharacter 와는 달리 &nbsp;초기 속도와 초기 가속도<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;를 지정할 수 있는 변수가 도입되었다. &nbsp;나머지 특성은 모두 
+선조와<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;같은 개념으로 사용된다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;DoAction 은 역시 재정의 되었고 ( DoAction 은 후손에서 무조건 재정의 해<BR>&nbsp;야 하는 
+함수.. ), &nbsp;DisplaySelf 라는 것은 선조의 것을 그대로 사용하기 위<BR>&nbsp;해서 여기서는 재정의 되지 않았다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mVX : real &nbsp;read m_vx &nbsp;write 
+m_vx;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mVY : real &nbsp;read m_vy &nbsp;write m_vy;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mAX 
+: real &nbsp;read m_ax &nbsp;write m_ax;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;mAY : real &nbsp;read m_ay &nbsp;write 
+m_ay;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 이것들은 모두 &nbsp;속도 (m_vx, m_vy) 와 가속도 (m_ax, m_ay) 를 
+위한<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property 로서 그대로 변수를 읽고 쓰게 된다.</FONT></P>
+<P><FONT face="굴림체"><BR>&nbsp;3) 이번에는 또 TObjects 에서 파생된 두 개의 클래스를 보자.<BR>&nbsp;TEnemy 는 적 
+보스를 정의한 것이고 EFriend 는 아군 ( 네토 ) 을 정의한 것<BR>&nbsp;이다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;&nbsp;&nbsp;PEnemy = ^TEnemy;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;TEnemy = 
+object(TObjects)<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;constructor create(number : TTileInfo; x, y, 
+HP : integer);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destructor &nbsp;destroy;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;function &nbsp;&nbsp;&nbsp;DoAction 
+: boolean; virtual;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;PFriend = ^TFriend;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;TFriend = object(TObjects)<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;constructor create(number : 
+TTileInfo; x, y, HP : integer);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destructor &nbsp;destroy;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure &nbsp;&nbsp;DisplaySelf; virtual;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;function &nbsp;&nbsp;&nbsp;DoAction : 
+boolean; virtual;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;private<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FShapeCount : integer;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FShapeDelay : integer;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;TEnemy 는 TObjects 에서 상속을 받지만 다른 점이라고는 DoAction 을 적의<BR>&nbsp;패턴에 
+맞게 재정의 한 것뿐이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;TFriend 역시 자신에 맞게 ( 키보드 입력등. ) DoAction 을 재정의 했고 자<BR>&nbsp;신의 
+날개에 대한 2 프레임 때문에 출력 루틴인 DisplaySelf 도 재정의 했다.<BR>&nbsp;FShapeCount 와 FShapeDelay 가 각각 
+프레임에 대한 카운트와 딜레이이다.<BR>&nbsp;이 변수는 캡슐화에 대한 보안이 필요하지 않는 단순 변수이므로 property를<BR>&nbsp;사용하지 않고 
+바로 접근하도록 만들었다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&nbsp;(3) SubUnit5.Pas 에 쓰일 변수와 함수 선언</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;const<BR>| &nbsp;&nbsp;&nbsp;&nbsp;MAX_CHARACTER = 50;<BR>| 
+&nbsp;var<BR>| &nbsp;&nbsp;&nbsp;&nbsp;Objects : array[1..MAX_CHARACTER] of PCharacter;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;여기 Objects 라는 배열 변수에 이제 모든 게임의 객체가 선언되게 된다.<BR>&nbsp;객체의 최고 개수는 
+보는 바와 같이 50 개이며 PCharacter 로 선언되었기 때<BR>&nbsp;문에 TCharacter 와 그 후손이라면 어떤 형으로도 정의가 
+가능하다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;implementation<BR>|<BR>| &nbsp;uses<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;MainUnt4;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;앞에서 말한 Circular Reference 를 막으면서 MainUnt4.Pas 와 결합하기 위<BR>&nbsp;한 
+코드이다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;function GetFreeObjects(var number : integer) 
+: boolean;<BR>| &nbsp;var<BR>| &nbsp;&nbsp;&nbsp;&nbsp;i : integer;<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;for i := 1 to 
+MAX_CHARACTER do begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if objects[i] = nil then begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;number := i;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;getFreeObjects := TRUE;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;getFreeObjects := 
+FALSE;<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이 함수는 클래스 선언에 대한 부록 함수쯤 되는 것으로 현재의 Objects 변<BR>&nbsp;수에서 비어있는 ( 
+즉, 객체를 할당 받을 수 있는 ) 곳을 찾아서 &nbsp;그 번호를<BR>&nbsp;reference 인수인 number 에 돌려준다. &nbsp;만약 50개의 객체가 
+모두 생성 되었<BR>&nbsp;으면 FALSE 를 리턴한다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&nbsp;(4) TCharacter 의 소스</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;constructor TCharacter.create(number : 
+TTileInfo; x, y, HP : integer);<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;mNumber &nbsp;:= number;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;m_Tile &nbsp;&nbsp;:= TileInfo[number];<BR>| &nbsp;&nbsp;&nbsp;&nbsp;m_x_size := 
+TileInfo[number].Right-TileInfo[number].Left;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;m_y_size := 
+TileInfo[number].Bottom-TileInfo[number].Top;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;mX &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= x;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;mY &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= y;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;mHP &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= HP;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;m_sx &nbsp;&nbsp;&nbsp;&nbsp;:= x;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;m_sy &nbsp;&nbsp;&nbsp;&nbsp;:= y;<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;생성자는 지금 보듯이 단순한 private 변수의 세팅에 그친다. &nbsp;m_x_size 
+와<BR>&nbsp;m_y_size 는 타일 정보의 TRect 형으로부터 얻어냄을 알 수 있다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;destructor &nbsp;TCharacter.destroy;<BR>| 
+&nbsp;begin<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;소멸자는 아무런 코드도 없지만 소멸자라는 자체만으로 가상 메소드 테이블<BR>&nbsp;을 해제하기 때문에 필요한 
+것이다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure &nbsp;&nbsp;TCharacter.setmX(x : 
+integer);<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if (x &gt;= 0) and (x + mXSize &lt; MAX_X_LINE) 
+then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_x &nbsp;:= x;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_sx := x;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| 
+&nbsp;end;<BR>|<BR>| &nbsp;procedure &nbsp;&nbsp;TCharacter.setmY(y : integer);<BR>| &nbsp;begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;if (y &gt;= 0) and (y + mYSize &lt; MAX_Y_LINE) then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_y 
+&nbsp;:= y;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_sy := y;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;x 와 y 의 범위를 화면의 범위로 제안한다. 보는 바와 같이 x 와 y 가 세팅<BR>&nbsp;될 때 real 
+형인 m_sx 와 m_sy 도 같이 세팅된다는 점만 주의하자.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure &nbsp;&nbsp;TCharacter.setmSX(x : real);<BR>| 
+&nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if x &lt; 0 then x := 0;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if x &gt;= MAX_X_LINE - mXSize 
+then x := MAX_X_LINE - mXSize - 1;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;m_sx := x;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;m_x &nbsp;:= 
+Trunc(x+0.5);<BR>| &nbsp;end;<BR>|<BR>| &nbsp;procedure &nbsp;&nbsp;TCharacter.setmSY(y : 
+real);<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if y &lt; 0 then y := 0;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if y &gt;= 
+MAX_Y_LINE - mYSize then y := MAX_Y_LINE - mYSize - 1;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;m_sy := y;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;m_y &nbsp;:= Trunc(y+0.5);<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이것은 real 형인 m_sx 와 m_sy 에 대한 세팅 함수로서 &nbsp;역시 정수형인 m_x<BR>&nbsp;와 m_y 
+에 영향을 미친다. real 형을 정수형으로 바꿀 때 Round (반올림) 이<BR>&nbsp;아닌 Trunc (자름) 을 사용한 이유는 델파이가 짝수 
+반올림에 버그가 있다고<BR>&nbsp;알려졌기 때문에 ( 예&gt; Round(12.5) -&gt; 12 로 판단 ) &nbsp;Trunc(r+0.5) 로 
+대신<BR>&nbsp;한 것이다. ( 단, 델파이 2 의 버그이므로 델파이 3 에서는 고쳐졌을 가능성<BR>&nbsp;도.. )</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure &nbsp;&nbsp;TCharacter.DisplaySelf;<BR>| 
+&nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;with Basic do repeat<BR>| &nbsp;&nbsp;&nbsp;&nbsp;until 
+MakeItSo(BackBuffer.BltFast(mX,mY,Image[1],mTile,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDBLTFAST_SRCCOLORKEY));<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;자신의 이미지를 백 버퍼에 찍는 함수이다. 별로 특이할 건 없다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;function &nbsp;&nbsp;&nbsp;TCharacter.DoAction;<BR>| 
+&nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;DoAction := TRUE;<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;아직은 정의 되지 않고 후손에서 정의 될 함수로, &nbsp;현재는 항상TRUE 만 리<BR>&nbsp;턴하도록 
+되어있다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&nbsp;(5) TObjects 의 소스</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;constructor TObjects.create(number : 
+TTileInfo; x, y, HP : integer;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vx, vy, ax, ay 
+: real);<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;inherited create(number,x,y,HP);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;mVX := 
+vx; &nbsp;mVY := vy;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;mAX := ax; &nbsp;mAY := ay;<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;생성자에서는 선조에서 선언된 변수와 이 객체에서 쓰일 속도, 가속도에 대<BR>&nbsp;한 정보를 받는다. 
+&nbsp;inherited 로 이전 선조의 생성자를그대로 사용하고 나<BR>&nbsp;머지는 직접 변수에 대입한다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;destructor &nbsp;TObjects.destroy;<BR>| &nbsp;begin<BR>| 
+&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;역시 TCharacter 와 같다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;function &nbsp;&nbsp;&nbsp;TObjects.DoAction;<BR>| 
+&nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;DoAction := TRUE;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if ((mX + mVX) &lt; 0) or ((mX + 
+mVX) &gt;= MAX_X_LINE-mXSize) or<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((mY + mVY) &lt; 0) or ((mY + mVY) 
+&gt;= MAX_Y_LINE-mYSize) then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DoAction := FALSE;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end 
+else begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mSX := mSX &nbsp;+ mVX;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mSY := mSY &nbsp;+ mVY;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mVX := mVX + mAX;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mVY := mVY + mAY;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| 
+&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;TCharacter 는 주로 불똥같은 것을 처리하므로 화면 밖으로 사라지게 되면<BR>&nbsp;&nbsp;객체가 소멸되는 
+조건이 된다. 그리고 객체가 유효하다면 위치에 속도를 더<BR>&nbsp;&nbsp;하고, 속도에는 현재의 가속도를 더한다.</FONT></P>
+<P>&nbsp;</P><P><font color="#CCFF00">#####################################################</font></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;하이텔 게임 제작 동호회 ( GO GMA )</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------<BR>### 
+DIRECT X 트루컬러 게임 (6) - 게임을 위한 기본 클래스 
+구성(2)<BR>------------------------------------------------------------------------<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;작성자 
+: 안영기 ( HiTEL ID : SMgal )</FONT></P>
+<P><FONT face="굴림체"><BR>&nbsp;이번의 장은 앞에서 못다한 부분의 연속으로 게제하겠다. &nbsp;하이텔에서 한 게<BR>시물의 라인 한계 
+때문에 이렇게 두 부분으로 나눈 것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;그럼 계속 설명을 하겠다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&nbsp;(6) TEnemy 의 소스</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;constructor TEnemy.create(number : TTileInfo; 
+x, y, HP : integer);<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;inherited 
+create(number,x,y,HP,2,2,0,0);<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;생성자는 TObjects 의 것을 그대로 사용하지만 속도는 2로 가속도는 0 으로<BR>&nbsp;고정되어 있다. 
+&nbsp;여기서 속도는 객체가 한번에 움직이는 거리를 나타내며 가<BR>&nbsp;속도는 아직 정의 되지 않았다. &nbsp;( 가속도는 외부의 충격이나 바람등에 
+의한<BR>&nbsp;변화 요소 같은 걸로 쓰면 될것이다. 확장은 여러분에게 맡긴다. )</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;destructor &nbsp;TEnemy.destroy;<BR>| &nbsp;begin<BR>| 
+&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;소멸자이다..</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;function &nbsp;&nbsp;&nbsp;TEnemy.DoAction;<BR>| &nbsp;var<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;i : integer;<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;DoAction := TRUE;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;mX := mX + 
+(random(3)-1);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;mY := mY + (random(3)-1);<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if random(10) = 
+0 then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if GetFreeObjects(i) then begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Objects[i] := new(PObjects,Create(tiEnergyBall,mX,mY+100,10,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-10,random(5)-3,0,0));<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;TEnemy 형 객체에 대한 행동 함수이다. &nbsp;역시 FALSE 가 돌아오면 객체의 소<BR>&nbsp;멸 조건을 
+만족했음을 알리게 된다. &nbsp;( 현재는 소멸 조건이 없지만 나중에는<BR>&nbsp;HP 가 0 보다 작으면 소멸 될 것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;행동 패턴은 다음과 같다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;1) 랜덤으로 (-1..1, -1..1) 만큼 움직인다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;2) 10번에 한번 꼴로 
+tiEnegyBall 을 발사한다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&nbsp;(7) TFriend 의 소스</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;constructor TFriend.create(number : TTileInfo; 
+x, y, HP : integer);<BR>| &nbsp;begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;inheritedcreate(number,x,y,HP,2,2,0,0);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;FShapeCount := 0;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;FShapeDelay := 0;<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;TEnemy 때와 같다. &nbsp;그리고 private 내부 변수인 FShapeCount, 
+FShapeDelay<BR>&nbsp;를 0 으로 초기화한다. &nbsp;( 아마 실제론 초기화 안해도 0 으로 될 것이다. 하<BR>&nbsp;지만 이렇게 적어주는 것이 
+프로그램 상으로 더 명확하다. )</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;destructor &nbsp;TFriend.destroy;<BR>| &nbsp;begin<BR>| 
+&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;소멸자... 그 이상도 이하도 아닌 소멸자일뿐... 이것은 소멸자만이 가지는<BR>&nbsp;숙명이라고 할수 
+있을까... !</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure &nbsp;&nbsp;TFriend.DisplaySelf;<BR>| 
+&nbsp;begin<BR>|<BR>| &nbsp;inc(FShapeDelay);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if FShapeDelay = 5 then begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FShapeCount := FShapeCount xor 1;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FShapeDelay := 0;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;with Basic do repeat<BR>| &nbsp;&nbsp;&nbsp;&nbsp;until 
+MakeItSo(BackBuffer.BltFast(mX,mY,Image[1],<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TileInfo[TTileInfo(ord(mNumber)+FShapeCount)],<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDBLTFAST_SRCCOLORKEY));<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;TFriend 형의 객체를 출력하는 함수이다. &nbsp;역시 재정의 되었고 의미를 알아<BR>&nbsp;보면 다음과 
+같다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;딜레이를 하나씩 증가시켜서 5 가 되었을때 출력될 이미지를토글한다. &nbsp;출<BR>&nbsp;력될 이미지는 tiNeTo1 
+과 tiNeTo2 가 될 것이다. ( 그래서 5 프레임에 한번<BR>&nbsp;씩 날개를 펄럭일 것이다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;function &nbsp;&nbsp;&nbsp;TFriend.DoAction;<BR>| &nbsp;var<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;i : integer;<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;DoAction := TRUE;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if 
+GetAsyncKeyState(VK_LEFT) &lt;&gt; 0 then mSX := mSX - mVX;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if 
+GetAsyncKeyState(VK_RIGHT)&lt;&gt; 0 then mSX := mSX + mVX;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if 
+GetAsyncKeyState(VK_UP) &nbsp;&nbsp;&lt;&gt; 0 then mSY := mSY - mVY;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if 
+GetAsyncKeyState(VK_DOWN) &lt;&gt; 0 then mSY := mSY + mVY;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if 
+GetAsyncKeyState(VK_CONTROL) &lt;&gt; 0 then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if 
+GetFreeObjects(i) then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Objects[i] := 
+new(PObjects,Create(tiFireBall,mX+15,mY+25,10,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;16,0,0,0));<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if GetAsyncKeyState(VK_MENU) &lt;&gt; 0 
+then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if GetFreeObjects(i) then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Objects[i] 
+:= new(PObjects,Create(tiFlame,mX,mY,10,16,0,0,0));<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이것은 모든 객체의 메소드 중 가장 중요한 함수이다. 우리가 직접 조종 가<BR>&nbsp;능한 네토의 행동 함수이기 
+때문이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;가장 위에 있는 4 개의 키 함수는 화살표 키를 눌렀을 때 &nbsp;속도만큼 네토를<BR>&nbsp;이동시키는 
+역할이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;VK_CONTROL 은 Ctrl 을 눌렀을 때 불똥이 발사되게 하는 루틴으로, &nbsp;새로운<BR>&nbsp;객체를 얻어서 
+그것을 TObject 형으로 선언하여 초기화 한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;VK_MENU 는 Alt 키를 눌렀을 때 푸른색 불꽃이 나가게 하는 루틴으로, 위에<BR>&nbsp;설명한 것과 
+다를바 없는 것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;역시 여기도 소멸 조건이 없지만 &nbsp;나중에 HP 가 0 보다 작을 때는 소멸하도<BR>&nbsp;록 
+해야한다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&nbsp;(8) SubUnit5.Pas 의 초기화 코드</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;var<BR>| &nbsp;&nbsp;&nbsp;&nbsp;i : integer;<BR>| &nbsp;begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;for i := 1 to MAX_CHARACTER do begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Objects[i] := nil;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;end.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이것은 유닛을 초기화하는 코드로 &nbsp;모든 Objects 의 배열 인자를 nil 로 초<BR>&nbsp;기화 
+한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;혹시나 파스칼에 익숙하지 않은 분들을 위해서 설명하자면... 원래..</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;.....<BR>| &nbsp;end.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;라고 되는 부분이 마지막에 있다. 그런데 그 부분의 앞에 begin 을 써보자.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;begin<BR>| &nbsp;end.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이렇게 하여 그 begin 과 end. 사이에 어떤 코드를 넣으면 프로그램 실행시<BR>&nbsp;그 안의 내용이 
+실행되게 되어 초기화가 진행된다.<BR>&nbsp;&nbsp;대부분 그 유닛에 있는 변수를 초기화 할 때 사용되는 것이다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&nbsp;(9) MainUnt5.Pas 의 수정될 코드들</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;TBasic = class(TForm) 의 public 에는 새로운 두개의 메소드가 
+추가된다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure InitializeGame;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure FinalizeGame;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이 메소드들은 게임의 초기화와 뒷처리를 담당해주는 부분으로 여기서는 게<BR>&nbsp;임의 초기에 생성될 2 개의 
+객체 ( 네토와 데몬 ) 을 자동 생성하게 되고 마<BR>&nbsp;지막에는 현재 생성된 객체를 모두 소멸 시키는 역할을 한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;각각 호출되는 부분은 다음과 같다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;InitializeGame 은 TBasic.FormShow 부분에서 플리핑을 가능하게 하는 부분<BR>&nbsp;의 
+바로 앞에 온다 코드 상으로 따져보면 이렇다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;&nbsp;&nbsp;InitializeGame; &nbsp;&nbsp;&nbsp;&nbsp;// 여기에 들어간다.<BR>|<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;FlippingEnabled := TRUE;<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;FinalizeGame 은 &nbsp;TBasic.FormDestroy 부분에서 &nbsp;플리핑을 불가능하게 
+하는<BR>&nbsp;부분의 코드 다음에 온다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;FlippingEnabled := 
+FALSE;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;FinalizeGame; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 여기에 들어간다.</FONT></P>
+<P><FONT face="굴림체"><BR>&nbsp;&nbsp;그럼 각각의 메소드의 소스를 보자.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure TBasic.InitializeGame;<BR>| 
+&nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;Objects[1] := new(PFriend,Create(tiNeto1,100,200,100));<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;Objects[2] := new(PEnemy ,Create(tiDemon,300,100,100));<BR>| &nbsp;end;<BR>|<BR>| 
+&nbsp;procedure TBasic.FinalizeGame;<BR>| &nbsp;var<BR>| &nbsp;&nbsp;&nbsp;&nbsp;i : integer;<BR>| &nbsp;begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;for i := 1 to MAX_CHARACTER do begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if assigned(Objects[i]) 
+then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispose(Objects[i],destroy);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Objects[i] 
+:= nil;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;InitializeGame 은 네토를 TFriend 객체로, &nbsp;데몬을 TEnemy 객체로 각각 
+초<BR>&nbsp;기화 시킨다. &nbsp;Objects[] 자체가 TCharacter ィ체의 포인터로 설정되어 있으<BR>&nbsp;므로 TCharacter 의 
+후손인 TFriend 와 TEnemy 는 모두 Objects[] 에서 선언<BR>&nbsp;이 가능하다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;FinalizeGame 은 모든 Objects[] 에 대해서 객체가 존재할때는 객체를 소멸<BR>&nbsp;시키는 
+역할을 한다.</FONT></P>
+<P><FONT face="굴림체"><BR>&nbsp;&nbsp;그럼 이번에는 MainUnt5.Pas 에서 가장 중요한 DrawScreen 메소드를 
+보자.<BR>&nbsp;이전의 코드는 미련없이 지워버리고 아래의 소스를 타이핑한다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure TBasic.DrawScreen;<BR>| &nbsp;var<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;i : integer;<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;repeat<BR>| &nbsp;&nbsp;&nbsp;&nbsp;until 
+MakeItSo(BackBuffer.BltFast(0,0,Image[2],Rect(0,0,640,480),<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDBLTFAST_NOCOLORKEY));<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;for i := MAX_CHARACTER 
+downto 1 do begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if assigned(Objects[i]) then begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Objects[i]^.DoAction then begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Objects[i]^.DisplaySelf;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end else begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispose(Objects[i],destroy);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Objects[i] := 
+nil;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;앞 부분에서 BltFast 로 Image[2] 를 백 버퍼로 전송하는 코드가 있다. &nbsp;이<BR>&nbsp;것은 
+Image[2] 에 들어있는 배경을 전송하는 부분이다. &nbsp;여기서 주목해야 하<BR>&nbsp;는 것이 바로 BltFast 의 전송 타입 중에 하나인 
+DDBLTFAST_NOCOLORKEY 이다.<BR>&nbsp;이것은 투명색에 대해 전혀 고려하지 ㅎ고 단지 이미지로써 서로 전송하라는<BR>&nbsp;의미를 
+담고있다. 그래서 배경을 복사할 때 유용하게 사용된다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;그 다음의 코드는 직접 설명하도록 하겠다.</FONT></P>
+<P><FONT color=aqua face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for i := MAX_CHARACTER downto 1 do begin &nbsp;// 
+모든 Object[] 에 대해<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if assigned(Objects[i]) then begin &nbsp;&nbsp;&nbsp;&nbsp;// 객체가 
+유효하면<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Objects[i]^.DoAction then begin &nbsp;// 행동 함수를 
+실행하고<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Objects[i]^.DisplaySelf; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 행동이 유효하면 
+출력<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end else begin &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 객체가 소멸 
+조건이면<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispose(Objects[i],destroy); &nbsp;&nbsp;&nbsp;&nbsp;// 객체를 소멸 
+시키고<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Objects[i] := nil; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Object[] 변수 
+초기화<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;DoAction 과 DisplaySelf 의 경우에는 객체 형에 따라서 &nbsp;각각 재정의 되었<BR>&nbsp;으므로 
+&nbsp;TFriend 에서의 DoAction 과 TEnemy 에 대한 DoAction 이 다르게 된<BR>&nbsp;다. 하지만 우리는 객체 지향이라는 잇점 
+때문에 명령만 내려주면 컴이 내부<BR>&nbsp;적으로 다 해결해 버린다. 얼마나 편리한 개념인가...</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&nbsp;(10) 드디어 실행</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;자.. 힘들게 이해하셨을지도 모를 필자의 코드를 실행할 차례이다.<BR>&nbsp;실행 시키면 이제와는 다른 게임 
+비스무리한 것이 나타날 것이다. 화살표 키<BR>&nbsp;로 네토를 이동 시키기도 하고 Ctrl 과 Alt 로 불똥도 발사해 보자.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;하지만 아직 네토와 데몬에 대한 소멸 조건이 없는데다가 충돌 체크도 없기<BR>&nbsp;때문에 게임으로선 무리가 
+있다. 그런 부수적인 것은 차후에 넣도록 한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;그리고 속도도 무지 느린데다가 &nbsp;트루컬러에 대한 요소는 전혀 사용하지 않<BR>&nbsp;았다. ( 트루컬러라서 
+속도가 느린 것은 어쩔 수 없는 일... 자신의 PC 에게<BR>&nbsp;분노를 발산하지 말기 바란다. )</FONT></P>
+<P>&nbsp;</P><P><font color="#CCFF00">#####################################################</font></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;하이텔 게임 제작 동호회 ( GO GMA )</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------<BR>### 
+DIRECT X 트루컬러 게임 (7) - 직접 비디오 메모리에 
+찍기<BR>------------------------------------------------------------------------<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;작성자 
+: 안영기 ( HiTEL ID : SMgal )</FONT></P>
+<P><FONT face="굴림체"><BR>&nbsp;드디어 이번 장부터 트루컬러에 대한 DX 강좌가 시작된다. 도스에서 VESA 트<BR>루컬러를 제어하는 
+것과 같은 개념으로 직접 비디오 메모리에 대한 접근을 시<BR>도할 것이다. 이장은 트루컬러 프로그래밍을 하는 처음이자 마지막 
+장이다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&nbsp;(1) 우리가 만들 최종 소스의 산물 DX24Bit7.Exe.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;여기서는 직접 바뀐 코드들을 언급하지 않겠다. 모든 것은 MainUnt7.Pas 
+와<BR>&nbsp;SubUnit7.Pas 를 참조하기 바란다. 이것은 최종적으로 필자가 만든 코드이며<BR>&nbsp;가장 간단한 게임의 형태를 갖추었다고 
+생각하면 된다. ( 유일하게 EXE 파일<BR>&nbsp;이 포함되어 있을 것이다. )</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이해를 빠르게 하기 위해서는 결과물을 먼저 봐두는 편이 좋을 것이다. 아<BR>&nbsp;마도 DX24Bit5.Exe 
+와는 거의 같은 모습을 보일 것이다. 바뀐점을 보자면 이<BR>&nbsp;러하다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;1) Ctrl 은 불똥, Alt 는 반투명의 푸른 화염, &nbsp;Shift 는 한 번에 5 
+개의<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;반투명 화염이 꼬리를 끌며 지나간다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;2) '데몬'은 네토를 겨냥하여 에너지 볼을 난사할 
+것이다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;( 정조준을 하지 않은 이유는 에너지 볼에 랜덤의 가속도 요소를 넣었<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;기 때문이다. 
+)<BR>&nbsp;&nbsp;&nbsp;&nbsp;3) 불똥과 데몬간에 충돌 체크가 이루어지고 HP 가 0 이하가 되면 데몬은<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;소멸한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;여기서 트루컬러 프로그래밍이 들어 간것이 바로 Shift 를 누르면 출현하는<BR>&nbsp;파란색 반투명 화염이다. 
+그래서 다른 것들은 대충 설명하고 그 부분만 중점<BR>&nbsp;적으로 다루겠다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&nbsp;(2) Lock 과 Unlock 함수의 의의</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;자신이 만일 도스에서 직접 그래픽 메모리 ( A000:0000 ) 를 통해 그래픽을<BR>&nbsp;해 보았다면 금방 
+이해될 부분이다. &nbsp;특히 13h packed 모드 ( 320 * 200 * 8<BR>&nbsp;bpp ) 에서 점을 찍어본 경험이 있다면 &nbsp;몇가지 주의 
+사항만 알면 거의 같은<BR>&nbsp;개념으로 작업이 가능하다. 도리어 plane 이나 bank 가없어서 프로그래머의<BR>&nbsp;입장에서는 무척이나 
+편리하다고 볼 수 있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;12h 모드나 13h 의 plane 모드에 있는 plane 을 이해하기 위해 머리를 싸매<BR>&nbsp;신 
+분들이나, VESA 에서 선형 어드레스 모드를 구현하고자 땀 흘리신 분들에<BR>&nbsp;겐 너무나도 허무할지도 모를 정도로 쉽게 되어 있는게 
+사실이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;Lock 과 Unlock 의 사용법은 강좌(3) 에서 다루었으므로 여기서 언급하지는<BR>&nbsp;않겠고, 다만 
+모드 구조와 주의점을 말해 두겠다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;Lock 에 필요한 TDDSurfaceDesc 구조체에는, 앞에도 말했듯이 lpSurface 
+와<BR>&nbsp;lPitch 라는 중요한 레코드를 가지고있다. lpSurface 는 GlobalAlloc() 으로<BR>&nbsp;얻은 메모리를 
+GlobalLock() 으로 메모리를 고정시켜 그 주소를 얻는 개념과<BR>&nbsp;동일하다. lpSurface 는 Lock 의 첫번째 인수인 
+lpDestRect 의 가장 왼쪽 상<BR>&nbsp;단의 주소를 돌려준다. &nbsp;그리고 lPitch 는 다음 라인까지의 바이트 수이므로<BR>&nbsp;y 
+증가시에는 항상 더해주어야 한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;따라서 lpDestRect 에 따른 논리 좌표 (x,y) 는,</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;longint(LockDesc.lpSurface) + y * LockDesc.lPitch + x * 
+BPP)</FONT></P>
+<P><FONT face="굴림체">&nbsp;가 되는 것이다. &nbsp;여기서 BPP 는 픽셀당 바이트수를 의미하므로 24비트 트루<BR>&nbsp;컬러에서는 3 ( = 
+24 / 8 ) 이 된다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;하지만 Lock 과 Unlock 을 사용함에 있어서, 굉장히 중요한 단점 하나가 숨<BR>&nbsp;어있다는 것을 
+알아야한다. &nbsp;윈도우 95 는 32 bit 운영체제라고 하지만 하위<BR>&nbsp;호환을 위해서 상당수의 자원을 Win16 과 공용하고 있다. 특히 
+Lock 같은 경<BR>&nbsp;우가 대표적인데.. 표면이 Lock 되어 있는 동안에 Win32 의 GDI 출력이 실행<BR>&nbsp;된다면 십중팔구 다운이 
+되어 버린다. 그래서 헬프에서는 Lock 과 Unlock 사<BR>&nbsp;이의 시간을 최대한 단축 시켜라고 나와있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;또한 주의해야 하는 비슷한 함수로는 GetDC 와 ReleaseDC가 있다. &nbsp;GDI 의<BR>&nbsp;함수와 
+이름이 같은만큼 역할도 유사하다고 생각하면 된다. 만약 GetDC 함수<BR>&nbsp;로 백 버퍼의 디바이스 컨텍스트를 얻는다면, 당신이 정의한 
+TCanvas 객체의<BR>&nbsp;Handle 에 DC 를 대입해보라. &nbsp;그러면 거의 모든 Canvas 객체에 있는 GDI 함<BR>&nbsp;수와 연결이 
+된다. 한글 출력같은 그런 류에 안성맞춤이다. 하지만 GetDC 는<BR>&nbsp;내부적으로 Lock 함수를 호출하므로 역시 ReleaseDC 를 하기 
+전에 다른 디스<BR>&nbsp;플레이 컨텍스트의 GDI 출력이 발생하면 역시 다운된다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;그래서 결론을 말하자면 Lock 과 Unlock ... GetDC 와 ReleaseDC 사이의 
+시<BR>&nbsp;간은 되도록이면 짧게 하는 것이 프로그램의 안정성을 높이는 길이며, &nbsp;만약<BR>&nbsp;Lock 을 이용해 모든 출력을 하는 게임을 
+만든다면 아예 시스템 키를 사용할<BR>&nbsp;수 없게 하여 Alt-Tab 과 같은 것에 의해 다운 되지 않게 해야 한다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&nbsp;(3) 바뀐 부분에 대한 이해</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;아래는 MainUnt7.Pas 에서 바뀐 게임 초기화 부분이다. 이 부분에서는 직접<BR>&nbsp;메모리에 접근하기 
+위한 &nbsp;이미지의 데이터 형을 만드는 코드로써, &nbsp;도스때의<BR>&nbsp;스프라이트 데이터와 같은 &lt;&lt; X길이(2bytes) + 
+Y길이(2bytes) + 비압축 데이<BR>&nbsp;터 &gt;&gt; 식의 데이터 구조이다. &nbsp;단 다른 점이 있다면 도스때는 비압축 데이타<BR>&nbsp;가 
+1 byte 인데 비해 여기서는 DWORD 인 4 bytes 를 쓴다는 점이다. &nbsp;그러므<BR>&nbsp;로 데이터를 만들기 위한 공간은 &lt;&lt; 
+X 길이 * Y 길이 * sizeof(DWORD) + 4 (<BR>&nbsp;헤더에 쓰인 4 bytes ) &gt;&gt; 가 된다. &nbsp;여기서는 대상이 
+되는 tiFlame 에 대한<BR>&nbsp;데이터만 DOWRD 형 포인터 전역 변수인 flame_image 에 만든다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;직접 소스에 주석을 달면서 설명하겠다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure TBasic.InitializeGame;<BR>| 
+&nbsp;var<BR>| &nbsp;&nbsp;&nbsp;&nbsp;i,j &nbsp;: integer;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;LWord : DWORD;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;PLong : 
+PDWORD;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;Desc &nbsp;: TDDSurfaceDesc;<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;with 
+TileInfo[tiFlame] do begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetMem(flame_image,(Right-Left)*(Bottom-Top)*sizeof(DWORD)+4);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+위에서 설명한 값만큼 메모리를 할당 받는다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PLong &nbsp;:= flame_image;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+PLong 은 flame_image 의 번지를 갖는다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LWord &nbsp;:= (Right-Left) or 
+((Bottom-Top) shl 16);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 헤더 정보를 DWORD 변수에 만든다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PLong^ 
+:= LWord;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 헤더 정보를 PLong 이 가리키는 번지에 넣는다.<BR>|<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Desc.dwSize := SizeOf(TDDSurfaceDesc);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;until Basic.MakeItSo(Basic.Image[1].Lock(Rect(0,0,MAX_X_LINE,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MAX_Y_LINE),Desc,DDLOCK_SURFACEMEMORYPTR + DDLOCK_WAIT, 
+0));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// image[1] 의 표면을 고정시킨다.<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for j := Top to 
+pred(Bottom) do<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for i := Left to pred(Right) do begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inc(PLong);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LWord &nbsp;:= 
+PDWORD(longint(Desc.lpSurface)+j*Desc.lPitch+i*BPP)^<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and 
+longint($00FFFFFF);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PLong^ := LWord;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// image[1] 의 영역중 필요한 사각형에서 데이타를 
+뽑아낸다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 나중에 Lock 했을때의 메모리 주조를 알려주겠다.<BR>|<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Basic.Image[1].UnLock(Desc.lpSurface);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// image[1] 의 표면 고정을 
+해제한다.<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;Objects[1] := 
+new(PFriend,Create(tiNeto1,100,200,5000));<BR>| &nbsp;&nbsp;&nbsp;&nbsp;Objects[2] := new(PEnemy 
+,Create(tiDemon,350,100,10000));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 이전과 다른 점이 있다면 에너지가 각각5000 과 10000 
+으로 명시<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 되어졌다는 점이다.<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체"><BR>&nbsp;&nbsp;아래는 새롭게 생긴 2 개의 객체에 대한 설명이다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;&nbsp;&nbsp;PTransparency = 
+^TTransparency;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// TTransparency 는 Alt 를 눌렀을 때 &nbsp;짧게 나가는 파란 반투명 
+화<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 염을 표현하는 객체이다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;TTransparency = 
+object(TObjects)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 모든 특징은 TObject 에서 상속 받았다.<BR>|<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure &nbsp;&nbsp;DisplaySelf; virtual;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 하지만 DisplaySelf 는 재정의 
+했다. &nbsp;이유는 반투명 객체만의<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 출력 루틴이 필요하기 때문이다.<BR>|<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;PMotionBlur = ^TMotionBlur;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// TMotionBlur 는 
+Shift 를 눌렀을 때 꼬리를 끌며 나가는 &nbsp;파란 반<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 투명 화염을 표현하는 객체이다.<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;TMotionBlur = object(TObjects)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 모든 특징은 TObject 에서 상속 
+받았다.<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure &nbsp;&nbsp;DisplaySelf; virtual;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;function 
+&nbsp;&nbsp;&nbsp;DoAction : boolean; &nbsp;virtual;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 반투명 화염은 자신만의 출력과 행동 방식을 가지므로 
+&nbsp;재정의<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 되어야 한다.<BR>&nbsp;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;아래는 각각의 객체에서 재정의 된 부분의 소스만을 추려낸 것이다.<BR>&nbsp;이전의 DisplaySelf 는 
+DX 의 내장 함수인 BltFast 를 사용했기 때문에 투명<BR>&nbsp;색을 표현하기 위해서는 그 함수를 재정의 하여 그에 따른 투명색 출력 
+함수<BR>&nbsp;를 만들어 호출하는 방법을 사용한다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure &nbsp;&nbsp;TTransparency.DisplaySelf;<BR>| 
+&nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;Basic.LockBackGround;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 백 버퍼를 고정시킨다.<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;DisplayEffect(mX,mY,flame_image^,mHP);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// DisplayEffect 를 호출한다. ( 
+이 함수는 나중에 자세히 설명 )<BR>| &nbsp;&nbsp;&nbsp;&nbsp;mHP := mHP - 8;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// HP 를 감소시킨다. &nbsp;HP 는 투명색의 
+강도에 영향을 주며 0 이하가<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 되면 객체의 소멸을 알려준다.<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;Basic.UnlockBackGround;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 백 버퍼 고정을 해제한다.<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;TMotionBlur.displaySelf 는 위의 TTransparency 와 
+유사하다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure &nbsp;&nbsp;TMotionBlur.DisplaySelf;<BR>| 
+&nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;Basic.LockBackGround;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;DisplayEffect(mX,mY,flame_image^,mHP);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;mHP := mHP - 15;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;Basic.UnlockBackGround;<BR>| &nbsp;end;</FONT></P>
+<P><FONT color=yellow face=굴림체><BR>| &nbsp;function &nbsp;&nbsp;&nbsp;TMotionBlur.DoAction : 
+boolean;<BR>| &nbsp;var<BR>| &nbsp;&nbsp;&nbsp;&nbsp;i : integer;<BR>| &nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if (mHP &lt;= 0) 
+or (mX &lt; 0) or (mX &gt;= MAX_X_LINE-mXSize) or<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(mY 
+&lt; 0) or (mY &gt;= MAX_Y_LINE-mYSize) then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DoAction := 
+FALSE;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// HP 가 0 이하이거나 이미지가 화면에서 
+조금이라도 벗어나면 소멸<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 조건이 된다.<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if CheckCrash then begin;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if mHP = 100 then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if ((mX + mVX) &gt; 0) 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((mX + mVX) &lt; MAX_X_LINE-mXSize) 
+and<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((mY + mVY) &gt; 0) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((mY + 
+mVY) &lt; MAX_Y_LINE-mYSize) then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if GetFreeObjects(i) 
+then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Objects[i] := 
+new(PMotionBlur,Create(tiFlame,<BR>| &nbsp;&nbsp;&nbsp;</FONT></P>
+<P><FONT color=yellow face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trunc(mSX+mVX+0.5),Trunc(mSY+mVY+0.5),<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;100,mVX,mVY,0,0));<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DoAction := TRUE;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end else 
+begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DoAction := FALSE;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// CheckCrash 는 
+현재의 객체가, 영향을 주는 다른 객체와 충돌했는<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 가를 판별하여 데미지를 입히고 자신은 소멸하는 구조를 
+가진다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// FALSE 가 돌아온다면 다른 객체와 충돌이 일어나 자신은 소멸된다<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 는 것을 알려주는 
+것이다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 만약 TRUE 가 돌아 왔다면 제일 처음 단 한번만 ( mHP = 100 ) 자<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 신과 
+같은 객체를 창조해내고 자신은 HP 를 줄여 나가는 메카니즘<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 이다. 창조한 객체는 자신의 속도만큼 앞서서 생성되기 
+때문에 보<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 는 이로 하여금 기다란 꼬리를 끌며 날아가는 것처럼 보이게한다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 그리고 HP 가 
+줄면서 투명도는 떨어지고 &nbsp;0 이하가 되면 소멸하므<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 로 서서히 사라지는 효과도 볼 수 있다.<BR>|<BR>| 
+&nbsp;end;</FONT></P>
+<P><FONT face="굴림체"><BR>&nbsp;&nbsp;그럼 앞에서 나온 출력함수를 보자. &nbsp;이 함수야 말로 &nbsp;트루컬러에 해당하는<BR>&nbsp;유일한 함수이다. 
+즉 이것만 좀 바꾸고 초기화에서 16bit 하이컬러로 한다면<BR>&nbsp;역시 동일한 결과가 나온다는 뜻이다. ( 32bit 트루컬러도 마찬가지.. 
+)<BR>&nbsp;&nbsp;이 투명색 함수는 도스에 사용하던 것을 그대로 컨버팅한거라 &nbsp;약간 지저분<BR>&nbsp;하지만 그래도 이해해 주기를 
+바란다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;procedure DisplayEffect(x, y : integer; var 
+bitmap_data;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ratio : 
+integer);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// x 와 y 는 이미지를 출력할 백 버퍼의 좌표이고, &nbsp;bitmap_data 
+는<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 스프라이트가 들어있는 변수를 reference 로 받는다. ratio 는 투<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 명도의 비율로 
+0 - 100 정도의 범위를 가진다.<BR>| &nbsp;var<BR>| &nbsp;&nbsp;&nbsp;&nbsp;r, g, b &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: word;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;_x, _y, 
+x_len, y_len, x_len_half, y_len_half : word;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;data &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 
+longint;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;pSour, pDest &nbsp;: PDWORD;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;temp &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: DWORD;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;tr1, tr2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: longint;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;tr3, division : word;<BR>| &nbsp;begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;if (x &lt; 0) or (y &lt; 0) then exit;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// x, y 의 범위가 화면을 벗어나면 
+다운까지도 된다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if addr(bitmap_data) = nil then exit;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+@bitmap_data 가 nil 이라면 당연히 exit.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;pSour := 
+PDWORD(@bitmap_data);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// bitmap_</FONT></P>
+<P><FONT color=yellow face=굴림체>data 의 주소를 DWORD 의 포인터 형으로 &nbsp;타입 
+캐스팅하여<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// pSour 의 주소로 사용한다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;x_len := LoWord(pSour^);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;y_len := HiWord(pSour^);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 첫번째 DWORD 는 헤더이므로하위 워드는 X 길이, 상위 워드는 
+Y<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 길이이다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;inc(pSour);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// pSour++ 과 같으므로 내부적으로 
+주소가 4 bytes 증가한다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;x_len_half := x_len div 2;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;y_len_half := 
+y_len div 2;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 약간의 속도 이득을 보고자 X, Y 의 길이에 대한 / 2 값을 변수로<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+두었다.<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if (x_len = 0) or (y_len = 0) then exit;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// X 길이나 
+Y 길이가 0 이라면 당연히 exit.<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;if Basic.FPixelFormat = pfBGR then 
+begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if ColorInfo = ciRed then ColorInfo := ciBlue<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else 
+if ColorInfo = ciBlue then ColorInfo := ciRed;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;end;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 만약 픽셀 
+구조가 RGB 가 아닌 BGR 이라면 ciRed 와 ciBlue 는 서<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 로 스와핑해야 제대로 된 결과가 
+나온다.<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;division := x_len * y_len div ratio div 2;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+공통적으로 나누어줄 수를 미리 계산해둔다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;&nbsp;&nbsp;for _y := 0 to pred(y_len) do begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with Basic.LockDesc do<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pDest := 
+PDWORD(longint(lpSurface)+y*lPitch+x*BPP);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// (X,Y) 에 대한 메모리 
+주소를 얻는다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for _x := 0 to pred(x_len) do begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data := 
+pSour^; inc(pSour);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 현재의 스프라이트 데이터를 읽어서 data 라는 변수에 
+둔다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 자신은 다음 데이터를 읽기 위해서 한 스텝 증가시킨다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if data 
+&lt;&gt; longint($0) then begin<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 만약 data 가 투명색이라면....<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;temp &nbsp;&nbsp;:= pDest^;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 찍힐 곳의 DWORD 를 미리 읽어 temp 에 
+저장한다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;r &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= Byte(temp shr 16);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= 
+Byte(temp shr &nbsp;8);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= 
+Byte(temp);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// temp 에 들어온 4 bytes 의 자료를 분석하면 
+이렇다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// [ #### rrrr gggg bbbb ] &lt;- 16 진수로 
+표기<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 이렇기 때문에 쉬프트 연산과 타입 캐스팅만으로 각각의<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+RGB 요소를 추출할 수 있다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// ( 나중에 #### 이라는 요소가 꼭 필요하다.. )<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tr1 &nbsp;&nbsp;&nbsp;:= (x_len_half - abs(integer(_x)- x_len_half));<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tr2 &nbsp;&nbsp;&nbsp;:= (y_len_half - abs(integer(_y)- y_len_half));<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tr3 &nbsp;&nbsp;&nbsp;:= (tr1 * tr2 div division) shl 2;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+얼마나 스프라이트의 중심에 위치했는가를 계산 하는 것<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 으로 tr3 라는 최종 변수의 값을 만들어 
+낸다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inc(g,tr3);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inc(r,tr3);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inc(b,DWORD($FF) * ratio div 64);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 푸른색의 
+투명색이므로 &nbsp;G 와 R 은 그냥 두고 B 에 대한<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 가공만을 한다.<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if r &gt; $FF then r := $FF;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if g &gt; $FF then g 
+:= $FF;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if b &gt; $FF then b := $FF;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+r,g,b 를 word 로 선언한 이유가 이때문이다. 만약 색상<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 의 최고치인 $FF(255) 를 
+넘어가는 수치라면 &nbsp;$FF 로 만<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 들어 준다. 만약 byte 형으로 선언했다면 오버 
+플로우가<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 일어나 0 부터 다시 시작되었을 것이다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data &nbsp;&nbsp;:= 
+(temp and $FF000000) or (longint(r) shl 16) or<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(longint(g) shl 8) &nbsp;&nbsp;or 
+longint(b);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 다시만든 r,g,b 를 다시 DWORD 형으로 만든다. 
+첫부분에<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 는 위의 '####' 부분의 gabage(?) 를 or 로 결합 
+시키는<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 부분이 나온다. 이것을 안해주면 바로 오른쪽 옆의 픽셀<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+까지 영향을 미친다. 궁금하면 (temp and $FF000000) or<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 부분을 빼고 실행 시켜 
+보라.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pDest^ := data;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 최종 결과물인 DWORD 변수 
+data 를 백 버퍼에 쓴다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inc(longint(pDest),BPP);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// pDest 를 BPP ( = 3) 만큼 
+증가시킨다. &nbsp;실제로 pDest 는 4<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// bytes 형 포인터이므로 3 bytes 만 주소를 증가시키려면 
+이<BR></FONT></P>
+<P><FONT color=yellow face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 렇게 하는 것이 좋다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+참고로, 도스의 베사 모드에서는 3 bytes 전송을 위해 2 와<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 1 로 나누어서 두번 전송하는 방법을 
+쓰곤했다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inc(y);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// y 좌표를 하나 증가한다.<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;( ** 위의 소스는 최종 버전에서 약간의 수정이 있었다. )</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;나머지 소스에 대한 언급은 피하도록 하겠다. 이것은 필자의 게으름에도 큰<BR>&nbsp;문제가 있겠지만 이 강좌의 
+의의를 델파이 문법이나 윈도우 프로그램 작성이<BR>&nbsp;아닌 DX 용법으로 국한 시키고자 하는 필자의 의도 때문이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;이제 남은 것은 당신이 스스로 공개자료실에 올라온 필자의 최종 소스를 분<BR>&nbsp;석해서 제대로 된 트루컬러 
+게임을 &nbsp;만들어 내는 것이다. &nbsp;모든 것은 당신의<BR>&nbsp;노력의 여하에 달렸다. &nbsp;필자가 게임 프로그래밍에서 주장하는 것은 바로 
+이<BR>&nbsp;'노력'이라는 것이다. 처음부터 프로그래밍을 위해 타고난 두뇌를 소유한 자<BR>&nbsp;도 분명있겠지만 &nbsp;그 역시도 남보다 과정이 조금 더 
+쉬웠을뿐 자신만의 노력<BR>&nbsp;을 게을리 하지 않았을 것이라는 생각이다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&lt;&lt; 에필로그 &gt;&gt;</FONT></P>
+<P><FONT face="굴림체">&nbsp;지금까지 지루하다면 지루한 설명을 읽어 주느시라고 수고하셨습니다.<BR>&nbsp;원래 강좌 계획과는 달리 일반 책에서 
+언급하는 수준을 못 벗어 났군요. &nbsp;그<BR>냥 DX 초기화하고 &nbsp;이미지 찍는 수준에 그쳐서 저도 안따까울 따름입니다. 지<BR>금부터 2 
+시간후면 이 아이디가 유보되어 버리는 바람에 &nbsp;강좌를 시간에 쫒겨<BR>마쳐버려서 저 역시 안타까운 마음을 금할 수 없군요.</FONT></P>
+<P><FONT face="굴림체">&nbsp;미천한 저의 강좌를 통해 DX 에 대한 이해를 넓혀 가실 분이 &nbsp;몇몇 분이라도<BR>된다면 제가 이 강좌 
+타이핑 하느라 보낸 1 주일의 시간은 충분히 보상되고도<BR>남을 것입니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;만약, 또 이런 기회가 찾아온다면 더욱 더 심도 깊은 내용으로 다가 서고 싶<BR>은데.... 아직 실력도 
+부족하고... 게임 프로그래밍에 투자할 시간도 이젠 없<BR>고...</FONT></P>
+<P><FONT face="굴림체">&nbsp;그럼 마지막으로 한마디 남기겠습니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;</FONT><FONT color=lime face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot; A mountain is a 
+mountain, Water is water. &quot;</FONT><FONT face="굴림체"><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<BR> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;98.1.31 
+&nbsp;안영기</FONT></P>
+<P>&nbsp;</P></body>
+</HTML>

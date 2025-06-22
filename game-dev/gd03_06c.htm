@@ -1,0 +1,726 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<title>main_game.</title>
+<meta name="generator" content="Namo WebEditor v5.0">
+</head>
+
+<body background="back01.jpg" bgcolor="white" text="black" link="blue" vlink="purple"
+ alink="red">
+
+<div align="left">
+<table cellpadding="0" cellspacing="0" width="640">
+    <tr>
+        <td bgcolor="#605870" valign="top">
+            <p><font size="4"><b>&nbsp;</b></font><font size="4" color="white"><b>∇ 
+            스크립트 강좌</b></font></p>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#605870" height="148">
+            <table align="center" cellpadding="0" cellspacing="0" width="637">
+                <tr>
+                    <td width="477" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ 스크립트와 맵의 연동</b></font></td>
+                    <td width="84" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">N/A</font></td>
+                    <td width="76" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스無</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+                            <p align="left"><font size="2"><br>앞의 절차를 거쳐서 
+                            스크립트를 읽었다면 이제는 스크립트가 실행되는 시점에 
+                            대해서 생각해 보아야 한다. 스크립트의 목적은 이벤트나 
+                            대화를 쉽게 처리하기 위해서 있는 것이라고 했다. 
+                            그렇다면 이벤트는 어떤 것이 있는가 생각해보자.<br><br>롤플레잉 
+                            게임 속에서 일어나는 이벤트는 게임 개발 시에 미리 
+                            정의 되어져 있는 것이며 사용자가 어떤 조건을 만족 
+                            했을 때 발생하게 된다. 보통 사용자가 특정 영역에 
+                            들어 서거나 특정 영역에 들어와서 일정 시간이 경과했을 
+                            때 많이 발생하게 된다. 즉, 이벤트는 맵과 깊은 관계를 
+                            가지고 있는 것이다. 앞서 설명한 스크립트에서도 스크립트가 
+                            실행될 구체적인 위치를 명시했었다. </font></p>
+                            <p align="left"><font size="2">추가적인 설명은 단행본에서 
+                            계속 (물론 단행본은 나오지 않을 것이다.)</font></p>
+                            <p align="left"><font size="3" color="#666600"><b>1. 
+                            스크립트 예약어 샘플 (funtions)</b></font></p>
+                            <ul>
+                                <table border="1" cellspacing="0" width="596" bordercolordark="white" bordercolorlight="black">
+                                    <tr>
+                                        <td width="123" bgcolor="#696FC7">
+                                            <p align="center"><font color="white" size="2"><b>예약어</b></font></p>
+                                        </td>
+                                        <td width="68" bgcolor="#696FC7">
+                                            <p align="center"><font color="white" size="2"><b>파라미터</b></font></p>
+                                        </td>
+                                        <td width="391" bgcolor="#696FC7">
+                                            <p align="center"><font color="white" size="2"><b>내용</b></font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">equal to</font></p>
+                                        </td>
+                                        <td width="68">
+                                            <p><font size="2">(i,j)</font></p>
+                                        </td>
+                                        <td width="391">
+                                            <p><font size="2">(i == j)</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">greater than</font></p>
+                                        </td>
+                                        <td width="68">
+                                            <p><font size="2">(i,j)</font></p>
+                                        </td>
+                                        <td width="391">
+                                            <p><font size="2">(i &gt; j)</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">less than</font></p>
+                                        </td>
+                                        <td width="68">
+                                            <p><font size="2">(i,j)</font></p>
+                                        </td>
+                                        <td width="391">
+                                            <p><font size="2">(i &lt; j)</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">greater equal</font></p>
+                                        </td>
+                                        <td width="68">
+                                            <p><font size="2">(i,j)</font></p>
+                                        </td>
+                                        <td width="391">
+                                            <p><font size="2">(i &gt;= j)</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">less equal</font></p>
+                                        </td>
+                                        <td width="68">
+                                            <p><font size="2">(i,j)</font></p>
+                                        </td>
+                                        <td width="391">
+                                            <p><font size="2">(i &lt;= j)</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">event is set</font></p>
+                                        </td>
+                                        <td width="68">
+                                            <p><font size="2">(i)</font></p>
+                                        </td>
+                                        <td width="391">
+                                            <p><font size="2">i번 이벤트가 설정되어 
+                                            있는가</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">event is</font></p>
+                                        </td>
+                                        <td width="68">
+                                            <p><font size="2">(i)</font></p>
+                                        </td>
+                                        <td width="391">
+                                            <p><font size="2">현재 발생한 이벤트의 
+                                            종류가 i인가</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">event number is</font></p>
+                                        </td>
+                                        <td width="68">
+                                            <p><font size="2">(i)</font></p>
+                                        </td>
+                                        <td width="391">
+                                            <p><font size="2">현재 발생한 이벤트의 
+                                            번호가 i인가</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">event map is</font></p>
+                                        </td>
+                                        <td width="68">
+                                            <p><font size="2">(x,y)</font></p>
+                                        </td>
+                                        <td width="391">
+                                            <p><font size="2">현재 발생한 이벤트의 
+                                            위치가 (x,y)인가</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">you talked</font></p>
+                                        </td>
+                                        <td width="68">
+                                            <p><font size="2">(i)</font></p>
+                                        </td>
+                                        <td width="391">
+                                            <p><font size="2">지금 말하고 있는 
+                                            대사가 i번 대사인가</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">flag is set</font></p>
+                                        </td>
+                                        <td width="68">
+                                            <p><font size="2">(i)</font></p>
+                                        </td>
+                                        <td width="391">
+                                            <p><font size="2">지금 말하고 있는 
+                                            대사가 i번 대사인가</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">time is</font></p>
+                                        </td>
+                                        <td width="68">
+                                            <p><font size="2">(..)</font></p>
+                                        </td>
+                                        <td width="391">
+                                            <p><font size="2">이벤트 발생 시간이 
+                                            이 집합 안에 있는가(집합형 파라미터를 
+                                            받음)</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">win a victory</font></p>
+                                        </td>
+                                        <td width="68">
+                                            <p><font size="2">()</font></p>
+                                        </td>
+                                        <td width="391">
+                                            <p><font size="2">최근 전투에서 
+                                            승리했는가</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">in a room</font></p>
+                                        </td>
+                                        <td width="68">
+                                            <p><font size="2">()</font></p>
+                                        </td>
+                                        <td width="391">
+                                            <p><font size="2">현재 실내에 있는가</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">person in map</font></p>
+                                        </td>
+                                        <td width="68">
+                                            <p><font size="2">(x,y) &nbsp;</font></p>
+                                        </td>
+                                        <td width="391">
+                                            <p><font size="2">그 좌표에 사람이 
+                                            있는가</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">special condition</font></p>
+                                        </td>
+                                        <td width="68">
+                                            <p><font size="2">(i)</font></p>
+                                        </td>
+                                        <td width="391">
+                                            <p><font size="2">i번 특수 상태는 
+                                            TRUE 인가</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">parameter is</font></p>
+                                        </td>
+                                        <td width="68">
+                                            <p><font size="2">(Num,i)</font></p>
+                                        </td>
+                                        <td width="391">
+                                            <p><font size="2">공통 파라메터 
+                                            Num은 i 인가</font></p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </ul>
+                            <p align="left"><font size="3" color="#666600"><b>2. 
+                            스크립트 예약어 샘플 (procedures)</b></font></p>
+                            <ul>
+                                <table border="1" cellspacing="0" width="596" bordercolordark="white" bordercolorlight="black">
+                                    <tr>
+                                        <td width="123" bgcolor="#696FC7">
+                                            <p align="center"><font color="white" size="2"><b>예약어</b></font></p>
+                                        </td>
+                                        <td width="146" bgcolor="#696FC7">
+                                            <p align="center"><font color="white" size="2"><b>파라미터</b></font></p>
+                                        </td>
+                                        <td width="313" bgcolor="#696FC7">
+                                            <p align="center"><font color="white" size="2"><b>내용</b></font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">test value</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(i)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">디버그용 숫자를 
+                                            출력</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">debug value</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(i)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">디버그용 숫자를 
+                                            메시지 출력</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">exit talk</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">()</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">대화를 강제 종료</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">set flag</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(i)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">플래그 세팅</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">reset flag</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(i)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">플래그 리셋</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">set var</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(num,value)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">광역 변수 세팅</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">get var</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(num)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">광역 변수 읽기</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">add var</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(num,value)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">광역 변수 더하기</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">run script</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(s,x,y)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">새로운 스크립트 
+                                            실행</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">print hangul</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(s)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">한글 출력</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">talk</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(s)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">대화를 출력</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">write map</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(attr,x,y,i)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">맵에 i를 씀</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">write event map</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(attr,x,y,b)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">맵에 i를 씀</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">fill map</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(attr,x1,y1,x2,y2,i)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">맵을 i로 채움</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">set event time</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(n,hour,min,sec) 
+                                            </font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">이벤트 시간 설정</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">direct hangul</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(x,y,s,r,g,b)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">(x,y)에 (r,g,b)의 
+                                            색으로 한글 직접 출력</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">direct hangul 
+                                            ex</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(y,s,r,g,b)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">위와 같지만 자동으로 
+                                            중간 정렬 x값을 설정</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">delay</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(mSec)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">1/1000 * mSec 
+                                            초만큼 딜레이</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">clear backscreen</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p>()</p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">백버퍼를 검은색으로 
+                                            지움</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">initialize talk</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p>()</p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">대화를 초기화 
+                                            시킴</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">add talk</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(i,s)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">대화 목록 추가</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">remove talk</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(i)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">대화 목록 제거</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">remove all talk</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">()</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">대화 목록 전부 
+                                            제거</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">set color</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(r,g,b)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">RGB 대화 색 설정</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">default color</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(r,g,b)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">디폴트 대화색 
+                                            설정</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">press any key</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p>()</p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">디폴트 대화색 
+                                            설정</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">wait any key</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p>()</p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">키를 누를 때까지 
+                                            대기, 단 백버퍼만 갱신</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">pass time</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(Hour,Minute,Second)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">시간 경과</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">modify time</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(Hour,Minute,Second)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">시간 강제 설정</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">set master</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(Person,i)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">사람 내부 인수 
+                                            설정 : person = 0 이면 자신</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">set parameter</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(Num,i)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">파라메터를 설정</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">clear parameter</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">()</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">파라메터를 전부 
+                                            소거</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">get number</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(s)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">s 라는 이름을 
+                                            가진 캐릭터의 번호 읽기</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">set internal</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(sPer,Num|s,i)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">sPer의 Num 내부변수를 
+                                            i 로 설정, s 는 옵션</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">get internal</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(sPer,Num|s,s)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">sPer의 Num 내부변수를 
+                                            읽기, s 는 옵션</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">add internal</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(sPer,Num|s,i)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">sPer의 Num 내부변수를 
+                                            i만큼 증가, s 는 옵션</font></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="123">
+                                            <p><font size="2">delay only</font></p>
+                                        </td>
+                                        <td width="146">
+                                            <p><font size="2">(mSec)</font></p>
+                                        </td>
+                                        <td width="313">
+                                            <p><font size="2">Flip 만 수행하는 
+                                            딜레이 루틴</font></p>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br>
+                            </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td height="2" bgcolor="#605870" colspan="3" width="637">
+                     </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td width="595" bgcolor="#605870" height="2">
+        </td>
+    </tr>
+</table>
+</div>
+
+</body>
+
+</html>

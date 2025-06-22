@@ -1,0 +1,74 @@
+<html>
+<head>
+<title>main_game.</title>
+<meta name="generator" content="Namo WebEditor v5.0">
+</head>
+
+<body background="back01.jpg" bgcolor="white" text="black" link="blue" vlink="purple"
+ alink="red">
+
+<div align="left">
+<table cellpadding="0" cellspacing="0" width="640">
+    <tr>
+        <td bgcolor="#605870" valign="top">
+            <p><font size="4"><b>&nbsp;</b></font><font size="4" color="white"><b>∇ 
+            프로그래밍 소품 및 팁</b></font></p>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#605870" height="148">
+            <table align="center" cellpadding="0" cellspacing="0" width="637">
+                <tr>
+                    <td width="477" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ 확장 완성형 코드를 유니코드로</b></font></td>
+                    <td width="84" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">C++</font></td>
+                    <td width="76" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">N/A</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+                            <p>일반적으로 완성형 한글 코드라고 하면 KSC5601-1987을 
+                            말하곤 한다. 이 코드는 한글 2350자 가량을 담고 있는 
+                            것으로 모든 한글을 다 표시할 수 있는 문자는 아니다. 
+                            일반적으로 휴대폰의 IME를 통해서 글자를 적을 때, 
+                            '똠', '펲', '쀍' 등은 입력할 수가 없는데 그 이유가 
+                            바로 KSC5601-1987을 적용하고 있기 때문이다. </p>
+                            <p>사실 Windows 프로그래밍만 하거나 PC용 linux 프로그래밍을 
+                            한다면 굳이 이런 변환 함수를 만들 필요가 없다. Windows에는 
+                            MultiByteToWideChar()라는 것이 있고, linux에는 iconv()라는 
+                            막강한 코드 변환 함수가 있다. 하지만 문제는 embedded 
+                            system의 경우이다. 보통 embedded system용 linux에는 
+                            iconv와 같이 용량을 많이 차지하는 것은 빌드에서 
+                            빠져 있다. (물론 직집 소스로 빌드하면 된다. 하지만 
+                            license 문제가 있는 경우가 있다) 그럴 때는 DOS 때 
+                            해왔던 것처럼 직접 변환 테이블을 소스 코드에 넣고 
+                            그것을 구현하는 방법 밖에는 없다.</p>
+                            <p>어쩌다 보니 필요하게 되어서 퇴근하자마자 만들어 
+                            보았는데, 세상이 좋아져서 100줄까지 코딩 않고도 
+                            변환 함수를 만들 수 있게 되었다. (물론 거짓말이다. 
+                            변환 테이블을 만들기 위한 코드가 추가로 필요 했었다)</p>
+                            <p align="center"><font size="3"><a href="gd_data/gd0703_1.zip">첨부파일 
+                            (46K)</a></font></p>
+                            <p>일단 VC++용 dsw가 있으니 직접 열어 보면 예제가 
+                            있다. 물론 g++에서도 제대로 동작 한다.</p>
+</td>
+                </tr>
+                <tr>
+                    <td height="2" bgcolor="#605870" colspan="3" width="637">
+                     </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td width="595" bgcolor="#605870" height="2">
+&nbsp;        </td>
+    </tr>
+</table>
+</div>
+
+<p>&nbsp;</p>
+</body>
+
+</html>

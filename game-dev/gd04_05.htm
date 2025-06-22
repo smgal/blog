@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<title>main_game.</title>
+<meta name="generator" content="Namo WebEditor v5.0">
+</head>
+
+<body background="back01.jpg" bgcolor="white" text="black" link="blue" vlink="purple"
+ alink="red">
+
+<div align="left">
+<table cellpadding="0" cellspacing="0" width="640">
+    <tr>
+        <td bgcolor="#605870" valign="top">
+            <p><font size="4"><b>&nbsp;</b></font><font size="4" color="white"><b>∇ 
+            VC++  게임 제작 소품</b></font></p>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#605870" height="148">
+            <table align="center" cellpadding="0" cellspacing="0" width="637">
+                <tr>
+                    <td width="477" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ 텍스쳐로 anti-aliased 폰트 찍기</b></font></td>
+                    <td width="84" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">VC++</font></td>
+                    <td width="76" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+                            <p><font size=2>지난 일요일에 AVEJ에 쓰일 폰트 엔진을 
+                            만들어 보자는 뜻에서 anti-aliasing을 지원하는 폰트 
+                            출력 클래스를 만들었다. 용량을 줄이기 위해서 외부 
+                            폰트 엔진을 사용하지 않고 win32의 true type font용 
+                            API를 사용했으며 출력은 DirectX를 사용했다.<br>(DirectX9에 
+                            딸려 오는 폰트 클래스가 있지만 이제와서 별로 공부하고 
+                            싶지도 않고..)</font></p>
+                            <p><font size=2>이것은 AVEJ의 일부로 제작되었기 
+                            때문에 Delphi가 아니라 VC++이다.</font></p>
+                            <p><font size="2" color="#003366"><b>fontTest.cpp</b></font><font size=2><br>- 
+                            이 font test를 시작하기 위한 WinMain() 함수가 있는 
+                            곳</font></p>
+                            <p><font size="2" color="#003366"><b>smAppWin32.cpp</b></font><font size=2><br>- 
+                            Win32용 application을 실행하기 위한 message loop등이 
+                            있는 곳</font></p>
+                            <p><font size="2" color="#003366"><b>smMain.cpp</b></font><font size=2><br>- 
+                            Platform에 비 의존적인 실제 main loop<br>&nbsp;&nbsp;(현재는 
+                            테스트를 위해 DirectX 9의 &nbsp;method를 직접 호출한다.)</font></p>
+                            <p><font size="2" color="#003366"><b>smVideoWin32.cpp</b></font><font size=2><br>- 
+                            Win32용 video 출력을 하기 위한 내용이 구현되어 있는 
+                            곳</font></p>
+                            <p><font size="2" color="#003366"><b>smFontWin32.cpp</b></font><font size=2><br>- 
+                            Win32용 font 출력을 하기 위한 내용이 구현되어 있는 
+                            곳</font></p>
+                            <table align="center" cellpadding="0" cellspacing="0" width="335">
+                                <tr>
+                                    <td width="335">
+                                        <p align="center"><font size="2" face="Courier New" color="#0033CC">fontTest.cpp<br></font><font size="2" face="Courier New" color="black">|</font><font size="2" face="Courier New" color="#0033CC"><br>smAppWin32.cpp<br></font><font size="2" face="Courier New" color="black">|</font><font size="2" face="Courier New" color="#0033CC"><br>smMain.cpp<br></font><font size="2" face="Courier New" color="black">|<br>+------------+------------+<br>| 
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</font><font size="2" face="Courier New" color="#0033CC"><br>smVideoWin32.cpp 
+                                        &nbsp;&nbsp;smFontWin32.cpp</font></p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p align="center"><font size=2><a href="gd_data/gd0405_1.zip">다운 로드 (실행파일은 
+                            없음)</a></font></p>
+                            <p><font size=2><br>Anti-aliasing font를 구현하기 
+                            위해서는 외곽선에 대한 블렌딩이 필요하다. 일반적으로 
+                            이 부분은 S/W 블렌딩을 통해 구현했지만 게임에서는 
+                            H/W의 기능을 이용해서 블렌딩도 가능하다.</font></p>
+                            <p><font size=2>1. Direct3D의 texture를 생성한다.<br>2. 
+                            Texture에 폰트를 그리되 anti-aliasing 정보는 모두 
+                            알파값으로만 지정한다.<br>3. 이렇게 만들어진 texture를 
+                            D3DBLEND_SRCALPHA를 이용해 back-buffer에 bliting한다.</font></p>
+                            <p><font size=2>문제점</font></p>
+                            <p><font size=2>절대 최적화 되어 있지 않다.<br>Texture의 
+                            buffer에 직접 lock을 걸고 내용을 갱신해야 하기 때문에 
+                            원하는 속도가 나지 않는다.<br>따라서 일반적인 텍스트 
+                            출력을 위해서는 사용하기 힘들고 texture에 고정된 
+                            폰트를 집어 넣거나 첨부된 소스를 수정해서, 한꺼번에 
+                            그린후 조금씩 보여주거나 &nbsp;font cashing을 구현해야 
+                            할 것이다.</font></p>
+                            <p><font size=2>Memory off-screen buffer 에 폰트 
+                            출력을 하고 UpdateSurface로 갱신해보기도 했지만 
+                            오히려 더 늦어졌다.<br>일단 내가 쓰려고 하는 용도에는 
+                            맞지 않기 때문에 이것은 버린다.</font></p>
+</td>
+                </tr>
+                <tr>
+                    <td height="2" bgcolor="#605870" colspan="3" width="637">
+                     </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td width="595" bgcolor="#605870" height="2">
+&nbsp;        </td>
+    </tr>
+</table>
+</div>
+
+<p>&nbsp;</p>
+</body>
+
+</html>

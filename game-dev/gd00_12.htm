@@ -1,0 +1,251 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<title>main_game.</title>
+<meta name="generator" content="Namo WebEditor v5.0">
+</head>
+
+<body background="back01.jpg" bgcolor="white" text="black" link="blue" vlink="purple"
+ alink="red">
+
+<div align="left">
+<table cellpadding="0" cellspacing="0" width="640">
+    <tr>
+        <td bgcolor="#605870" valign="top">
+            <p><font size="4"><b>&nbsp;</b></font><font size="4" color="white"><b>∇ 
+            델파이 게임 제작 소품</b></font></p>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#605870" height="148">
+            <table align="center" cellpadding="0" cellspacing="0" width="636">
+                <tr>
+                    <td width="372" align="center" valign="top" bgcolor="#908CB8" height="19">
+                            <p align="left">&nbsp;<font
+             size="3" color="white"><b>▼ </b></font><a href="gd_data/src0307_1.zip"><font
+             size="3" color="white">50% 반투명 퍼포먼스 분석</font></a></p>
+</td>
+                    <td width="66" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">Delphi</font></td>
+                    <td width="58" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td width="636" align="center" valign="top" bgcolor="#E1DBFF" height="19" colspan="3">
+                            <p align="left"><font size="2">현재 알려진 50% 반투명에 
+                            대한 16-bit, 32-bit 모드의 소스와 실행 파일이 있습니다. 
+                            또한 각 모드 별로 일반 알고리즘과 보정 알고리즘(마지막 
+                            1비트 손실 복원)의 퍼포먼스 차이를 수치로 나타내고 
+                            있습니다. 그리고 마지막에는 이 알고리즘을 어셈블러로 
+                            구현했을 때 퍼포먼스 개선의 정도가 어느 정도인지 
+                            확인할 수 있습니다.</font><br>&nbsp;</p>
+</td>
+                </tr>
+                <tr>
+                    <td width="372" align="center" valign="top" bgcolor="#908CB8" height="19">
+                            <p align="left">&nbsp;<font
+             size="3" color="white"><b>▼ </b></font><a href="gd_data/src0110_1.zip"><font
+             size="3" color="white">형광펜 효과</font></a></p>
+</td>
+                    <td width="66" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">Delphi</font></td>
+                    <td width="58" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td width="636" align="center" valign="top" bgcolor="#E1DBFF" height="19" colspan="3">
+                            <p align="left"><font size="2">그림 위에 마우스로 
+                            그린 그림이 형광펜처럼 작용하는 예제입니다.</font><br>&nbsp;</p>
+</td>
+                </tr>
+                <tr>
+                    <td width="372" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ </b></font><a href="gd_data/src0012_1.zip"><font
+             size="3" color="white">델파이로 소용량 게임 만들기</font></a></td>
+                    <td width="66" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">Delphi</font></td>
+                    <td width="58" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="center" valign="top" bgcolor="#E1DBFF" colspan="3">
+<p align="left"><font size="2">Delphi로 게임을 만들기 위해서 사실 필요한 부분은 
+                Direct X라는 
+COM 기반의 DLL 뿐입니다. 이 DLL은 Direct X를 설치하면 기본으로 system에 깔리기 때문에 추가로 드는 용량은 아닙니다. 
+                그렇다면 Direct X SDK는 뭐냐. 이것은 바로 
+그 DLL 을 사용할 수 있게 해주는 import 목록의 집합이라고 할 수 있으며 델파이에서는 별도의 *.lib 과 
+*.h 없이 하나의 파일로 접근이 가능하도록 되어 있습니다..<BR>(즉, Direct X SDK 가 원칙적으로 필요 
+없다는거죠. Help document 빼고)<BR><BR>그렇다면 델파이에선 무엇이 문제인고 
+하니 기본적으로 폼을 하나 띄우데 300K 가까운 용량을 만들어 낸다는 것입니다. 스타크래프트 할 
+때 윈도우 창 뜨는 거 봤습니까 ? 아니면 윈도우 컨트롤을 사용하는 게임 봤습니까 ? 
+                (최근의 추세는 
+AOE 처럼 윈도우 컨트롤을 사용해서 간단하게 만들기도 합니다만, 그건 MS 사의 게임이기 
+                때문이며 기타의 3D 
+게임에서도 사용하기는 하지만 별로 보기 좋아 보이지는 않습니다)<br><BR>그렇다면 결론은.. 델파이로 게임을 
+만들 때 Form은 필요가 없는 부분이라는 것입니다. 단지 메시지를 핸들링 하기 위한 윈도우 핸들만 필요할 
+뿐이죠. 그래서 Delphi 로 컴파일 되는 간단한 Direct X 데모를 만들었습니다. ( 실행 
+파일의 크기는 30Kb)<BR><BR>소스에서 보시면 아시겠지만 VCL을 빼고 순수한 Object 
+                Pascal로 제작되었으며 예전 Turbo pascal for windows 의 향수를 느끼기에 충분하게 
+만들었습니다.</font>&nbsp;<br>&nbsp;                    </td>
+                </tr>
+                    <td width="372" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ </b></font><a href="gd_data/src0010_1.zip"><font
+             size="3" color="white">투시 안경 시뮬레이터 1</font></a></td>
+                    <td width="66" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">Delphi</font></td>
+                    <td width="58" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="center" valign="top" bgcolor="#E1DBFF" colspan="3">
+                        <p align="left"><font size="2">RGB 5:5:5 모드에서 2중 Color Key 에 대한 예제입니다.<br>마우스를 
+                그림에 가져다 대면 그 부분만 마스킹이 풀리면서 숨은 그림이 나타나게 
+                됩니다.<br>&nbsp;</font>                    </td>
+                </tr>
+                <td width="372" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ </b></font><a href="gd_data/src0010_2.zip"><font
+             size="3" color="white">투시 안경 시뮬레이터 2</font></a></td>
+                    <td width="66" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">Delphi</font></td>
+                    <td width="58" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="center" valign="top" bgcolor="#E1DBFF" colspan="3">
+<p align="left"><font size="2">32 비트 RGB 8:8:8 모드에서 남는 상위 8 비트를 
+                    알파 블렌딩 컴포넌트로 사용하는 예제입니다.<br><br>&nbsp;</font>                    </td>
+                </tr>
+                <td width="372" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ </b></font><a href="gd_data/src0009_1.zip"><font
+             size="3" color="white">프로젝트 모모코</font></a></td>
+                    <td width="66" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">Delphi</font></td>
+                    <td width="58" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="center" valign="top" bgcolor="#E1DBFF" colspan="3">
+                <dl>
+                    <div align="left">
+                        <dt><font size="2"><b>이건 뭐냐 ?</b></font>
+                    </div>
+                </dl>
+                <ul>
+                    <p align="left"><font size="2">프로젝트 : 모모코<BR><BR>이것은 Direct Draw 와 
+Direct Show 를 사용하여 현재 플레이 되는 동영상의 각 프레임을 실시간으로 Canvas 화시켜서 글자도 쓰고 
+그림도 그릴 수 있게 하는 프로그램 소스...<BR>(동영상 자막 넣거나 반투명 필터링 등등을 하는데 
+                    쓰일걸로 
+예상 됨)</font></p>
+                </ul>
+                <p align="left"> <font size="2"><b>만든 동기</b></font></p>
+                <ul>
+                    <dl>
+                        <p align="left"><font size="2">평범한 샐러리맨의 
+생활을 하던 나는 어제 저녁에 사사미란 프로그램을 보고 갑자기 델파이에 대한 향수가 
+                        떠올라 부랴 부랴 델파이 깔고 먼지 
+묻은 예전의 소스들을 꺼내어 요딴 걸 만들어 봄. '사사미'라는 이름처럼 받침 없이 3 자에 앞의 두자 발음이 같은 
+애니 캐릭터를 떠올려 본 결과 모모이로 시스터즈의 '모모코'가 떠올라 모모코라 
+                        명명.. (즉 의미 불명)</font></p>
+                    </dl>
+                </ul>
+                <p align="left"> <font size="2"><b>사용 설명</b></font></p>
+                <ul>
+                    <p align="left"><font size="2">가장 불편한 유저 인터페이스에 근간한 
+작품<BR>사람이 알아 보기 힘든 소스 코딩 기법에 최소의 주석<BR>COM 이나 Direct X 를 다루어 본 사람은 다 알만한 
+내용<BR><BR>소스에 보면 이런 저런 과정을 거친 후에 Direct Draw Stream Sample이란 
+인터페이스에 연결된 BackBuffer라는 Direct Draw Surface에 그 프레임의 Bitmap 
+정보가 Update 되게되고 그것을 TDDCanvas (TCanvas 객체에서 상속 받은 객체)로 받기 때문에 제어 
+가능하게 만들어져 있음...<BR><BR>쉽게 말하면 TDDCanvas 를 TCanvas 쓰듯이 쓰면 됨.. 
+                    (그대신 
+Canvas 다 쓰면 꼭 Release 해줘야됨.. 왜냐고 ? 내부적으로 Direct Draw Surface Lock 
+을 사용 하니까...)<BR><BR>별로 친절하지 않은 인터페이스에 최소의 test 예제만 
+                    들어가 
+있지만.. 굉장히 쉽게 이해 될거라고 믿음..<BR><BR>절대 버전 업 없음..<BR>에러 처리 안되어 
+있음...<BR>실행 안된다는 메일 사절.. 기초적 질문 사절..<BR>&nbsp;</font></p>
+                </ul>
+                    </td>
+                </tr>
+                <td width="372" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ </b></font><a href="gd_data/src0009_2.zip"><b><font
+             size="3" color="white">동영상 자막만 출력하세</font></b></a></td>
+                    <td width="66" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">Delphi</font></td>
+                    <td width="58" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="center" valign="top" bgcolor="#E1DBFF" colspan="3">
+            <p align="left"> <b><font size="2">프로그램 이름</font></b></p>
+            <ul>
+                <p align="left"><font size="2">동영상 자막 출력 하세</font></p>
+            </ul>
+            <p align="left"> <font size="2"><b>프로그램 
+기능</b></font></p>
+            <ul>
+                <p align="left"><font size="2">현존하는 동영상에 대한 오디오만 재생 하기, 
+                그리고 동영상 자막만 재생 하는 기능이 
+있다. (즉 동영상에서 영상만 출력하지 않는다는 뜻. 동영상 출력하는 자료는 입구에서 1번 
+웨이타 '모모코'를 찾아 주시면 된다)<BR><BR>c:Tempabc.mpg 를 재생한다면 자막 
+파일은 자동으로 c:Tempabc.smi (또는 sami)를 찾게 된다.</font></p>
+            </ul>
+            <p align="left"> <font size="2"><b>프로그램 
+구성</b></font></p>
+            <ul>
+                <p align="left"><font size="2">USmSAMI.pas : 동영상 자막 파서 unit<BR>USmAudio.pas : 동영상중 Audio 
+필터 unit<BR>그 이외 위의 unit 으로 구현한간단한 플레이어</font></p>
+            </ul>
+            <p align="left"> <font size="2"><b>프로그램 
+용도</b></font></p>
+            <ul>
+                <p align="left"><font size="2">나는 몰래 뭔가를 하는 것을 좋아한다. 
+                특히 일하면서 딴 짓하기를 좋아한다. 제일 많이 
+하는 것이 일하면서 애니메이션이나 영화 보기이다. 하지만 화면에 동영상을 띄우면 바로 눈에 띄기 때문에 이어폰을 끼고 
+플레이어를 최소화시켜서 소리만 듣는다. 물론 화면을 가득 메운 것은 코딩 작업 
+화면이다.<BR><BR>아주 열심히 일하는 척 하면서 귀로는 애니나 영화를 듣게 되지만... 결정적인 문제가 
+있다... 나는 너무나도 자랑스런 한국인이기 때문이다...<BR><BR>그렇다.. 완벽한 한국어를 
+구사하는 긍지만큼이나 신께서는 나에게 미흡한 외국어 실력을 주시고 만 것이다. 
+                평소 즐겨보는 
+영상물을 접할 때면 '이야, 야메테, 잇쨔우.' 정도의 10개 남짓한 단어로만 모든 내용을 
+                알 수 있지만 가끔씩 수준 
+높은 애니를 볼 때는 역시 '*.smi' 의 확장자를 가지는 SAMI 파일이 
+필요한 것이다..<BR><BR>그래서 생각한 것이..<br>&quot; 화면 구석에 눈에 안띄는 자막만 
+나오더라도 나의 삶이 풍요로워 질텐데.. &quot;<BR>라는 것이었다. <BR><BR>그래서 소리와 
+자막만 나오는 플레이어를 만들려고 한 것이다.<BR>(사실은 이곳 자료실에 개인 소스 백업 해두는 것임)</font></p>
+            </ul>
+            <p align="left">  
+<font size="2"><b>사양</b></font></p>
+            <ul>
+                <p align="left"><font size="2">Delphi 3 standard 에서 컴파일되니까.. 그 이상의 버전에는 
+                당연히 될거고.. 
+Direct X 버전도 웬만큼 낮아도 다 된다.</font></p>
+            </ul>
+            <p align="left"> <font size="2"><b>기타</b></font></p>
+            <ul>
+                <p align="left"><font size="2">이전에 upload 한 모모코와 
+합체하면 미디어 플레이어가 된다. 하지만 합치고 싶지 않다. 별의미가 없으니까. 
+                그리고 
+USmAudio.pas 파일 자체로는 백그라운드 mp3 연주 unit 으로 변신 가능하다. 기존에 자료실이나 
+팁란에 있는 MCI 로 하는 MP3 연주는 기종에 따라 MCI 드라이버가 다르기 때문에 &quot; 적절한 제어기가 어쩌구.. 
+&quot; 하는 에러가 종종 날 때가 있다. 하지만 이걸로 MP3 연주하면 그런 걱정이 
+없다..<BR><BR>그리고 자막만 플레이도 가능하다..<BR><BR>샘플이 허접하더라도 이해해야만 한다. 그런 
+당신이 아름답다.<BR>&nbsp;</font></p>
+            </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="496" height="2" bgcolor="#605870" colspan="2">
+		    </td>
+        <td></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td width="595" bgcolor="#605870" height="2">
+        </td>
+    </tr>
+</table>
+</div>
+</body>
+
+</html>

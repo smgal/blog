@@ -1,0 +1,287 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<title>main_game.</title>
+<meta name="generator" content="Namo WebEditor v5.0">
+</head>
+
+<body background="back01.jpg" bgcolor="white" text="black" link="blue" vlink="purple"
+ alink="red">
+
+<div align="left">
+<table cellpadding="0" cellspacing="0" width="640">
+    <tr>
+        <td bgcolor="#605870" valign="top">
+            <p><font size="4"><b>&nbsp;</b></font><font size="4" color="white"><b>∇ 
+            델파이 게임 제작 소품</b></font></p>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#605870" height="148">
+            <table align="center" cellpadding="0" cellspacing="0" width="637">
+                <tr>
+                    <td width="477" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ Assembled Sprite</b></font></td>
+                    <td width="84" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">Delphi</font></td>
+                    <td width="76" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+                            <p align="left"><font size=2>Assembled Sprite가 무엇이냐. 벌써 알고 있었다면 이상한 것이다 내가 지어낸 
+말이니까.<br>이것의 아이디어는&nbsp;Compiled Sprite의 원리를 근간으로 한다.</font></p>
+<DIV>
+                                <p><font size=2>단, Compiled Sprite는 실시간에 컴파일된 데이터를 만들 수 있고 그것을 아예 어셈블러 수준에서 
+링크하기도 한다. ({$L ..}옵션이던가..) 하지만 이것은 전처리를 통해 pascal inline assembly&nbsp;language&nbsp;코드를 생성하고 그것을 
+다시 델파이 컴파일러가 컴파일하여 스프라이트를 자신의 실행 파일 속으로 숨긴다.</font>&nbsp;
+                                <p><font size=2>예전에 MMX를 이용한 '<strong>무분기 스프라이트</strong>'기법을 소개한 적이 
+있다.<br>그때는 MMX 명령어에 기본으로 포함되어 있는 마스킹 명령을 썼던 것이다. 그래서 스프라이트 출력에 필수 코드였던 if 문을 뺄 수 있었다. 
+                                그렇다면 이번의 Assembled Sprite는 무엇인가? 이것은 if 문 뿐만 아니라 sprite 출력 
+루틴이라면 필수적으로 가지고 있던 for 루프 2개를 모두 생략한 것이다.</font>&nbsp;
+                                <p><font size=2>자 그럼 원리부터 설명하기 위한 기본 조건을 보자면,</font>&nbsp;
+                                <p><font size=2>1. 델파이는 인라인 어셈블리어를 지원한다.<br>2. 델파이는 함수형 타입을 선언 할 수 있다.<br>3. 델파이는 fastcall을 지원한다.</font></DIV>
+                            <p align="center"><font size="3"><a href="gd_data/gd0403_1.zip">첨부파일 
+                            (28K)</a> (Delphi 5에서 작성되었음)</font></p>
+                            <p><font size="3" color="#666600"><b>1. 
+                            원리</b></font></p>
+<DIV>
+                                <dl>
+                                    <dd><font size=2>고전적인 스프라이트 출력 루틴은 이렇다.</font>
+                                    <dd>&nbsp;
+                                    <dd><FONT face="Courier New" color=#008080 size=2>for y = 0 to sprite.height - 
+1</FONT>
+                                    <dd><FONT size=2><FONT face="Courier New"><FONT color=#008080>&nbsp;&nbsp;&nbsp; <FONT 
+size=2>for&nbsp;x = 0 to sprite.width - 1</FONT></FONT></FONT></FONT>
+                                    <dd><FONT face="Courier New" color=#008080 size=2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if sprite.data[x][y] 
+&lt;&gt; color_key</FONT>
+                                    <dd><FONT face="Courier New" color=#008080 size=2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+frame_buffer[x_offset + x][y_offset + y] = sprite.data[x,y]</FONT>
+                                    <dd><FONT face="Courier New" color=#008080 size=2>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; end if</FONT>
+                                    <dd><FONT face="Courier New" color=#008080 size=2>&nbsp;&nbsp;&nbsp; end for</FONT>
+                                    <dd><FONT face="Courier New" color=#008080 size=2>end for</FONT>
+                                    <dd>&nbsp;
+                                    <dd><font size=2>이 루틴을 보면 크게 점프문이 3군데 있다. for 루프 복귀를 위한 2개와 if 문을 위한 1개이다. 특히 
+if문은 for 루프 2개 사이에 항상 호출되는 것이므로 퍼포먼스 저하를 가져오는 주된 원인이 된다. 그래서 나온 것이 흔히 '0번 압축'이라고 
+불리는 짝퉁 RLE이다. 이것은&nbsp;if 문은 제거할 수 있지만 적어도 2개의 for 문(패턴에 캐리지 리턴 정보를 넣으면 1개로 가능)이 
+필요하다.</font>
+                                    <dd>&nbsp;
+                                    <dd><font size=2>그럼 이제 말하고자 하는 Assembled Sprite를 보자. 이것은 스프라이트의 raw data로부터 
+전처리를 통해 inline assembly language를 생성한다고 했다. 그리고 그 구조는 다음과 같다.</font>
+                                    <dd><font size=2>이것은 <FONT color=#ff0000>스프라이트 데이터이긴 하지만 데이터 자체가 하나의 컴파일 가능한 
+inline assembly language</FONT> 이다.</font>
+                                    <dd>&nbsp;
+                                    <dd><FONT face="Courier New" color=#008080 size=2>&nbsp;&nbsp;&nbsp; jmp @@START</FONT>
+                                    <dd><FONT face="Courier New" color=#008080 size=2>&nbsp;&nbsp;&nbsp; [sprite 
+header]</FONT>
+                                    <dd>&nbsp;
+                                    <dd><FONT face="Courier New" color=#008080 size=2>@@START:</FONT>
+                                    <dd><FONT face="Courier New" color=#008080 size=2>&nbsp;&nbsp;&nbsp; [sprite data 
+copying]</FONT>
+<DIV>
+                                        <dd><FONT size=2><FONT face="Courier New" color=#008080 size=2>&nbsp;&nbsp;&nbsp; [transparent data 
+skipping]</FONT></FONT>
+                                        <dd><FONT size=2><FONT face="Courier New" color=#008080>&nbsp;&nbsp;&nbsp; .......</FONT></FONT><DIV>
+                                            <dd><FONT size=2><FONT face="Courier New" color=#008080 size=2>&nbsp;&nbsp;&nbsp; [sprite data 
+copying]</FONT></FONT>
+<DIV>
+                                                <dd><FONT size=2><FONT size=2><FONT face="Courier New" color=#008080 size=2>&nbsp;&nbsp;&nbsp; [transparent data 
+skipping]</FONT></FONT></FONT>
+                                                <dd><FONT size=2><FONT size=2>&nbsp;</FONT></FONT>
+                                                <dd><FONT size=2><FONT size=2><FONT face="Courier New" color=#008080>&nbsp;&nbsp;&nbsp; ret</FONT></FONT></FONT>
+                                                <dd><FONT size=2><FONT size=2>&nbsp;</FONT></FONT>
+                                                <dd><FONT size=2><FONT size=2><FONT face="Courier New" color=#008080>@@DATA00001:</FONT></FONT></FONT><DIV>
+                                                    <dd><FONT size=2><FONT size=2><FONT face="Courier New" color=#008080 size=2>&nbsp;&nbsp;&nbsp; [sprite 
+data]</FONT></FONT></FONT>
+                                                    <dd><FONT size=2><FONT size=2><FONT face="Courier New" color=#008080>@@DATA00002:</FONT></FONT></FONT><DIV>
+                                                        <dd><FONT size=2><FONT size=2><FONT face="Courier New" color=#008080 size=2>&nbsp;&nbsp;&nbsp; [sprite 
+data]</FONT></FONT></FONT><DIV>
+                                                            <dd><FONT size=2><FONT size=2><FONT face="Courier New" color=#008080>&nbsp;&nbsp;&nbsp; .......</FONT></FONT></FONT>
+                                                            <dd><FONT size=2><FONT size=2>&nbsp;</FONT></FONT>
+                                                            <dd><FONT size=2><FONT size=2>보시다시피 메인 루틴에 점프문은 전혀 없다. 계속 정해진대로 데이터를 복사하고 스킵한 후 ret를 만나서 함수를 끝내면 
+된다.</FONT></FONT>
+                                                            <dd><FONT size=2><FONT size=2>또한 사용하는 사람도 단지 함수처럼 부르기만 하면 알아서 출력이 된다.</FONT></FONT>
+                                                            <dd><FONT size=2><FONT size=2>&nbsp;</FONT></FONT>
+                                                            <dd><FONT size=2><FONT size=2>데이터가 실행파일 속에 함수의 형태로 숨기 때문에 유출되기도 어렵고, 전체 foot-print도 작아진다.</FONT></FONT>
+                                                            <dd><FONT size=2><FONT size=2>첨부파일의 샘플을 기준으로 했을 때&nbsp;, 일반적인&nbsp;리소스 형식으로는 (22080+bmp헤더)bytes 가량이 증가하는데&nbsp;반해 이 방식을 
+쓰면 18432bytes만 늘어 났다. (Delphi 5에서 테스트)</FONT></FONT>
+                                                            <dd><FONT size=2><FONT size=2>물론 단점도 있다.</FONT></FONT>
+                                                            <dd><FONT size=2><FONT size=2>&nbsp;</FONT></FONT>
+                                                            <dd><FONT size=2><FONT size=2>1.&nbsp;스프라이트 데이터에 출력 루틴이 삽입되기 때문에 특수효과를 주기 어렵다.<br> 
+                                                            &nbsp;&nbsp;&nbsp;(특수효과를 주려면 그것이 가능하도록 전처리기를 새로 
+만들어야 한다.)</FONT></FONT>
+                                                            <dd><FONT size=2><FONT size=2>2. 클리핑이 어렵다.<br> 
+                                                            &nbsp;&nbsp;&nbsp;(직접 frame buffer에 쓰는 것은 클리핑이 불가능하고 적어도 double buffering이 되어야 
+클리핑<br> &nbsp;&nbsp;&nbsp;&nbsp;효과가 가능하다.)</FONT></FONT>
+                                                            <dd><FONT size=2><FONT size=2>3. 스프라이트 형식이 아닐때는 도리어 사이즈가 커진다.</FONT></FONT>
+                                                            <dd><FONT size=2><FONT size=2>4.&nbsp;한 소스는 하나의 color depth에만 유효하다.</FONT></FONT>
+                                                        </dl>
+</DIV></DIV></DIV></DIV></DIV></DIV></DIV>
+                            <p><font size="3" color="#666600"><b>2. 
+                            첨부 파일 설명</b></font></p>
+<DIV>
+                                <dl>
+                                    <dd><STRONG><font size="2">Uni1.pas</font></STRONG>
+                                    <dd><font size=2>&nbsp;&nbsp;&nbsp; Assembled Sprite를 실험할 수 있는 3개의 버튼이 있는 예제 프로그램이다.</font>
+                                    <dd><font size=2>&nbsp;&nbsp;&nbsp; 왼쪽 두 개의 버튼은 각각 Assembled Sprite와 일반 스프라이트 출력 루틴에 대한 속도 비교다.</font>
+                                    <dd><font size=2>&nbsp;&nbsp;&nbsp; 가장 오른쪽의 버튼은 'test.bmp'를 읽어서 그것은 Assembled Sprite 코드로 출력 해 주는 
+예제다.</font>
+                                    <dd><font size=2>&nbsp;&nbsp;&nbsp; 모든 용법은&nbsp;이 안에 들어가 있다. 예제는 비록 15bits 컬러에서 동작하지만 충분히 8 bits index<br> &nbsp;&nbsp;&nbsp;&nbsp;mode나 32 
+bits true color mode에서도 동작하도록 수정할 수 있을 것이다.</font>
+                                    <dd><font size=2>&nbsp;</font><DIV>
+                                        <dd><STRONG><font size="2">UFrameBuffer.pas</font></STRONG>
+                                        <dd><font size=2>&nbsp;&nbsp;&nbsp; TBitmap을 상속받아 만든 가상 frame buffer를 구현하기 위한 클래스다.</font>
+                                        <dd><font size=2>&nbsp;&nbsp;&nbsp; 이 frame buffer를 통해 스프라이트를 출력하고 최종적으로 form에 나타나게 한다.</font>
+                                        <dd><font size=2>&nbsp;</font></DIV>
+                                    <dd><STRONG><font size="2">UAsmSprite.pas</font></STRONG>
+                                    <dd><font size=2>&nbsp;&nbsp;&nbsp; Assembled Sprite를 만들기 위한 클래스다.</font>
+                                    <dd><font size=2>&nbsp;&nbsp;&nbsp; 특정한 bmp와 그에 대한 color key를 지정하면 TStringList의 형태로 코드를 생성해 낸다.</font>
+                                    <dd><font size=2>&nbsp;&nbsp;&nbsp; 현재는 15 bits 전용이지만 약간의 수정으로도 충분히 다른 모드용을 만들 수 있을 것이다.</font>
+                                    <dd><font size=2>&nbsp;</font>
+                                    <dd><STRONG><font size="2">USpriteData.pas</font></STRONG>
+                                    <dd><font size=2>&nbsp;&nbsp;&nbsp; Assembled Sprite를 통해 만들어진 스프라이트 데이터가 있는 unit다.</font></DIV>                    
+                                <dd>&nbsp;
+                                </dl>
+                            <p><font size="3" color="#666600"><b>3. 
+                            첨부 내용 설명 (UAsmSprite.pas)</b></font></p>
+<div>			    
+                                    
+                                <ul>
+<font size=2>이 unit은 하나의 클래스로 이루어져 
+                                있다. 기능은 TBitmap으로 Assembled Sprite 스트링을 
+                                생성하는 역할을 한다.<br><br>아래는 그 클래스의 선언이다.<br><br></font> <font size=2>==========================================================================<br></font><font size=2 face="Courier New">TAssembledSprite 
+                                = </font><font size="2" face="Courier New" color="blue">class<br>public<br></font><font size=2 face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;</font><font size="2" face="Courier New" color="blue">constructor</font><font size=2 face="Courier New"> 
+                                Create(</font><font size="2" face="Courier New" color="blue">const</font><font size=2 face="Courier New"> 
+                                srcImage: TBitmap; </font><font size="2" face="Courier New" color="blue">const</font><font size=2 face="Courier New"> 
+                                Id: </font><font size="2" face="Courier New" color="blue">string</font><font size=2 face="Courier New">;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;colorKey: 
+                                word);<br>&nbsp;&nbsp;&nbsp;&nbsp;</font><font size="2" face="Courier New" color="blue">procedure</font><font size=2 face="Courier New"> 
+                                Free();<br></font><font size="2" face="Courier New" color="blue">public<br></font><font size=2 face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;spriteCode: 
+                                TStrings;<br></font><font size="2" face="Courier New" color="blue">end</font><font size=2 face="Courier New">;<br></font><font size=2>==========================================================================<br><br>생성자에는 srcImage라고 하는 
+                                TBitmap 클래스의 인스턴스를 받는다. 현재는 srcImage은 
+                                PixelFormat이 pf15bit만 지원된다. (하지만 충분히 
+                                확장 가능하다) 그리고 Assembled Sprite의 이름의 
+                                접미사를 붙일 수 있는 Id라는 스트링을 받으며, 
+                                마지막 파라미터로 컬러키를 받는다. 물론 이때의 
+                                컬러키도 pf15bit 형태로 주어야 한다.<br><br>이 클래스는 생성 시 생성자에 
+                                파라미터를 넘기기만 하면 Assembled Sprite로 
+                                구성된 TStringList형의 public 필드인 spriteCode에 
+                                그 결과가 들어 가게 된다.<br><br>그렇다면 이번에는 Assembled 
+                                Sprite를 만드는 원리를 알아 보자.<br><br>다음과 같은 스프라이트 데이터(1byte 
+                                단위)가 있으며 컬러키는 $00 이라고 하면,<br><br></font><font size="2" color="purple">00 00 00 00 
+                                00 <b>1A 35 36 85</b> 00 00 00 <b>15 7F 35 56</b> 
+                                00 00 <b>1E 3D</b> 00 00 00<br><br></font><font size=2>아마도 고전적인 코드에는 어떤 
+                                정해진 스프라이트 처리 루틴에서 00인 컬러키를 
+                                판별하여, 컬러키가 아닐 때만 화면에 출력하려고할 
+                                것이다. 하지만 Assembled Sprite에서는 위의 것을 
+                                다음과 같은 assembly language 코드로 만들어 
+                                준다.<br><br>=========================================================================<br></font><font size="2" face="Courier New" color="purple">mov 
+                                &nbsp;edi, 5 </font><font size="2" color="green"><i>// 
+                                출력 버퍼 5 bytes 이동<br></i></font><font size="2" face="Courier New" color="purple">lea 
+                                &nbsp;esi, @@DATA0001 </font><font size="2" color="purple">// 
+                                @@DATA0001 번지를 esi로 지정<br></font><font size="2" face="Courier New" color="purple">mov 
+                                &nbsp;ecx, 4 </font><font size="2" color="green"><i>// 
+                                복사할 바이트 수 지정<br></i></font><font size="2" face="Courier New" color="purple">rep 
+                                &nbsp;movsb &nbsp;</font><font size="2" color="green"><i>// 
+                                복사<br><br></i></font><font size="2" face="Courier New" color="purple">mov 
+                                &nbsp;edi, 3<br>lea 
+                                &nbsp;esi, @@DATA0002<br>mov 
+                                &nbsp;ecx, 4<br>rep 
+                                &nbsp;movsb<br><br>mov 
+                                &nbsp;edi, 2<br>lea 
+                                &nbsp;esi, @@DATA0003<br>mov 
+                                &nbsp;ecx, 2<br>rep 
+                                &nbsp;movsb<br><br>mov 
+                                &nbsp;edi, 3<br>......<br><br>ret 
+                                </font><font size="2" color="green"><i>// 함수 
+                                끝<br><br></i></font><font size="2" face="Courier New" color="purple">@@DATA0001:<br>&nbsp;&nbsp;&nbsp;&nbsp;db 
+                                $1A, $35, $36, $85 <br>@@DATA0002:<br>&nbsp;&nbsp;&nbsp;&nbsp;db 
+                                $15, $7F, $35, $56<br>@@DATA0003:<br>&nbsp;&nbsp;&nbsp;&nbsp;db 
+                                $1E, $3D </font><font size=2>==========================================================================<br><br>컬러키를 제외한 데이터만 함수 
+                                내에 포함되며 스킵되는 컬러키에 대한 정보는 
+                                assembly language로 표현된다. 여기서는 어떠한 
+                                점프문도 어떠한 비교문도 사용되지 않고 오직 
+                                출력을 위해 버퍼 포인터를 증가시키는 명령만이 
+                                존재한다.<br><br>이렇게 만들어진 assembly language는 
+                                spriteCode라는 TStringList 형 인스턴스 안에 
+                                '함수의 소스 코드' 형태로 존재한다. 따라서 이것을 
+                                복사한 후 실제 자신의 파일에 삽입하여 컴파일 
+                                하기만 하면 모든 것이 끝이다. (내용은 첨부한 
+                                예제를 직접 실행시켜 보면 이해가 쉬울 것이다.)<br><br>가장 간단한 사용 형태는 다음과 
+                                같다.<br><br>==========================================================================<br></font><font size="2" face="Courier New" color="blue">var<br></font><font size=2 face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;bgImage: 
+                                TBitmap;<br>&nbsp;&nbsp;&nbsp;&nbsp;spriteCode: 
+                                TAssembledSprite;<br></font><font size="2" face="Courier New" color="blue">begin<br></font><font size=2 face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;bgImage 
+                                := TBitmap.Create;<br>&nbsp;&nbsp;&nbsp;&nbsp;bgImage.LoadFromFile(</font><font size="2" face="Courier New" color="#006666">'./test.bmp'</font><font size=2 face="Courier New">);<br>&nbsp;&nbsp;&nbsp;&nbsp;bgImage.PixelFormat 
+                                := pf15Bit;<br><br> &nbsp;&nbsp;&nbsp;&nbsp;spriteCode 
+                                := TAssembledSprite.Create(bgImage, </font><font size="2" face="Courier New" color="#006666">'Test'</font><font size=2 face="Courier New">, 
+                                </font><font size="2" face="Courier New" color="#006666">$001F</font><font size=2 face="Courier New">);<br>&nbsp;&nbsp;&nbsp;&nbsp;Memo1.Lines.Assign(spriteCode.spriteCode);<br>&nbsp;&nbsp;&nbsp;&nbsp;spriteCode.Free;<br><br> 
+                                    &nbsp;&nbsp;&nbsp;&nbsp;bgImage.Free;<br></font><font size="2" face="Courier New" color="blue">end</font><font size=2 face="Courier New">;<br></font><font size=2>==========================================================================</font>
+                                </ul>
+</div>			    
+                            <p><font size="3" color="#666600"><b>4. 
+                            첨부 내용 설명 (UFrameBuffer.pas)</b></font></p>
+                            <ul>
+                                <p><font size=2>이 클래스는 Assembled Sprite를 
+                                위해서 특별히 구현한 가상 frame buffer 클래스이며 
+                                실제로는 TBitmap을 상속받아 이용하고 있다.<br><br>아래는 그 클래스의 선언이다.<br><br>==========================================================================<br></font><font size=2 face="Courier New">TSpriteProc 
+                                = </font><font size="2" color="blue" face="Courier New">procedure</font><font size=2 face="Courier New">(</font><font size="2" color="blue" face="Courier New">const</font><font size=2 face="Courier New"> 
+                                pAddr: pointer; </font><font size="2" color="blue" face="Courier New">const</font><font size=2 face="Courier New"> 
+                                pitch: longint); </font><font size="2" color="blue" face="Courier New">register</font><font size=2 face="Courier New">;<br><br>TFrameBuffer 
+                                = </font><font size="2" color="blue" face="Courier New">class</font><font size=2 face="Courier New">(TBitmap)<br></font><font size="2" color="blue" face="Courier New">public<br></font><font size=2 face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;</font><font size="2" color="blue" face="Courier New">constructor</font><font size=2 face="Courier New"> 
+                                Create(w, h: integer);<br><br></font><font size="2" color="blue" face="Courier New">private<br></font><font size=2 face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;m_pSurface: 
+                                pointer;<br>&nbsp;&nbsp;&nbsp;&nbsp;m_pitch: 
+                                longint;<br><br></font><font size="2" color="blue" face="Courier New">public<br></font><font size=2 face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;</font><font size="2" color="blue" face="Courier New">procedure</font><font size=2 face="Courier New"> 
+                                DrawImage(x, y: integer; </font><font size="2" color="blue" face="Courier New">const</font><font size=2 face="Courier New"> 
+                                proc: TSpriteProc); </font><font size="2" color="blue" face="Courier New">overload</font><font size=2 face="Courier New">;<br>&nbsp;&nbsp;&nbsp;&nbsp;</font><font size="2" color="blue" face="Courier New">procedure</font><font size=2 face="Courier New"> 
+                                DrawImage(x, y: integer; </font><font size="2" color="blue" face="Courier New">const</font><font size=2 face="Courier New"> 
+                                bitmap: TBitmap;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font size="2" color="blue" face="Courier New">const</font><font size=2 face="Courier New"> 
+                                colorKey: word); </font><font size="2" color="blue" face="Courier New">overload</font><font size=2 face="Courier New">;<br>&nbsp;&nbsp;&nbsp;&nbsp;</font><font size="2" color="blue" face="Courier New">procedure</font><font size=2 face="Courier New"> 
+                                Flush(</font><font size="2" color="blue" face="Courier New">const</font><font size=2 face="Courier New"> 
+                                canvas: TCanvas; x, y: integer);<br><br></font><font size="2" color="blue" face="Courier New">end</font><font size=2 face="Courier New">;<br></font><font size=2>==========================================================================<br><br>TSpriteProc 타입은 Assembled 
+                                Sprite로 만들어진 함수에 대한 타입이다. 함수이지만 
+                                변수처럼 쓸 수 있게 하기 위해서 이런 형태로 
+                                선언했다. 자세한 용법은 아래의 내용을 참조하면 
+                                된다.<br><br>TFrameBuffer 클래스의 생성자 
+                                Create()는 frame buffer의 크기를 정의한다. w와 
+                                h는 각각 너비와 높이를 나타내며 color depth는 
+                                일단 16 bits로 고정되어 있다. (역시 수정 가능하다.)<br><br>public 메소드는 딱 3개가 있다. 
+                                그 중에 첫 번째 DrawImage()는 (x, y)의 위치를 
+                                좌상단 좌표로 하여 Assembled Sprite를 출력하게 
+                                해준다. 실제 proc은 함수이지만 여기서는 파라미터처럼 
+                                사용하면 된다. 두 번째 Drawimage()는 TBitmap 
+                                클래스의 이미지 데이터를 받아서 똑같은 출력을 
+                                한다. 이것이 존재하는 이유는 단지 속도 비교를 
+                                위해서이다. 그리고 마지막 메소드는 Flush()이다. 
+                                이것은 지정한 canvas의 (x, y)의 위치를 좌상단 
+                                좌표로하여 frame buffer의 내용을 화면에 출력한다.<br><br>구현 자체는 아주 간단하므로 
+                                첨부된 소스를 통해서 확인하기 바란다.</font></p>
+                            </ul>
+                            <p><font size="3" color="#666600"><b>5. 
+                            첨부 내용 설명 (USpriteData.pas)</b></font></p>
+                            <ul>
+                                <p><font size=2>Assembled Sprite를 통해 만들어진 
+                                함수를 따로 unit으로 떼었다. 보시다시피 코드 
+                                자체의 라인수가 내용에 비해 굉장히 크기 때문에 
+                                따로 분리한 것이다. 라인 수는 많지만 이 데이터를 
+                                직접 bitmap으로 달고 다니는 것보다는 바이너리의 
+                                크기가 작아진다.<br>&nbsp;</font></p>
+                            </ul>
+</td>
+                </tr>
+                <tr>
+                    <td height="2" bgcolor="#605870" colspan="3" width="637">
+                     </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td width="595" bgcolor="#605870" height="2">
+&nbsp;        </td>
+    </tr>
+</table>
+</div>
+
+<p>&nbsp;</p>
+</body>
+
+</html>

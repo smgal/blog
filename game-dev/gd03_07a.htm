@@ -1,0 +1,293 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<title>main_game.</title>
+<meta name="generator" content="Namo WebEditor v5.0">
+</head>
+
+<body background="back01.jpg" bgcolor="white" text="black" link="blue" vlink="purple"
+ alink="red">
+
+<div align="left">
+<table cellpadding="0" cellspacing="0" width="640">
+    <tr>
+        <td bgcolor="#605870" valign="top">
+            <p><font size="4"><b>&nbsp;</b></font><font size="4" color="white"><b>∇ 
+            AI 강좌</b></font></p>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#605870" height="148">
+            <table align="center" cellpadding="0" cellspacing="0" width="637">
+                <tr>
+                    <td width="477" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ Predict circuit 재해석</b></font></td>
+                    <td width="84" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">N/A</font></td>
+                    <td width="76" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스無</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+                            <p align="left"><font size="2"><br>이 글은 별바람님께서 
+                            만드신 Predict circuit를 설명해주기 위한 저의 답변 
+                            중에 하나입니다. 나름대로의 생각으로 정리한 것이므로 
+                            별바람님의 원본 과는 내용이 다를 수도 있고 재해석 
+                            된 부분도 있을 수 있습니다.</font></p>
+                            <p align="left"><font size="3" color="#666600"><b>1. 
+                            Predict circuit</b></font></p>
+                            <dl>
+                                <dd><font size="2">인공지능이라.. 사실 게임 
+                                파트에서는 제 전공은 아니지만 그래도 그녀의 
+                                기사단 만들 때 전투 씬에서 사용한 것도 인공지능이라면 
+                                인공지능이겠죠..</font>
+                                <dd><font size="2">(설계는 광삼님께서 하셨기 
+                                때문에 게제동 강의실에 보면&nbsp;자료가 있습니다.. 
+                                )</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">광삼님의 설계에 보면 다분 
+                                인간의 관점에서 착안 하신 점이 많이 보입니다. 
+                                반대로 퍼지 이론 같은 것은 컴퓨터의 관점에서 
+                                확률 통계로써 결정하는 것이겠죠.</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">퍼지 이론에 의한 것은 자료가 
+                                많으니 생략하기로 하고.. 광삼님의 predict circuit 
+                                알고리즘을 제 생각대로 풀어서 설명할께요.</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">프로이트의 심리학에서 보면 
+                                이드(Id), 에고(Ego), 슈퍼에고(super ego)가 있습니다..</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">이드는 '무의식'이며 개인의 
+                                본능적 욕구충동이라고 할수 있습니다.</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">에고는 자아의 현실 원리로서 
+                                이드의 무제한적 욕구를 억제케 하는 역할을 합니다. 
+                                현실세계의 원리죠.</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">슈퍼에고도 에고와 같은 무의식의 
+                                억제 역할이지만 주로 '도덕적'인 관점에서 나타나게 
+                                되는 행동 양식입니다.</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">그럼 게임에서 전투 본능에 
+                                이것을 적용시켜 봅시다.</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">'이드'는 전투 본능이 되겠죠.. 
+                                적을 보고 적을 쫒아서 움직이는 역할을 합니다. 
+                                만약 캐릭터가 '이드'만 가지고 있다면 단순한 
+                                자코 캐릭터가 됩니다. 주로 좀비가 이런 것이 
+                                되겠네요..</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">'에고'는 '이드'의 무의식적인 
+                                공격 성향을 좀 더 현실적으로 해석하게 합니다. 
+                                예를 들어 자신이 상처입었다면 공격 성향이 줄어 
+                                들고 치료하려들거나 동료들에게 의지하게 됩니다. 
+                                그 때의 상황에 맞게 판단하기 위한 요소입니다.</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">'슈퍼 에고'는 위에서 정의한 
+                                것들에 대해 다시 재해석을 합니다. 예를들어 나 
+                                한목숨 바쳐서라도 적을 무찔러야 하는 비장함이 
+                                있다면 자신이 상처 입었어도 적을 치려 들겠죠..</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">그럼 스타크래프트의 예를들어 
+                                볼까요 ?</font>
+                                <dd><font size="2">주로 컴퓨터와 1:1 을 하면 
+                                그것을 잘 알 수가 있는데...</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">우리편 히드라로 적의 본진에서 
+                                질럿을 공격하다 보면 그 질럿이 실드가 부족하면 
+                                아군을 공격하지 않고 배터리 쪽으로 이동하려 
+                                합니다. 또한 recall 등으로 회수되기도 하죠..</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">여기서 히드라의 공격에 대해서 
+                                맞대응 하는 것이 '이드'이고 자신이 불리해지자 
+                                배터리 쪽으로 가는 것이 '에고'입니다.</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">그리고 프로토스의의 마지막 
+                                미션에서, 프로토스족의 hero가 템플로 진입하면 
+                                맵 상의 모든 저그족이 템플쪽으로 무조건 공격을 
+                                해오는 것은 '이드'와 '슈퍼에고' 때문입니다. 
+                                저그족이 멸망하지 않기 위해서 모든 저그가 사력을 
+                                다해 템플을 부수려고 하는데서 비롯됩니다.</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">그럼.. 이런 장황한 개념 이야기는 
+                                이쯤 해두고 실제 게임에 적용시켜 봅시다..</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">'이드'는 공격적 특성이기 
+                                때문에 수치로 표현하면 (+)가 됩니다. '에고는 
+                                방어적 소극적 특성이기 때문에 (-)의 수치로 표현됩니다. 
+                                '슈퍼에고'는 그때의 상황에 맞는 (+), (-)의 가중치로 
+                                표현됩니다.</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">'이드'는 캐릭터의 무의식이기 
+                                때문에 주어진 속성에서 바로 값을 얻을 수가 있습니다.<br>(예&gt; 
+                                공격성향 : 10)</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">'에고'는 현재 캐릭터의 상태에 
+                                좌우 되므로 현재의 캐릭터 값에 의해 값을 계산해 
+                                낼 수 있습니다.</font>
+                                <dd><font size="2">(예&gt; HP = 1 이므로 죽기 
+                                싫은 수치가 12)</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">'슈퍼에고'는 현재의 외부 
+                                상황에서 값을 얻을 수가 있습니다.<br>(예&gt; 
+                                &nbsp;적을 꼭 섬멸하라는 임무를 부여 받았기 
+                                때문에 +5)</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">그렇다면 '이드' - '에고' 
+                                + '슈퍼에고' = 10 - 12 + 5 = 3 이 되어서 양수가 
+                                됩니다. 비록 '이드' + '에고' 는 (-) 값이지만 
+                                '슈퍼에고' 때문에 (+)의 값이 되었습니다.. 그렇다면 
+                                행동은 뭘까요 ?</font>
+                                <dd><font size="2">바로 '공격'입니다.</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">'공격'이라는 행동이 정해졌으면 
+                                그 다음에는 공격에 대한 행동을 정의해야 합니다. 
+                                이동할것이냐 바로 공격할 것이냐 원거리 공격을 
+                                할것이냐 아군을 도와 줄것이야 하는 것들이 있는데, 
+                                역시 위와 같은 공식을 이용합니다.</font>
+                                <dd><font size="2"><br></font>                                <div align="left">
+                                    <table cellpadding="0" cellspacing="0" width="590" bgcolor="#F0E8FF">
+                                        <tr>
+                                            <td>
+                                                <dl>
+                                                    <dd><font size="2" face="굴림체"><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Id 
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ego 
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Super 
+                                                    ego &nbsp;&nbsp;&nbsp;Total<br>&nbsp;</font>
+                                                    <dd><font size="2" face="굴림체">이동 
+                                                    2 칸 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10 
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ 
+                                                    8 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;14</font>
+                                                    <dd><font size="2" face="굴림체">이동 
+                                                    4 칸 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ 
+                                                    5 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6</font>
+                                                    <dd><font size="2" face="굴림체">바로 
+                                                    공격 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10 
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ 
+                                                    2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- 
+                                                    4</font>
+                                                    <dd><font size="2" face="굴림체">원거리공격 
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9 
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2 
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ 
+                                                    8 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;15</font>
+                                                    <dd><font size="2" face="굴림체">아군 
+                                                    원조 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2 
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- 
+                                                    2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0<br></font><font size="2">&nbsp;</font>
+                                                </dl>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <dd><font size="2" face="굴림체">&nbsp;</font>
+                                <dd><font size="2">이런식으로 계산이 되었습니다.. 
+                                '원거리 공격'이 가장 값이 크죠. 그렇기 때문에 
+                                원거리 공격모드로 들어가게 됩니다.</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">이 상황을 다시 풀어 보면요..</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">&lt;무의식&gt;에서는 2칸 
+                                이동하는 것이 제일 쉽고 바로 공격하거나 아군을 
+                                원조하기가 현재로서는 제일 어렵다고 생각합니다. 
+                                그리고 &lt;의식&gt;에서는 바로 공격을 할 수 
+                                있을 상황은 아니라고 판단 했으며 원거리 공격이나 
+                                아군 원조에 가장 부담을 적게 가지고 있었겟죠.. 
+                                그리고 &lt;현재상황&gt;으로 보면 2칸 이동하거나 
+                                원거리 공격이 가장 쉬운 상황입니다. 그래서 그것의 
+                                정도를 수치로 놓고 계산해보니 Total에 나온 결과가 
+                                나왔고 가장 큰 값이 '원거리 공격'이었던 것입니다.</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">하지만 이런 식으로 계산하면 
+                                항상 같은 결과만 나올 수가 있습니다. 그래서 
+                                random 의 요소를 넣어야 하구요. 물론 강직하고 
+                                굽힘없는 성격이라면 random = 0 이 되어서 변동이 
+                                없을 수도 있지만, 역시 그 사람의 성격에 따라서 
+                                +- random(2) 나 +- random(5) 가 생긴다고 생각하면 
+                                됩니다.</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">그녀의 기사단에서는 이동에 
+                                대해서는 맵상의 가능한 이동 공간에 대해서 모두 
+                                위와 같은 수치를 재어 보고 그 중에 가장 수치가 
+                                높은 곳이 그 캐릭터가 판단한 위치라고 보고 그 
+                                쪽으로 이동합니다. 물론 위의 예제와 같이 간단한 
+                                요소로만 판단 하는 것이라 아니라 게임의 기획에 
+                                따라서 훨씬 더 많은 요소가 위의 3 값을 정하는 
+                                역할을 합니다.</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">지금까지 제가 말씀 드린 것은 
+                                RPG 등에서 캐릭터의 동작 특성을 결정하는 요소에 
+                                대한 것입니다. 그렇다면 슈팅 등에서는 장르가 
+                                다른 만큼이나 다른 AI가 들어가겠죠.</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">보통 슈팅은 RPG와는 달리 
+                                빠른 진행을 해야 하기 때문에 위와 같은 복잡한 
+                                연산으로 속도를 떨어뜨릴 수는 없습니다.</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">그래서 AI 라기보다는 패턴을 
+                                두어서 그것에 맞게 행동하는게 대부분이구요. 
+                                단지 아군의 총알을 피하는 곳에 AI 가 쓰일텐데, 
+                                제가 알기로는 그 쪽은 거의 퍼지 이론과 같은 
+                                방법을 쓴다고 알고 있습니다.</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">2D 슈팅이라면 화면상의 영역을 
+                                2D map 으로 잘게 잘라 놓고 현재의 오브젝트들에 
+                                의한 자신의 위험 수위를 더하는 식으로 합니다. 
+                                현재 총알이 있는 곳이라면 100 이고 그 다음에 
+                                움직이는 위치라면 90, 그 다음 타임의 위치는 
+                                80... 이런식으로 위험 수위에 대해서 그것을 수치로 
+                                측정한 후에 모든 오브젝트의 것을 다 계산하여 
+                                맵 상에 가중치로 부여합니다. 그러다 보면 당연히 
+                                수치가 가장 낮게 나오는 path가 생깁니다. 그곳이 
+                                흔히 말하는 '안전지대'입니다. 그리고 그 위치대로 
+                                이동하면 바로 회피 AI 가 됩니다.</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">또.. 실시간 시뮬레이션에 
+                                사용된다면 (만들어 보지는 않았지만..) 위의 RPG 
+                                의 요소들을 가장 단순화시킨 방법으로 빨리 많은 
+                                오브젝트에 대한 행동 양식을 결정해야겠죠.</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">스타크의 경우에는 한놈 집중공격을 
+                                위한 AI가 쓰였고 자신을 공격한 놈에게 다시 공격을 
+                                한다는 기본적인 AI가 포함된 것 같습니다. 그 
+                                이외에는 그렇게 복잡한 AI 는 보이지 않았습니다..</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">제가 구체적인 코드는 안 넣었습니다. 
+                                오히려 이론을 제대로 정립하는 편이 훨씬 더 도움이 
+                                될 것 같아서 나름대로 생각하고 있었던 AI 이론을 
+                                펼쳐 보았습니다..</font>
+                                <dd><font size="2">&nbsp;</font>
+                                <dd><font size="2">제것뿐만 아니라 다른 것도 
+                                많이 참조하셔서 자신만의 AI 이론을 세우시기 
+                                바랍니다.<br><br></font>
+                            </dl>
+                    </td>
+                </tr>
+                <tr>
+                    <td height="2" bgcolor="#605870" colspan="3" width="637">
+                     </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td width="595" bgcolor="#605870" height="2">
+        </td>
+    </tr>
+</table>
+</div>
+
+</body>
+
+</html>

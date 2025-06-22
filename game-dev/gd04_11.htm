@@ -1,0 +1,1217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<title>main_game.</title>
+<meta name="generator" content="Namo WebEditor v5.0">
+</head>
+
+<body background="back01.jpg" bgcolor="white" text="black" link="blue" vlink="purple"
+ alink="red">
+
+<div align="left">
+<table cellpadding="0" cellspacing="0" width="640">
+    <tr>
+        <td bgcolor="#605870" valign="top">
+            <p><font size="4"><b>&nbsp;</b></font><font size="4" color="white"><b>∇ 
+            델파이 게임 제작 연재</b></font></p>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#605870" height="148">
+            <table align="center" cellpadding="0" cellspacing="0" width="637">
+                <tr>
+                    <td width="477" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ Direct3D9을 이용한 2D 게임 만들기</b></font></td>
+                    <td width="84" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">Delphi</font></td>
+                    <td width="76" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+<DIV>
+                                <p><font size=2><br>나는 강좌 같은 것을 써서 세상에 공헌 하고 싶은 생각은 없다.<BR>내가 굳이 이런 곳에 강좌를 올리지 않아도 
+충분히 세상은 발전적으로 돌아기 때문에 '나 하나쯤'하는 마음을 가슴 속에 깊이 새기고 내 밥 벌어 먹기에만 몰두하는, 그런 지극히 주관적으로 
+아름다운 삶을 영위하고 싶다.<BR><BR>하지만 나는 지금 여기에 강좌를 올리고 있다. 그 이유는 뭘까?<BR>기억도 날랑 말랑하는 아주 예전 
+Direct X 3.0 ~ 6.0 시절에 관련 강좌를 HiTel에 올린 적이 있다. 그 강좌가 돌고 돌아 여기까지 왔는지 아니면 내가 자진해서 
+여기에 올렸는지 잘 생각은 안나지만 하여간 나의 강좌가 이 사이트 아랫 구석 어딘가에 있다는 것은 확실하다.<BR><BR>지금이 어느 시대인가? 
+Direct X는 9.0c까지 나왔고 그래픽 카드는 3D H/W 가속을 당연하다는 듯이 지원한다. 인간이 달나라도 가고, 머지않아 화성인의 
+침공까지 받을지도 모르는 이 상황에서 나의 강좌는 아직도 고무신을 신고 리어카를 끌며 비포장 도로에 머물러 있다. 한마디로 말해서 '쪽팔린다'는 
+이야기다.<BR><BR>그래서 먹고 사느라 아주 바쁜 와중에도 '델파이 게임 제작 부흥'이라는 미명 아래 초보 델피언을 혹세무민하고자 이런 강좌 
+비스무리한 것을 쓰게 되었다.<br>&nbsp;</font>
+<HR>
+<font size=2><BR></font><font size="4"><b>◀◀ 목차</b></font><font size=2>&nbsp;</font>
+                                <p><FONT size=2><FONT color=#000080>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 1. 이 강좌의 
+목적<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 2. 사용되는 툴<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 3. 
+Direct3D9의 시작과 끝<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 4. Device의 
+생성<BR></FONT><FONT color=#ff0000><FONT color=#000080>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 5. texture의 생성<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 6. texture 읽기<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 7. 블렌딩 옵션<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 8. 기본 primitive 출력<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 9. 이미지 출력<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 10. 화면에 출력 하기</FONT></FONT></FONT>
+<DIV><FONT size=2><FONT color=#ff0000><FONT color=#000000><FONT color=#000080>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 11. 예제 설명<br><FONT color=#000080>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 12. 강좌를 
+접으며<br>&nbsp;</FONT></FONT></FONT></FONT></FONT></DIV>
+<HR>
+<font size=2><BR><FONT size=4><B>1. 이 강좌의 목적</B><BR></FONT><BR>Direct3D9 (Direct3D 9.0)을 
+이용하여 2D 게임을 만드는 것이 목적이다. 3D를 만들지 왜 2D를 만드느냐고 하면 별로 할말은 없다. 단지 3D를 만들기 위한 자료들은 이미 
+많이 만들어져 있고 활발한 스터디가 되고 있으며 관련 서적도 많다. 그리고 개인적으로 3D 게임을 좋아하지 않는다. 또한 내가 하지 않더라도 
+3D 강좌를 써주실만한 실력자들이 여기에 많기 때문이다.<BR><BR>강좌의 주대상은 델파이 게임 제작의 초보들이다. 누구나 초보 때는 힘들다. 
+이 강좌를 통해 더욱 더 힘든 좌절을 겪을 수 있도록 도와 주는 것이 나의 임무다. 모두 같이 자세를 취해보자 OTL<BR><BR></font>
+                                <p><font size=2><BR><FONT size=4><B>2. 사용되는 툴</B><BR></FONT><BR>여기에서 사용된 소스와 바이너리들은 모두 
+Delphi 5.0 standard에서 컴파일되고 테스트 되었다.<BR>그 이하의 버전이나 그 이상의 버전에서의 오동작은 모두 Inprise의 
+탓으로 책임을 전가할 생각이다.<BR><BR>DirectX 9.0 runtime이 필요하다. SDK는 설치할 필요없다는 말처럼 들리는데, 
+설치안해도 프로그램이 잘 돌 수 있도록 내가 특별히 기원해 주겠다.<BR><BR></font>
+                                <p><font size=2><BR><FONT size=4><B>3. Direct3D9의 시작과 끝</B><BR></FONT><BR>제목으로 보아서는 
+Direct3D9의 처음부터 끝까지 모두 알려줄 듯이 이야기하는 것 같다.</font>
+                                <p><font size=2>Direct3D9도 다른 DirectX의&nbsp; 오브젝트와 마찬가지로 인스턴스를 가진다. 그리고 그 인스턴스를 얻기 
+위해서는 일반 함수를 호출하는 방식을 취하는데 그 선언은 다음과 같다.</font>
+                                <p><FONT face=Fixedsys size=2><FONT color=#0000ff>function</FONT> 
+Direct3DCreate9(SDKVersion : Cardinal) : IDirect3D9;</FONT>
+                                <p><font size=2>이 함수를 통해서 받은 인스턴스는 앞으로 Direct3D9의 기능을 사용하는데 가장 시초가 되는 것으로, 앞으로 
+나올 무수한 Direct3D9의 인터페이스(클래스)는 모두 이 인스턴스를 통해서 생성되거나 이 인스턴스에서 생성된 인터페이스에 의해 생성된다. 
+따라서 이 인스턴스는 전역변수, 글로벌 멤버변수 등으로 정의되어서 DirectX가 유효한 범위 내에서는 항상 접근 가능하도록 해야 한다. (즉, 
+로컬 변수 등으로 스택에 생성되어서는 안된다)</font>
+                                <p><font size=2>그럼 인스턴스를 생성하는 구체적인 코드를 보자. (여기서는 클래스 멤버 변수로 
+선언되었다.)<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys><FONT color=#008000>// 변수 
+선언<BR></FONT>m_pD3D: IDirect3D9;<BR><FONT 
+color=#800080>.......</FONT></FONT></FONT>
+                                    <p><FONT size=2><FONT face=Fixedsys><FONT color=#008000>// 인스턴스를 
+생성한다.<BR></FONT>m_pD3D := Direct3DCreate9(D3D_SDK_VERSION);</FONT></FONT>
+                                    <p><FONT size=2><FONT face=Fixedsys><FONT color=#008000>// 인스턴스 생성 여부를 
+검사한다.<BR></FONT><FONT color=#0000ff>if</FONT> <FONT color=#0000ff>not</FONT> 
+assigned(m_pD3D) <FONT color=#0000ff>then<br></FONT></FONT></FONT><FONT face=Fixedsys size=2>&nbsp;&nbsp;&nbsp; exit;<br>&nbsp;</FONT></BLOCKQUOTE>
+<font size=2>여기서 Direct3DCreate9()의 파라미터로 D3D_SDK_VERSION가 들어 갔다. 
+D3D_SDK_VERSION는 Direct3D9에서 정의되는 상수 값으로, 애플리케이션에게 정확한 버전으로 빌드되었는가를 알려주는 역할을 한다. 
+따라서 무조건 D3D_SDK_VERSION만 넣는다고 생각하면 가장 편하다.</font>
+                                <p><font size=2>그럼 이렇게 생성한 인스턴스를 해제하는 코드를 보자.<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                    <p style="margin-right:0px;"><FONT face=Fixedsys size=2>m_pD3D := <FONT color=#0000ff>nil</FONT>;<br>&nbsp;</FONT></BLOCKQUOTE>
+<font size=2>아주 간단하다 단지 nil만 대입하는 것으로 끝난다. C++이라면 Release()를 호출해주어야 하겠지만 
+Delphi의 COM의 특성 상, 그냥 대입만 하면 알아서 레퍼런스 카운트에 따라 동작이 수행된다. 이 부분은 당신이 델파이를 하기 때문에 누릴 
+수 있는 특권이다.</font>
+                                <p><font size=2>이미 당신은 'Direct3D9의 시작과 끝'을 알게 되었다.<br><br><br><BR><STRONG><FONT size=4>4. Device의 생성</FONT></STRONG></FONT>
+                                <p><font size=2>Direct3D9 인스턴스의 생성은 의외로 싱겁게 끝냈다. 사실 앞으로 나올 것들도 이런 방식을 크게 벗어나지 않는다.<BR>이번 
+설명할 것은 Device다. Device는 Direct3D에서는 실제 그래픽이 출력되는 장치를 표현하기 위한 인터페이스로 볼 수 있다. 화면에 
+출력될 장치 자체를 Device로 볼 수도 있는데 일단 최종 출력은 모두 이 Device를 통해 나간다고 생각하면 된다.</font>
+                                <p><font size=2>그럼 Device를 생성하는 방법을 알아 보자. Device는 이 앞에서 생성한 Direct3D9 인스턴스를 통해서만 생성할 수 있다. 
+Direct3D9 인스턴스의 클래스에는 십수개의 메서드를 가지고 있는데 그 중에서 Device를 생성하기 위한 것이 
+IDirect3D9.CreateDevice()이며 그것의 정의는 다음과 같다.<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys><FONT color=#0000ff>function</FONT> 
+IDirect3D9.CreateDevice<BR>(<br>&nbsp;&nbsp;&nbsp; <FONT color=#008000>// D3DADAPTER_DEFAULT만 
+넣자</FONT><BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>const</FONT> Adapter : 
+Cardinal;<br><FONT color=#008000>&nbsp;&nbsp;&nbsp; // D3DDEVTYPE_HAL만 
+넣자<BR></FONT>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>const</FONT> DeviceType : 
+TD3DDevType;<br>&nbsp;&nbsp;&nbsp; <FONT color=#008000>// 윈도우 핸들, 즉 Form1.Handle에 해당하는 
+것</FONT><BR>&nbsp;&nbsp;&nbsp; FocusWindow : HWND;<br><FONT color=#008000>&nbsp;&nbsp;&nbsp; // 
+D3DCREATE_SOFTWARE_VERTEXPROCESSING을 넣자<BR></FONT>&nbsp;&nbsp;&nbsp; BehaviorFlags : 
+LongWord;<br><FONT color=#008000>&nbsp;&nbsp;&nbsp; // 아래에서 설명<BR></FONT>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>var</FONT> PresentationParameters : 
+TD3DPresentParameters;<br>&nbsp;&nbsp;&nbsp; <FONT color=#008000>// Device 생성에 성공했으면 여기에 값이 돌아 
+온다</FONT><BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>out</FONT> ReturnedDeviceInterface : 
+IDirect3DDevice9<BR>): HResult; <FONT color=#0000ff>stdcall</FONT>;<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>복잡하긴 하지만 알고 보면 다 쉬운 내용들이다. 자세한 파라미터의 설명이나 사용가능한 플래그는 DirectX 9.0 
+Documentation에 보면 자세하게 나온다. 넣어야 할 파라미터를 직접 명시한 것은 시행착오를 줄이기 위한 것이며 고급 사용자가 되기 
+위해서는 다른 파라미터의 용도에 대해서도 숙지하고 있어야 한다.</font>
+                                <p><font size=2>그렇다면 현재 설명되지 않은 파라미터는 PresentationParameters이다. 이 파라미터는 Device를 생성 할 때 그 
+속성을 정의해 주는 것이라고 할 수 있다.<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys><FONT color=#008000>// 변수 선언<BR></FONT>d3dPP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : 
+TD3DPresentParameters;<BR><FONT 
+color=#800080>.......</FONT></FONT></FONT>
+                                    <p><FONT size=2><FONT face=Fixedsys><FONT color=#008000>// fill D3D present parameters with 
+zero<BR></FONT>ZeroMemory(@d3dPP, sizeof(d3dPP));</FONT></FONT>
+                                    <p><FONT size=2><FONT face=Fixedsys><FONT color=#008000>// fill D3D present parameter's 
+fields<BR></FONT>d3dPP.SwapEffect&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; := 
+D3DSWAPEFFECT_DISCARD;<BR>d3dPP.BackBufferCount&nbsp; := <FONT 
+color=#008080>1</FONT>;<BR>d3dPP.Flags&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; := 
+D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;<BR>d3dPP.Windowed&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; := <FONT color=#0000ff>not</FONT> isFullScreen;<BR>d3dPP.BackBufferFormat := 
+d3dFormat;<BR>d3dPP.BackBufferWidth&nbsp; := width;<BR>d3dPP.BackBufferHeight := 
+height;<br><br></FONT></FONT></BLOCKQUOTE>
+<font size=2>자, 이렇게만 넣어주면 Device는 생성되는 것이다. TD3DPresentParameters는 보는 바와 같이 아주 의미가 명확하게 
+필드명이 붙어 있으므로 별다른 설명은 하지 않겠다. 하지만 딱 두 개만 짚고 넘어가자면, 그 첫째가 <FONT 
+color=#000080><STRONG>Windowed</STRONG></FONT>라는 필드인데 이것이 TRUE이면 윈도우 창 모드로 생성되며 
+이것이 FALSE이면 전체 화면 모드로 실행된다. (이것은 나중에 alt-enter 등을 이용해서 화면 출력 모드를 전환하도록 만들 때도 
+사용된다.) 둘째는 <FONT 
+color=#000080><STRONG>BackBufferFormat</STRONG></FONT>인데 전체 화면 
+모드일 때는 여기에다가 사용할 백버퍼의 포맷을 직접 명시할 수 있다. 여기에 들어 갈 것은 딱 2개만 외우면 된다. 16비트 모드로 할 때는 
+D3DFMT_R5G6B5, 32비트 모드를 할 때는 D3DFMT_X8R8G8B8이다. 물론 자신이 스스로 중급 사용자라고 생각하시는 분들은 
+IDirect3D9.CheckDeviceType() 함수를 이용해서 D3DFMT_X1R5G5B5, D3DFMT_A1R5G5B5, 
+D3DFMT_R8G8B8, D3DFMT_A8R8G8B8 등등의 가능성을 시도해봐도 된다.</font>
+                                <p><font size=2>이렇게 Device를 생성하고 나면 기본적인 속성을 설정해야 한다. 하지만 이 강좌는 2D를 이용하는 것이기 때문에 굳이 설정하지 않고 
+디폴트 속성을 써도 큰 문제는 없다 (속지 말자!). 그래도 예의 상 짚고 넘어가자면 다음과 같다.</font>
+                                <p><font
+             size="2"><strong>1) View port 설정<br>&nbsp;</strong></font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>viewPort: TD3DVIEWPORT9;</FONT></FONT>
+                                    <p><FONT size=2><FONT face=Fixedsys>viewPort.X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; := <FONT 
+color=#008080>0</FONT>;<BR>viewPort.Y&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; := <FONT 
+color=#008080>0</FONT>;<BR>viewPort.Width&nbsp; := width;<BR>viewPort.Height := 
+height;<BR>viewPort.MinZ&nbsp;&nbsp; := <FONT 
+color=#008080>0.0</FONT>;<BR>viewPort.MaxZ&nbsp;&nbsp; 
+:= <FONT 
+color=#008080>1.0</FONT>;</FONT></FONT>
+                                    <p><FONT size=2><FONT face=Fixedsys>m_pD3DDevice.SetViewport(viewPort);<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>간단하다. 이제부터 모든 Device의 출력은 (0, 0) - (width, height)에 국한된다. 사실 전화면으로 출력하는 
+대부분의 2D게임에서는 설정하지 않고 사용해도 되나, 맵 출력 영역이 화면의 일부로 한정되는 게임의 경우에는 따로 clipping area를 
+구현할 필요가 없이 view port를 조작하는 것만으로도 훌륭하게 clipping된다.</font>
+                                <p><font
+             size="2"><strong>2) 알파 블렌딩 속성 지정<br>&nbsp;</strong></font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys><FONT color=#008000>// 블렌딩 스테이지의 속성 
+설정<BR></FONT>m_pD3DDevice.SetTextureStageState(<FONT 
+color=#008080>0</FONT>, 
+D3DTSS_TEXCOORDINDEX, <FONT 
+color=#008080>0</FONT>);<BR>m_pD3DDevice.SetTextureStageState(<FONT 
+color=#008080>0</FONT>, D3DTSS_COLORARG1, 
+D3DTA_TEXTURE);<BR>m_pD3DDevice.SetTextureStageState(<FONT 
+color=#008080>0</FONT>, D3DTSS_COLORARG2, 
+D3DTA_DIFFUSE);<BR>m_pD3DDevice.SetTextureStageState(<FONT 
+color=#008080>0</FONT>, D3DTSS_COLOROP,&nbsp;&nbsp; 
+D3DTOP_MODULATE);<BR>m_pD3DDevice.SetTextureStageState(<FONT 
+color=#008080>0</FONT>, D3DTSS_ALPHAARG1, 
+D3DTA_TEXTURE);<BR>m_pD3DDevice.SetTextureStageState(<FONT 
+color=#008080>0</FONT>, D3DTSS_ALPHAARG2, 
+D3DTA_DIFFUSE);<BR>m_pD3DDevice.SetTextureStageState(<FONT 
+color=#008080>0</FONT>, D3DTSS_ALPHAOP,&nbsp;&nbsp; D3DTOP_MODULATE);</FONT></FONT>
+                                    <p><FONT size=2><FONT face=Fixedsys><FONT color=#008000>// 필터 사용하지 
+않음<BR></FONT>m_pD3DDevice.SetSamplerState(<FONT 
+color=#008080>0</FONT>, 
+D3DSAMP_MINFILTER, D3DTEXF_POINT);<BR>m_pD3DDevice.SetSamplerState(<FONT 
+color=#008080>0</FONT>, D3DSAMP_MAGFILTER, D3DTEXF_POINT);</FONT></FONT>
+                                    <p><FONT size=2><FONT face=Fixedsys><FONT color=#008000>// 픽셀 블렌딩 방법 
+결정<BR></FONT>m_pD3DDevice.SetRenderState(D3DRS_SRCBLEND, 
+D3DBLEND_SRCALPHA);<BR>m_pD3DDevice.SetRenderState(D3DRS_DESTBLEND, 
+D3DBLEND_INVSRCALPHA);<BR>m_pD3DDevice.SetRenderState(D3DRS_BLENDOP, 
+D3DBLENDOP_ADD);<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>먼저 블렌딩 스테이지의 속성을 보자. Direct3D는 총 8개의 블렌딩 스테이지를 지원하나 본 샘플에서는 0번 스테이지만 사용하도록 
+한다. 따라서 0번에 대한 설정을 한 것이며 color와 alpha모두 texture와 diffuse 컬러를 modulate하는 방식으로 블렌딩 
+하라고 설정했다. 좀 더 쉽게 말하면, 아주 일반적인 블렌딩 방식이라고 이해하면 머리가 좀 덜 아프다.</font>
+                                <p><font size=2>추가적으로 알아 두어야 할 것은, 두 번째 스테이지부터는 이전 결과와 다시 블렌딩하는 경우가 많으므로 D3DTA_CURRENT를 사용할 
+경우가 많다는 것과, D3DTOP_MODULATE 이외에 D3DTOP_ADD 등을 사용하면 다른 이펙트를 조합할 수 있다는 것 정도만 알아두면 
+될 것 같다.</font>
+                                <p><font size=2>필터는 3종류 이상이 있지만 2D 게임의 느낌을 내기 위해서는 D3DTEXF_POINT를 사용하는 것이 좋다. 
+D3DTEXF_LINEAR를 사용해야 결과가 더 좋은 부분이 있는데 그것은 직접 눈으로 확인해보면 쉽게 결정 할 수 가 있다.</font>
+                                <p><font size=2>마지막은 픽셀 블렌딩 방식을 지정하는 것이다. 파라미터는, 사용할 수 있는 H/W capability 내에서 무궁무진하나 위의 
+파라미터가 가장 일반적인 알파 블렌딩에 부합한다고 생각하여 위와 값이 값을 설정했다. 그 의미는, source pixel의 alpha비율로 
+destination pixel과 섞는 것이다.</font>
+                                <p><font size=2>참고로, 이것의 디폴트 값은 <br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>m_pD3DDevice.SetRenderState(D3DRS_SRCBLEND, 
+D3DBLEND_ONE);<BR>m_pD3DDevice.SetRenderState(D3DRS_DESTBLEND, 
+D3DBLEND_ZERO);<BR>m_pD3DDevice.SetRenderState(D3DRS_BLENDOP, 
+D3DBLENDOP_ADD);<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>인데, 이것은 source의 내용을 destination에 그대로 출력(보통 copy라 불리는...)하라는 의미이다.</font>
+                                <p><font
+             size="2"><strong>3) 컬러키 속성 지정</strong></font>
+                                <p><font size=2>컬러키는 DirectDraw 때도 사용된 고전적인 masking 기법이다. 그 원리는 '명시한 값을 제외한 나머지를 출력하라'는 
+의미인데, Direct3D에서는 alpha test라는 방법으로 컬러키의 기능을 지원한다. (그냥 위의 alpha blending을 이용해도 
+된다)</font>
+                                <p><font size=2>alpha test는 alpha 값이 명시한 조건과 같을 때만 source pixel을 출력하라는 것인데, 아래와 같이 하면 
+alpha가 0인 부분만 투명하게 처리하라는 의미가 된다.<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys><FONT color=#008000>// if alpha &lt;&gt; $00 
+then<BR></FONT>m_pD3DDevice.SetRenderState(D3DRS_ALPHAREF, <FONT 
+color=#008080>$00</FONT>);<BR>m_pD3DDevice.SetRenderState(D3DRS_ALPHAFUNC, 
+D3DCMP_NOTEQUAL);<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>다시 풀어 보면, alpha가 $00이 아닐 때(not equal) source pixel을 출력하라는 의미다. 응용해서 같은 효과를 
+내려면,<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys><FONT color=#008000>// if alpha &gt; $00 
+then<BR></FONT>m_pD3DDevice.SetRenderState(D3DRS_ALPHAREF, <FONT 
+color=#008080>$00</FONT>);<BR>m_pD3DDevice.SetRenderState(D3DRS_ALPHAFUNC, 
+D3DCMP_GREATER);<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>이렇게 여러가지 방법으로 표현이 가능하다. (나머지 파라미터는 SDK 매뉴얼을 참고하기 바란다)</font>
+                                <p><font size=2>단, 이 방법을 사용하려면 최초의 이미지가 0의 값을 가지는 alpha pixel을 포함하고 있거나, 특정한 컬러 일 때는 
+alpha값을 0으로 설정해서 texture를 읽어 오도록 사용자가 직접 구현할 수도 있다. 이것은 나중에 다시 설명하도록 하겠다.</font>
+                                <p><font
+             size="2"><strong>4) 기타 속성 지정</strong></font>
+                                <p><font size=2>그 이외에는 디폴트 속성 값을 써도 무방하지만 몇 가지 정도는 취향에 따라 다르게 설정해도 된다.<BR>나의 경우에는 아래의 것을 
+설정한다.<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>m_pD3DDevice.SetRenderState(D3DRS_CULLMODE, 
+D3DCULL_NONE);<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>Direct3D에서 일반적으로,&nbsp;반시계방향으로 감기는 폴리곤은 그 면이 반대 방향으로 향하는 폴리곤으로 취급해서 엔진에서 출력을 
+생략한다. 하지만 위의 것을 설정하면 어떻게 감겨 있는 폴리곤이라도 그대로 출력해 준다. 즉, 반대로 감아서 뒤집힌 스프라이트도 그릴 수 있다. 
+이것을 잘 이용하면 왼쪽으로 향한 이미지만 로딩한 후, 오른쪽으로 향한 이미지는 왼쪽으로 향한 이미지를 flip 해서 사용할 수 있게 
+된다.</font>
+                                <p><font
+             size="2"><strong>5) 기타 속성 얻기</strong></font>
+                                <p><font size=2>굳이 Device의 속성을 보유하고 있을 필요는 없으나 그래도 속성에 대한 빠른 접근을 위해서 미리 값을 받아 둘 수도 
+있다.<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>m_d3dCaps&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : TD3DCaps9;<BR>m_d3dDisplayMode : 
+TD3DDisplayMode;</FONT></FONT>
+                                    <p><FONT size=2><FONT face=Fixedsys><FONT color=#008000>// Device의 capability를 
+얻는다<BR></FONT>m_pD3DDevice.GetDeviceCaps(m_d3dCaps);<BR><FONT color=#008000>// 
+디스플레이의 크기와 pixel format을 얻는다<BR></FONT>m_pD3DDevice.GetDisplayMode(<FONT 
+color=#008080>0</FONT>, m_d3dDisplayMode);<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>특히 창모드로 초기화 되었을 때는 이미 설정된 pixel format 위에서 Device가 생성되는데 이때 바탕 화면의 pixel 
+format을 얻어오는데 유용하게 쓸 수 있다.</font>
+                                <p><font size=2>그럼 이것으로 디바이스의 생성도 끝났다. 지금까지는 Device를 생성하고 그 속성을 지정했다. 다음 장에서는&nbsp;그 속성을 사용하기 위한 
+자원을 생성하도록 하겠다.<br><br><br><br><STRONG><FONT size=4>5. texture의 생성</FONT></STRONG></FONT>
+                                <p><font size=2>Texture는 이미지를 올려 놓기 위한 공간으로 이 강좌 내에서는 2D의 이미지 버퍼와 동일한 것으로 봐도 무방하다. 그렇다면 가장 
+중요한 속성은 딱 3가지다. 그것은 바로, 가로 크기, 세로 크기, pixel format인데 이 강좌에서는 이 3가지를 파라미터로 받아서 
+texture를 만드는 예제를 만들 생각이다. (실제로 필요한 파라미터는 더 있다는 이야기다.)</font>
+                                <p><font size=2>Texture는 일반 이미지 버퍼와는 달리 그 크기나 형태에 대해 제약이 심한 편이다. 대표적인 3가지를 보자면,<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                    <p style="margin-right:0px;"><FONT size=2><FONT color=#800080>1&gt; 가로와 세로의 크기는 2의 승수가 되어야 한다.<BR>2&gt; 가로와 세로 크기가 
+같아야 한다. (구식 H/W의 경우)<BR>3&gt; 생성 가능한 최대 크기에 대한 제약이 있다. (구식 H/W의 
+경우)<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>자, 그럼 파라미터로 받아 들인 width, height에 대해 Device의 capabity를 확인하여 원하는 크기로 조정을 
+해보자.</font></DIV>
+<BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+<DIV dir=ltr style="MARGIN-RIGHT: 0px">
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>realW, realH: 
+integer;</FONT>&nbsp;</font>
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys><FONT color=#008000>// 아까도 한 번 나왔던 Device의 capability를 얻어 오는 
+함수<BR></FONT>m_pD3DDevice.GetDeviceCaps(ddCaps);</FONT></FONT>
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys><FONT color=#008000>// Texture의 크기가 2의 승수여야 한다면,<BR></FONT><FONT color=#0000ff>if</FONT> (ddCaps.TextureCaps <FONT color=#0000ff>and</FONT> 
+D3DPTEXTURECAPS_POW2) &gt; <FONT 
+color=#008080>0</FONT> <FONT color=#0000ff>then 
+begin</FONT><BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; // width보다 크거나 같은 2의 승수 중에서 가장 작은 값을 
+찾는다.<BR></FONT>&nbsp;&nbsp;&nbsp; realW := <FONT 
+color=#008080>4</FONT>;<BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>while</FONT> width &gt; realW <FONT color=#0000ff>do</FONT><BR>&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp; realW := realW <FONT color=#0000ff>shl</FONT> <FONT 
+color=#008080>1</FONT>;</FONT></FONT>
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys><FONT color=#008000>&nbsp;&nbsp;&nbsp; // height보다 크거나 같은 2의 승수 중에서 가장 작은 값을 찾는다.<BR></FONT>&nbsp;&nbsp;&nbsp; realH 
+:= <FONT 
+color=#008080>4</FONT>;<BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>while</FONT> height 
+&gt; realH <FONT color=#0000ff>do<BR></FONT>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; realH := realH <FONT color=#0000ff>shl</FONT> <FONT 
+color=#008080>1</FONT>;<BR><FONT 
+color=#008000><FONT color=#0000ff>end<BR>else begin</FONT><BR>&nbsp;&nbsp;&nbsp; // 원래의 width, 
+height를 대입한다.<BR></FONT>&nbsp;&nbsp;&nbsp; realW := width;<BR>&nbsp;&nbsp;&nbsp; realH := height;<BR><FONT color=#0000ff>end;</FONT></FONT></FONT>
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys><FONT color=#008000>// Texture의 가로 세로비가 항상 1:1이여야 한다면,<BR></FONT><FONT color=#0000ff>if</FONT> (ddCaps.TextureCaps <FONT color=#0000ff>and 
+</FONT>D3DPTEXTURECAPS_SQUAREONLY) &gt; <FONT 
+color=#008080>0</FONT> <FONT color=#0000ff>then begin</FONT><BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; // 가로 세로 중에서 큰 쪽으로 
+맞춘다.<BR></FONT>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>if</FONT> realW &gt; realH <FONT color=#0000ff>then</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; realH := realW<BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>else</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; realW := realH<BR><FONT color=#0000ff>end</FONT>;</FONT></FONT></BLOCKQUOTE>
+                                <p style="margin-right:0px;"><font size=2>이 과정을 거치면 realW와 realH는 Device가 원하는 크기가 
+되어 있을 것이다. 그렇다면 이제는 이 값을 가지고 texture를 생성하면 된다.<br>&nbsp;</font></DIV>
+<BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+<DIV><FONT size=2><FONT face=Fixedsys>m_pD3DDevice.CreateTexture(realW, realH, <FONT 
+color=#008080>0</FONT>, <FONT 
+color=#008080>0</FONT>, pixelFormat, 
+D3DPOOL_MANAGED, pTexture, <FONT color=#0000ff>nil</FONT>);<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>앗, 이게 무엇인가? 조금 전에는 3개의 파라미터만 있으면 된다고 했는데 이것은 약간 더 복잡하게 보인다. 하지만 이 강좌는 혹세무민을 
+기본 원칙으로 하고 있기 때문에 이 정도는 그냥 눈감아 주길 바란다. 이번에도 그냥 똑같이 사용하면 된다. 그대신 하나만 짚고 넘어가야 할 것이 
+있다. 그것은 바로 D3DPOOL_MANAGED라는 파라미터인데 알고보면 이것이 가장 중요한 texture의 속성중의 하나를 결정하는 
+요소다.<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                    <p style="margin-right:0px;"><font
+             size="2"><strong>D3DPOOL_DEFAULT<BR></strong><FONT color=#000080>&nbsp;&nbsp;&nbsp; - 
+                                    비디오 메모리의 영역에 
+생성된다. 비디오 메모리가 부족하면 시스템 메모리에 생성된다.<BR>&nbsp;&nbsp;&nbsp; - 
+                                    Lock/Unlock이 불가능 하다.<BR>&nbsp;&nbsp;&nbsp; - 
+                                    <FONT 
+face="Courier New">IDirect3DDevice9.StretchRect()</FONT>를 통해 서로의 surface를 복사할 수 
+있다.<BR>&nbsp;&nbsp;&nbsp; - <FONT 
+face="Courier New">IDirect3DDevice9.UpdateSurface()</FONT>를 통해 
+메모리 surface를 자신의<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;surface에 올려 놓을 수 있다.<BR>&nbsp;&nbsp;&nbsp; - 
+                                    <FONT 
+face="Courier New">IDirect3DDevice9.ColorFill()</FONT>을 통해 지정된 영역을 지정된 색으로 채울 수 
+있다.<BR></FONT><BR><strong>D3DPOOL_MANAGED</strong><BR><FONT color=#000080>&nbsp;&nbsp;&nbsp; 
+- 처음에는 비디오 메모리가 아닌 어딘가에 생성된다. 그리고 사용할 때는 비디오 메모리에<br> 
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;올라간다.<BR>&nbsp;&nbsp;&nbsp; - 
+                                    <FONT 
+face="Courier New">IDirect3DTexture9.PreLoad()</FONT> 메서드를 통해 미리 비디오 메모리에 올려 놓을 
+수도<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;있다.<BR>&nbsp;&nbsp;&nbsp; - 
+                                    Lock/Unlock이 가능 하다. 하지만 <FONT 
+face="Courier New">IDirect3DDevice9.LockRect()</FONT> 함수에서 엄청난<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;latency가 발생할 때가 
+있다.<BR>&nbsp;&nbsp;&nbsp; - Device lost의 경우, 시스템에 의해 자동 복구된다.<br></FONT><BR><strong>3DPOOL_SYSTEMMEM</strong><BR><FONT color=#000080>&nbsp;&nbsp;&nbsp; - 
+                                    시스템 메모리 
+영역에 생성된다.<BR>&nbsp;&nbsp;&nbsp; - <FONT 
+face="Courier New">IDirect3DDevice9.UpdateSurface()</FONT>를 통해 자신의 surface내용을 
+비디오 메모리<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;surface에 올릴 수 있다.</FONT></FONT>
+                                    <p><FONT size=2><FONT color=#000080>&nbsp;&nbsp;&nbsp; - 
+                                    <FONT 
+face="Courier New">IDirect3DDevice9.UpdateTexture()</FONT>를 통해 자신을 
+3DPOOL_DEFAULT로 생성된<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;texture에 복사할 수 있다.<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>이렇듯 서로 다른 속성을 가지기 때문에 가장 적절한 pool type을 선택하는 것은 바로 당신의 몫이다. (여기서는 파일에서 데이터를 
+불러와 IDirect3DDevice9.LockRect()로 버퍼의 메모리를 열고 데이터를 가공해야 하기 때문에 D3DPOOL_MANAGED을 
+선택했다. 물론 D3DPOOL_DEFAULT인 texture에서도 같은 결과를 낼 수 있다)<br><br><br><br><STRONG><FONT size=4>6. texture 읽기</FONT></STRONG></FONT>
+                                <p><font size=2>일단 texture 버퍼를 만들었지만 그 내용을 채워 넣는 일이 아직 남았다. 직접 특정한 포맷으로 인코딩되어 있는 스트림(파일 스트림 
+포함)을 디코딩하면서 버퍼를 채울 수도 있겠지만 이 강좌에서는 특정 포맷에 종속적이지 않게 버퍼를 채우는 쪽으로 하려 한다.</font>
+                                <p><font size=2>먼저 이미지 버퍼를 정의하기 위한 가장 기본적인 속성을 보자면, 이미지 버퍼의 시작 주소, 픽셀 단위의 가로 세로 크기, 다음 라인까지 
+스킵하기 위한 바이트 수, 한 픽셀이 차지하는 비트 수등을 꼽을 수 있겠다. 이런 속성들은 DirectDraw surface와도 크게 다르지 
+않은 속성이므로 별다른 설명은 필요하지 않을 것 같다. 그럼, 방금 설명한 이미지의 속성을 가지고 texture를 채우는 함수를 소개하려 한다. 
+이 함수는 쉬운 설명을 위해 최적화되지는 않았으므로 실제 최종 샘플에서는 아래의 내용과 좀 다를 수도 있다. 아래의 샘플은 
+D3DFMT_X8R8G8B8 또는 D3DFMT_A8R8G8B8의 텍스쳐에 대해서 32-bit 또는 24-bit(BGR의 순서)의 이미지 버퍼의 
+내용을 복사해 넣는 것으로 한정되어 있다.<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys><FONT color=#0000ff>function</FONT> AssignImage<BR>&nbsp;&nbsp;&nbsp; 
+(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// 대상이 되는 
+texture</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hImage: IDirect3DTexture9;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// source 이미지가 있는 버퍼</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pImage: 
+pointer;</FONT></FONT>
+                                    <p><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// source 이미지의 
+크기</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; width, height: integer;</FONT></FONT>
+                                    <p><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// source&nbsp;이미지에서 한 픽셀이 차지하는 
+비트수</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; depth: integer;</FONT></FONT>
+                                    <p><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// source&nbsp;이미지에서&nbsp;한 라인을 
+구성하는&nbsp;바이트 수</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pitch: integer;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>//&nbsp;컬러키를 적용할 것인가?</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; useColorKey: boolean = 
+FALSE;</FONT></FONT>
+                                    <p><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>//&nbsp;컬러키를 적용할 때&nbsp;컬러키의 색상 
+값</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; colorKey: longword = <FONT 
+color=#008080>0<BR></FONT>&nbsp;&nbsp;&nbsp; ): 
+boolean;</FONT></FONT>
+                                    <p><FONT size=2><FONT face=Fixedsys><FONT color=#0000ff>var</FONT><BR>&nbsp;&nbsp;&nbsp; pSour08: 
+Pbyte;<BR>&nbsp;&nbsp;&nbsp; pSour32: Plongword;<BR>&nbsp;&nbsp;&nbsp; pDest32: Plongword;<BR>&nbsp;&nbsp;&nbsp; lockRect: 
+TD3DLockedRect;<BR>&nbsp;&nbsp;&nbsp; i, j: integer;<BR>&nbsp;&nbsp;&nbsp; _R, _G, _B: longword;</FONT></FONT>
+                                    <p><FONT size=2><FONT face=Fixedsys><FONT color=#0000ff>begin</FONT><BR></FONT></FONT><font size=2 face="Fixedsys">&nbsp;&nbsp;&nbsp; result := 
+FALSE;</font>
+                                    <p><font size=2 face="Fixedsys">&nbsp;<FONT color=#008000>&nbsp;&nbsp;&nbsp;// 실제로는 더 많은 파라미터 검사가 이루어져야 한다.<br> 
+                                    &nbsp;&nbsp;&nbsp;&nbsp;// assert() 사용 가능</FONT></FONT>
+                                    <p><font size=2 face="Fixedsys">&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>if not</FONT> assigned(hImage) 
+<FONT color=#0000ff>then</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; exit;</font>
+                                    <p><font size=2 face="Fixedsys">&nbsp;<FONT color=#008000>&nbsp;&nbsp;&nbsp;// 이미지를 복사할 texture의 버퍼를 
+연다.</FONT></FONT>
+                                    <p><font size=2 face="Fixedsys">&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>if</FONT> hImage.LockRect(<FONT 
+color=#008080>0</FONT>, lockRect, <FONT color=#0000ff>nil</FONT>, <FONT 
+color=#008080>0</FONT>) &lt;&gt; D3D_OK <FONT color=#0000ff>then</FONT><BR>&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp; exit;</font>
+                                    <p><font size=2 face="Fixedsys">&nbsp;<FONT color=#008000>&nbsp;&nbsp;&nbsp;// 컬러키를 위해 컬러 성분만 
+분리한다.</FONT></FONT>
+                                    <p><font size=2 face="Fixedsys">&nbsp;&nbsp;&nbsp; colorKey := colorKey <FONT color=#0000ff>and</FONT> <FONT 
+color=#008080>$00FFFFFF</FONT>;</font>
+                                    <p><font size=2 face="Fixedsys">&nbsp;<FONT color=#0000ff>&nbsp;&nbsp; case</FONT> depth <FONT color=#0000ff>of</FONT><BR>&nbsp;&nbsp;&nbsp; <FONT 
+color=#008080>32</FONT>:<BR>
+</font><DIV><FONT size=2><FONT face=Fixedsys><FONT face=Fixedsys color=#008000>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // 32 bits source인 
+경우</FONT></FONT></FONT></DIV>
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>for</FONT> j := <FONT 
+color=#008080>0</FONT> <FONT color=#0000ff>to</FONT> pred(height) <FONT color=#0000ff>do begin</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; pSour32 := 
+Plongword(longint(pImage) + j * pitch);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; pDest32 := 
+Plongword(longint(lockRect.Bits)<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ j * lockRect.Pitch);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <FONT color=#0000ff>for</FONT> i := <FONT 
+color=#008080>0</FONT> <FONT color=#0000ff>to</FONT> pred(width) <FONT color=#0000ff>do</FONT> <FONT color=#0000ff>begin<BR></FONT>
+</FONT></FONT><DIV><FONT size=2><FONT face=Fixedsys><FONT face=Fixedsys color=#008000>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // 컬러키가 적용되는 경우에는<br> 
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+                                        alpha 
+component를 0으로 만든다.</FONT></FONT></FONT></DIV>
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>if</FONT> 
+useColorKey <FONT color=#0000ff>and</FONT> ((pSour32^ <FONT color=#0000ff>and</FONT> <FONT 
+color=#008080>$00FFFFFF</FONT>)<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= colorKey) <FONT color=#0000ff>then<BR></FONT>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; pDest32^ := pSour32^ <FONT color=#0000ff>and</FONT> <FONT 
+color=#008080>$00FFFFFF</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+<FONT color=#0000ff>else</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; pDest32^ := 
+pSour32^;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; inc(pSour32);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+inc(pDest32);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT>;<BR>&nbsp;&nbsp;&nbsp; <FONT 
+color=#008080>24</FONT>:<BR>
+</FONT></FONT><DIV><FONT size=2><FONT face=Fixedsys><FONT face=Fixedsys color=#008000>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // 24 bits source인 
+경우</FONT></FONT></FONT></DIV>
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>for</FONT> j := <FONT 
+color=#008080>0</FONT> to pred(height) <FONT color=#0000ff>do 
+begin</FONT><BR><FONT color=#0000ff>&nbsp;&nbsp;&nbsp; </FONT>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; pSour08 := 
+Pbyte(longint(pImage) + j * pitch);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; pDest32 := 
+Plongword(longint(lockRect.Bits)<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ j * lockRect.Pitch);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <FONT color=#0000ff>for</FONT> i := <FONT 
+color=#008080>0</FONT> <FONT color=#0000ff>to</FONT> pred(width) <FONT color=#0000ff>do begin</FONT><BR><FONT color=#0000ff>
+</FONT></FONT></FONT><DIV><FONT size=2><FONT face=Fixedsys><FONT 
+color=#0000ff><FONT face=Fixedsys color=#008000>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // B, G, R의 순서로 저장되었다고 
+생각한다.<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;(24 bits BMP 구조와 동일)</FONT></FONT></FONT></FONT></DIV>
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;</FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _B := pSour08^; 
+inc(pSour08);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _G := pSour08^; inc(pSour08);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp; _R := pSour08^; inc(pSour08);</FONT></FONT>
+                                    <p><font size=2>&nbsp;<FONT face=Fixedsys><FONT 
+color=#0000ff><FONT face=Fixedsys color=#008000>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // 원본에 alpha component의 
+정보가 없었으므로<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+                                    여기서 경우에 맞게 첨가한다.</FONT></FONT></FONT></FONT>
+                                    <p><FONT size=2><FONT face=Fixedsys><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if</FONT> useColorKey 
+<FONT color=#0000ff>and</FONT> (((_R <FONT color=#0000ff>shl</FONT> <FONT 
+color=#008080>16</FONT>) <FONT color=#0000ff>or</FONT> (_G <FONT color=#0000ff>shl</FONT> <FONT 
+color=#008080>8</FONT>) <FONT color=#0000ff>or</FONT> _B)<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= colorKey) <FONT color=#0000ff>then</FONT><BR>&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; pDest32^ := <FONT 
+color=#008080>$00000000</FONT> <FONT color=#0000ff>or<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>(_R <FONT color=#0000ff>shl</FONT> <FONT 
+color=#008080>16</FONT>) <FONT color=#0000ff>or</FONT> (_G <FONT color=#0000ff>shl </FONT><FONT 
+color=#008080>8</FONT>) <FONT color=#0000ff>or</FONT> _B<BR><FONT color=#0000ff><FONT color=#000000>&nbsp;&nbsp;&nbsp; 
+</FONT>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; else</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; pDest32^ := <FONT 
+color=#008080>$FF000000</FONT> <FONT color=#0000ff>or<br> </FONT></FONT></FONT><font size=2 face="Fixedsys"><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>(_R <FONT color=#0000ff>shl</FONT> <FONT 
+color=#008080>16</FONT>) <FONT color=#0000ff>or</FONT> (_G <FONT color=#0000ff>shl </FONT><FONT 
+color=#008080>8</FONT>) <FONT color=#0000ff>or</FONT> _B;</font>
+                                    <p><font size=2 face="Fixedsys">&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; inc(pDest32);<BR><FONT color=#0000ff><FONT color=#000000>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </FONT>&nbsp;&nbsp;&nbsp; end</FONT>;<BR><FONT color=#0000ff>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; end</FONT>;<BR><FONT color=#0000ff>&nbsp;&nbsp;&nbsp; 
+end</FONT>;</font>
+                                    <p><font size=2 face="Fixedsys">&nbsp;<FONT color=#008000>&nbsp;&nbsp;&nbsp;// 이미지의 복사가 끝났으므로&nbsp;texture의 버퍼를 
+닫는다.</FONT></FONT>
+                                    <p><font size=2 face="Fixedsys">&nbsp;&nbsp;&nbsp; hImage.UnlockRect(<FONT 
+color=#008080>0</FONT>);</font>
+                                    <p><font size=2 face="Fixedsys"><FONT color=#0000ff>end</FONT>;<br></font><FONT size=2><FONT face=Fixedsys>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>한 가지 좀 더 설명하자면, 위의 함수를호출하면서 useColorKey를 TRUE로 하고 colorKey에 원하는 컬러 값을 넣으면 그 
+컬러는 항상 alpha가 0이 되어서 저장된다. 따라서 현재 alpha가 0일때는 컬러키를 적용하게 속성을 변경했으므로 DirectDraw에서 
+source color key를 설정한 것과 같은 효과를 낼 수 있다. (4-3의 내용을 참고하자)<br><br><br><BR><STRONG><FONT size=4>7. 블렌딩 옵션</FONT></STRONG></FONT>
+                                <p><font size=2>이전의 DirectDraw에 비해 Direct3D를 사용하면서 얻는 가장 큰 이득은 바로 블렌딩의 편의성을 들 수 있겠다. 사실 
+DirectDraw에서는 컬러키 정도만 사용할 수 있을뿐, 임의의 각도에 대한 회전과 알파블렌딩은 스펙 상으로만 명시되어 있는 속성이었다. 
+하지만 이제는 위대한 H/W 가속기의 힘을 빌어 2D 게임에서도 가공할만한 혜택을 누릴 수 있게 되었나니 그 방법을 소개하려 한다.</font>
+                                <p><font size=2>예제에서 정의한 블렌딩 모드는 4개이다. 실제로 더 필요한 것이 많지만 이미 자료도 많을뿐더러 하나 하나 직접 테스트 해보면 더 많은 
+효과를 찾을 수 있을 것이다.<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>TBlendingMode =<BR>&nbsp;&nbsp;&nbsp; (<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// 일반 복사 
+출력</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bmNormal,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// 컬러키처럼 일부를 투명하게 
+출력</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bmTransparent,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// 픽셀별 알파 
+블렌딩</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bmAlpha,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// 그림자용 
+블렌딩</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bmShadow<BR>&nbsp;&nbsp;&nbsp; );<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>이런 식으로 블렌딩 모드를 정의하고 나서 다음과 같이 case문을 통해 블렌딩 방식을 적용하면 된다.<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                    <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys><FONT color=#0000ff>case</FONT> blendingMode <FONT color=#0000ff>of</FONT><BR>&nbsp;&nbsp;&nbsp; bmNormal:<BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>begin</FONT><BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // 모두 
+disable<BR></FONT>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; m_pD3DDevice.SetRenderState(D3DRS_ALPHABLENDENABLE, 
+<FONT 
+color=#008080>0</FONT>);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+m_pD3DDevice.SetRenderState(D3DRS_ALPHATESTENABLE, <FONT 
+color=#008080>0</FONT>);<BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT>;<BR>&nbsp;&nbsp;&nbsp; 
+bmTransparent:<BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>begin</FONT><BR><FONT color=#008000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // alpha test만 enable<BR></FONT>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+m_pD3DDevice.SetRenderState(D3DRS_ALPHABLENDENABLE, <FONT 
+color=#008080>0</FONT>);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+m_pD3DDevice.SetRenderState(D3DRS_ALPHATESTENABLE, <FONT 
+color=#008080>1</FONT>);<BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT>;<BR>&nbsp;&nbsp;&nbsp; 
+bmAlpha:<BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>begin</FONT><BR><FONT color=#008000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+// alpha blending만 enable<BR></FONT>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+m_pD3DDevice.SetRenderState(D3DRS_ALPHABLENDENABLE, <FONT 
+color=#008080>1</FONT>);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+m_pD3DDevice.SetRenderState(D3DRS_ALPHATESTENABLE, <FONT 
+color=#008080>0</FONT>);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; m_pD3DDevice.SetRenderState(D3DRS_SRCBLEND,<br> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D3DBLEND_SRCALPHA);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; m_pD3DDevice.SetRenderState(D3DRS_DESTBLEND,<br> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D3DBLEND_INVSRCALPHA);<BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT>;<BR>&nbsp;&nbsp;&nbsp; 
+bmShadow:<BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>begin</FONT><BR><FONT color=#008000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+// alpha blending만 enable하되<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+                                    블렌딩 옵션에 약간의 변화를 가한다.<BR></FONT>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+m_pD3DDevice.SetRenderState(D3DRS_ALPHABLENDENABLE, <FONT 
+color=#008080>1</FONT>);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+m_pD3DDevice.SetRenderState(D3DRS_ALPHATESTENABLE, <FONT 
+color=#008080>0</FONT>);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; m_pD3DDevice.SetRenderState(D3DRS_SRCBLEND,<br> 
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D3DBLEND_ZERO);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; m_pD3DDevice.SetRenderState(D3DRS_DESTBLEND,<br> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D3DBLEND_INVSRCALPHA);<BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT>;<BR><FONT color=#0000ff>end</FONT>;<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<DIV dir=ltr>
+<DIV><font size=2>블렌딩 모드는 단지 게임에서 편하게 사용하기 위해서 위의 4가지와 같은 이름을 붙였을뿐 실제로는 무궁무진한 조합이 있으며 vertex 
+color까지 이용하면 더욱 더 다양한 효과를 만들 수 있다. 위의 예제는 이미 정의되어 있는 rendering state를 토글시켜주는 
+역할만을 하는 것인데 좀 더 다양한 조합은 DirectX SDK 매뉴얼을 참고하기 바란다.<br><br><br><br><STRONG><FONT size=4>8. 기본 primitive 출력</FONT></STRONG></FONT></DIV>
+</DIV><DIV>
+                                    <p><font size=2>Direct3D는 그래픽스 라이브러리의 개념이 아니기 때문에 복합적인 graphics primitive는 제공하지 않는다. 실질적으로 
+모든 primitive는 line drawing, rectangle filling, image drawing으로만 모두 구현될 수 있기 때문에 
+가징 근간이 되는 몇 개의 primitive만 제공한다. (그중에 가장 중요한 것은 역시 삼각형 렌더링이다)</font>
+                                    <p><font size=2>Primitive에 분류하긴 개념이 좀 다르지만 일단 제일 먼저 볼 것은 IDirect3DDevice9::Clear()다.<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>m_pD3DDevice.Clear(<FONT 
+color=#008080>1</FONT>, <FONT color=#0000ff>nil</FONT>, D3DCLEAR_TARGET, color, <FONT 
+color=#008080>1.0</FONT>, <FONT 
+color=#008080>1</FONT>);<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>이것은 백버퍼를 지정한 color로 소거하는 것인데 백퍼버뿐만 아니라 z-buffer 등도 같이 초기화시킬 수있다. 다만 이 강좌에서는 
+z-buffer를 사용하지 않으므로 렌더링 타겟이되는 surface만 소거하도록 했다. 여기서 주목해야 할 것은 첫 번째 파라미터와 두 번째 
+파라미터다. 두 번째 파라미터는 소거할 영역의 리스트를 배열로 나타낸 포인터가 들어가고 첫 번째 파라미터에는 그 배열의 개수를 넣으면 된다. 
+위의 예에서는 두 번째 파라미터가 nil(특별한 영역을 지정하지 않았으므로 전영역)이기 때문에 첫번 째 파라미터는 0이란 값이 들어 갔다. 
+그렇다면 FillRect()라는 함수를 만들어 보자. 그것은 IDirect3DDevice9::Clear()를 이용해서 간단하게 만들 수 
+있다.<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys><FONT color=#0000ff>function</FONT> FillRect(color: 
+longword; x, y, w, h: integer): boolean;<BR><FONT color=#0000ff>var</FONT><BR>&nbsp;&nbsp;&nbsp; rect: TRect;<BR><FONT color=#0000ff>begin</FONT><BR>&nbsp;&nbsp;&nbsp; rect.Left&nbsp;&nbsp; := x;<BR>&nbsp;&nbsp;&nbsp; rect.Top&nbsp;&nbsp;&nbsp;&nbsp;:= 
+y;<BR>&nbsp;&nbsp;&nbsp; rect.Right&nbsp; := x + w;<BR>&nbsp;&nbsp;&nbsp; rect.Bottom := y + h;</FONT></FONT>
+                                        <p><FONT size=2><FONT face=Fixedsys><FONT color=#008000>&nbsp;&nbsp;&nbsp; // 1개의 사각 영역을&nbsp;명시한 색으로 채우도록 
+지정한다.</FONT><BR>&nbsp;&nbsp;&nbsp; result := (m_pD3DDevice.Clear(<FONT 
+color=#008080>1</FONT>, 
+@rect, D3DCLEAR_TARGET, color,<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008080>1.0</FONT>, <FONT 
+color=#008080>0</FONT>) = D3D_OK);<BR><FONT color=#0000ff>end</FONT>;<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>그 다음은 line을 그어보자. (과연 이것이 게임을 만들 때 필요한 것이지는 잘 모르겠다.)<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys><FONT color=#0000ff>function</FONT> DrawLine(color: 
+longword; x1, y1: integer; x2, y2: integer)<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: boolean;<BR><FONT color=#0000ff>type</FONT><BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;3D의 좌표에 특정한 색을 지정하되<br> 
+                                        &nbsp;&nbsp;&nbsp;&nbsp;// transformation의 영향을 받지 않도록 한다.</FONT><BR>&nbsp;&nbsp;&nbsp; TSimpleVertex = <FONT color=#0000ff>packed record</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; x, y, z, rhw: single;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+color: longword;<BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT>;<BR>&nbsp;&nbsp;&nbsp; 
+PArraySimpleVertex = ^TArraySimpleVertex;<BR>&nbsp;&nbsp;&nbsp; TArraySimpleVertex = <FONT color=#0000ff>array</FONT>[<FONT 
+color=#008080>0</FONT>..<FONT 
+color=#008080>0</FONT>] <FONT color=#0000ff>of</FONT> TSimpleVertex;<BR><FONT color=#0000ff>var</FONT><BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;어차피 스택이다.</FONT><BR>&nbsp;&nbsp;&nbsp; 
+pVertex: <FONT color=#0000ff>array</FONT>[<FONT 
+color=#008080>0</FONT>..<FONT 
+color=#008080>99</FONT>] <FONT color=#0000ff>of</FONT> TSimpleVertex;<BR>&nbsp;&nbsp;&nbsp; hr: 
+HRESULT;<BR><FONT color=#0000ff>begin</FONT><BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;(x1, 
+y1)에 해당하는 점을 pVertex[0]에 표현한다.<BR></FONT>&nbsp;&nbsp;&nbsp; pVertex[<FONT 
+color=#008080>0</FONT>].x := x1 - <FONT 
+color=#008080>0.5</FONT>;<BR>&nbsp;&nbsp;&nbsp; 
+pVertex[<FONT 
+color=#008080>0</FONT>].y := y1 - <FONT 
+color=#008080>0.5</FONT>;<BR>&nbsp;&nbsp;&nbsp; pVertex[<FONT 
+color=#008080>0</FONT>].z := 
+<FONT 
+color=#008080>0.5</FONT>;<BR>&nbsp;&nbsp;&nbsp; pVertex[<FONT 
+color=#008080>0</FONT>].rhw 
+:= <FONT 
+color=#008080>1.0</FONT>;<BR>&nbsp;&nbsp;&nbsp; pVertex[<FONT 
+color=#008080>0</FONT>].color := color;<BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;(x2, y2)에 
+해당하는 점을 pVertex[1]에 표현한다.</FONT><BR>&nbsp;&nbsp;&nbsp; pVertex[<FONT 
+color=#008080>1</FONT>].x 
+:= x2 - <FONT 
+color=#008080>0.5</FONT>;<BR>&nbsp;&nbsp;&nbsp; pVertex[<FONT 
+color=#008080>1</FONT>].y := y2 - <FONT 
+color=#008080>0.5</FONT>;<BR>&nbsp;&nbsp;&nbsp; 
+pVertex[<FONT 
+color=#008080>1</FONT>].z := <FONT 
+color=#008080>0.5</FONT>;<BR>&nbsp;&nbsp;&nbsp; pVertex[<FONT 
+color=#008080>1</FONT>].rhw := 
+<FONT 
+color=#008080>1.0</FONT>;<BR>&nbsp;&nbsp;&nbsp; pVertex[<FONT 
+color=#008080>1</FONT>].color := color;</FONT></FONT>
+                                        <p><font size=2>&nbsp;<FONT face=Fixedsys><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;이것은 텍스쳐를 적용하는 것이 
+아니다.&nbsp;</FONT><BR>&nbsp;&nbsp;&nbsp; m_pD3DDevice.SetTexture(<FONT 
+color=#008080>0</FONT>, <FONT color=#0000ff>nil</FONT>);<BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;TSimpleVertex에서 정의했던 
+내용을&nbsp;가속기에게 알려준다.&nbsp;<BR></FONT>&nbsp;&nbsp;&nbsp; m_pD3DDevice.SetFVF(D3DFVF_XYZRHW <FONT color=#0000ff>or</FONT> D3DFVF_DIFFUSE);<BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;pVertex에는 
+선을 그리기 위한 정보가 있으며 그리려는 선은 1개<BR></FONT>&nbsp;&nbsp;&nbsp; hr := 
+m_pD3DDevice.DrawPrimitiveUP(D3DPT_LINELIST, <FONT 
+color=#008080>1</FONT>, 
+@pVertex,<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sizeof(TSimpleVertex));</FONT></FONT>
+                                        <p><font size=2>&nbsp;<FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; result := (hr = D3D_OK);<BR><FONT color=#0000ff>end</FONT>;<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>TSimpleVertex라는 타입을 정의했는데, 이 line의 목적은 2D상의 평면에 그려야 하고, 텍스쳐와는 관계가 없으므로 위와 
+같이 정의되었다. 눈여겨 봐야 할 것은 SetTexture()에서 nil을 넣은 것과 DrawPrimitiveUP( 
+                                    D3DPT_LINELIST, 
+1, ....)의 부분이다. D3DPT_LINELIST의 내용은 DirectX9 SDK를 참고하기 바란다.</font>
+                                    <p><font size=2>그렇다면 이것을 조금 더 응용한 폴리곤 그리기를 보기로 하자.<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys><FONT color=#0000ff>function</FONT> DrawPolygon(color: 
+longword; points: <FONT color=#0000ff>array of</FONT> TFPoint;<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n: integer): 
+boolean;<BR><FONT color=#0000ff>type</FONT><BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;반갑다. 
+바로 위와 같다.</FONT><BR>&nbsp;&nbsp;&nbsp; TSimpleVertex = <FONT color=#0000ff>packed 
+record</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; x, y, z, rhw: single;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; color: 
+longword;<BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT>;<BR>&nbsp;&nbsp;&nbsp; PArraySimpleVertex = 
+^TArraySimpleVertex;<BR>&nbsp;&nbsp;&nbsp; TArraySimpleVertex = <FONT color=#0000ff>array</FONT>[<FONT 
+color=#008080>0</FONT>..<FONT 
+color=#008080>0</FONT>] <FONT color=#0000ff>of</FONT> TSimpleVertex;<BR><FONT color=#0000ff>var</FONT><BR>&nbsp;&nbsp;&nbsp; i: integer;<BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; 
+//&nbsp;points의 개수가 100개가 넘으면 낭패다.</FONT><BR>&nbsp;&nbsp;&nbsp; pVertex: <FONT color=#0000ff>array</FONT>[<FONT 
+color=#008080>0</FONT>..<FONT 
+color=#008080>99</FONT>] <FONT color=#0000ff>of</FONT> TSimpleVertex;<BR>&nbsp;&nbsp;&nbsp; hr: 
+HRESULT;<BR><FONT color=#0000ff>begin</FONT><BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;낭패를 
+안당하도록 assert()를 써보든지<br> &nbsp;&nbsp;&nbsp;&nbsp;// 동적 할당을 하든지 맘대로...</FONT><BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>for</FONT> i := 0 <FONT color=#0000ff>to</FONT> pred(n) <FONT color=#0000ff>do begin</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; pVertex[i].x := points[i].x;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+pVertex[i].y := points[i].y;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; pVertex[i].z := <FONT 
+color=#008080>0.5</FONT>;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; pVertex[i].rhw := <FONT 
+color=#008080>1.0</FONT>;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; pVertex[i].color := color;<BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT>;</FONT></FONT>
+                                        <p><font size=2>&nbsp;<FONT face=Fixedsys><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;위와 같다.&nbsp;</FONT><BR>&nbsp;&nbsp;&nbsp; 
+m_pD3DDevice.SetTexture(<FONT 
+color=#008080>0</FONT>, <FONT color=#0000ff>nil</FONT>);<BR>&nbsp;&nbsp;&nbsp; m_pD3DDevice.SetFVF(D3DFVF_XYZRHW <FONT color=#0000ff>or</FONT> D3DFVF_DIFFUSE);<BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; 
+//&nbsp;D3DPT_TRIANGLEFAN은 상황에 따라서 위험하다.<br> &nbsp;&nbsp;&nbsp;&nbsp;// 
+                                        Concave인 폴리곤에서는 낭패<BR></FONT>&nbsp;&nbsp;&nbsp; hr := 
+m_pD3DDevice.DrawPrimitiveUP(D3DPT_TRIANGLEFAN, n-<FONT 
+color=#008080>2</FONT>,<br> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@pVertex, sizeof(TSimpleVertex));</FONT></FONT>
+                                        <p><font size=2>&nbsp;<FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; result := (hr = D3D_OK);<BR><FONT color=#0000ff>end</FONT>;<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>윗쪽의 DrawLine()과 크게 다른 점은 없다. 단지 폴리곤을 삼각형으로 쪼개어서 D3DPT_TRIANGLEFAN의 형식으로 출력을 
+한다. 현재 culling mode를 D3DCULL_NONE로 설정했으므로 폴리곤이 감기는 방향과는 관계없이 출력될 것이다. (단, 위의 예제는 
+convex인 폴리곤에서만 적용된다. Concave의 경우에는 <FONT color=#000080>D3DPT_TRIANGLELIST</FONT> 
+또는 <FONT color=#000080>D3DPT_TRIANGLESTRIP</FONT>를 사용하는 방법으로 구현해야 한다. 하지만 이 강좌와는 
+관계가 없으므로 생략)<br><br><br><br><STRONG><FONT size=4>9. 이미지 출력</FONT></STRONG></FONT>
+                                    <p><font size=2>2D의 개념을 빌어 '이미지'출력이라고 하였지만 실제는 texture 출력이다. 하지만 2D 게임을 만드는 입장에서는 최대한 3D의 
+존재를 숨기는 것이 좋으므로 다음과 같은 파라미터의 이미지 출력 함수를 만들고자 한다.<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>DrawImage<BR>&nbsp;&nbsp;&nbsp; (<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// destination의 left-top 
+좌표</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xDest, yDest: integer;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// 이미지 핸들</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+hImage: integer;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// 이미지 상에서 복사를 시작할 left-top 
+좌표</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xSour, ySour: integer;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// 복사될 영역에 대한 width와 
+height</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; wSour, hSour: integer<BR>&nbsp;&nbsp;&nbsp; 
+):<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>뭔가 익숙하지 않은가? 그렇다 바로 이것은 Win32 API의 BitBit()과 거의 유사한 형식의 파라미터다. 아직 투명도 조정, 
+색상 밝기 조정, 회전/확대/축소 지정이 들어가지 않은 상태에서는 아마 이 정도의 파라미터라면 일반 타일 출력&nbsp;및 스프라이트 출력에 모두 사용할 
+수 있을 것이라 생각한다.</font>
+                                    <p><font size=2>그럼 먼저 이미지 핸들에 대한 것부터 하자. 내가 제안하는 것은 다음과 같다.<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>PTextureInfo = ^TTextureInfo;<BR>TTextureInfo = <FONT color=#0000ff>record<br></FONT>&nbsp;&nbsp;&nbsp; <FONT color=#008000>// 이미지의 width</FONT><BR>&nbsp;&nbsp;&nbsp; 
+wSize: longint;<br>&nbsp;&nbsp;&nbsp; <FONT color=#008000>// 이미지의 height</FONT><BR>&nbsp;&nbsp;&nbsp; 
+hSize: longint;<br>&nbsp;&nbsp;&nbsp; <FONT color=#008000>// texture의 
+실제&nbsp;width</FONT><BR>&nbsp;&nbsp;&nbsp; wTexture: longint;<br>&nbsp;&nbsp;&nbsp; <FONT color=#008000>// texture의 실제 
+height</FONT><BR>&nbsp;&nbsp;&nbsp; hTexture: longint;<br>&nbsp;&nbsp;&nbsp; <FONT color=#008000>// texture의 포맷</FONT><BR>&nbsp;&nbsp;&nbsp; 
+pixelFormat: TD3DFORMAT;<br>&nbsp;&nbsp;&nbsp; <FONT color=#008000>// 이미지를 대표하는 texture 
+인스턴스</FONT><BR>&nbsp;&nbsp;&nbsp; pTexture: IDirect3DTexture9;<BR><FONT color=#0000ff>end</FONT>;<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>이렇게 정의된 TTextureInfo의 포인터 형태, 즉 PTextureInfo를 integer로 casting한 것을 핸들로 쓰려고 
+한다. 이미지 매니져가 핸들의 번호를 선형적으로 구현하면서 각각의 참조 포인터를 가지고 있다면 더 좋겠지만 이 강좌에서는 이렇게 써도 무리가 
+없으므로 그냥 포인터 자체를 핸들로 사용한다. (단, 사용자에게는 TTextureInfo 형의 포인터라는 것을 알릴 필요가 없다)<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys><FONT color=#0000ff><FONT color=#000000><FONT 
+color=#0000ff>type<br></FONT>&nbsp;&nbsp;&nbsp; <FONT 
+color=#008000>//&nbsp;texture 출력을 위한 vertex 구조체</FONT><BR>&nbsp;&nbsp;&nbsp; PVertex = 
+^TVertex;<BR>&nbsp;&nbsp;&nbsp; TVertex = </FONT>packed record<BR><FONT color=#000000>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+x, y, z, rhw : single;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; tu, tv&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : single;<BR></FONT>&nbsp;&nbsp;&nbsp; 
+end;<br></FONT></FONT><FONT color=#0000ff><FONT face=Fixedsys><FONT 
+color=#0000ff><BR>function</FONT></FONT></FONT><FONT face=Fixedsys> 
+TD3DDevice.DrawImage(xDest, yDest: integer;<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hImage: integer;<br> 
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xSour, ySour, 
+wSour, hSour: integer)<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: boolean;<BR><FONT color=#0000ff>const</FONT><BR>&nbsp;&nbsp;&nbsp; 
+<FONT color=#008000>//&nbsp;사각형의 이미지를 만들기 위해서는 삼각형 두 개가 필요하며<br>&nbsp;&nbsp;&nbsp; // 그 삼각형은&nbsp;2개의 꼭지점을 공유하므로&nbsp;필요한 
+vertex 수는<br> &nbsp;&nbsp;&nbsp;&nbsp;// (3 * 2) - 2 = 4</FONT><BR>&nbsp;&nbsp;&nbsp; MAX_VERTEX = <FONT 
+color=#008080>4</FONT>;<BR><FONT color=#0000ff>var</FONT><BR>&nbsp;&nbsp;&nbsp; pTexInfo: 
+PTextureInfo;<BR>&nbsp;&nbsp;&nbsp; x, y, w, h, tu, tv, tw, th: single;<BR>&nbsp;&nbsp;&nbsp; vertices: <FONT color=#0000ff>array</FONT>[<FONT 
+color=#008080>0</FONT>..pred(MAX_VERTEX)] <FONT color=#0000ff>of</FONT> TVertex;<BR><FONT color=#0000ff>begin</FONT><BR>&nbsp;&nbsp;&nbsp; 
+result := FALSE;</FONT></FONT>
+                                        <p><FONT size=2><FONT face=Fixedsys><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;모든 파라미터를 다 체크할 필요는 
+없다.</FONT></FONT></FONT>
+<DIV><FONT size=2><FONT face=Fixedsys><FONT face=Fixedsys><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;만약 wSour가 음수라거나 texture의 
+크기보다 크면 재미있는<br> &nbsp;&nbsp;&nbsp;&nbsp;// 반응을 나타낸다.</FONT></FONT></FONT></FONT></DIV>
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>if</FONT> hImage = <FONT 
+color=#008080>0 </FONT><FONT color=#0000ff>then</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; exit;</FONT></FONT>
+                                        <p><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; pTexInfo := PTextureInfo(hImage);<br>&nbsp;</FONT></FONT>
+<DIV><FONT size=2><FONT face=Fixedsys><FONT face=Fixedsys><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;wSour와 hSour를 0으로 주면 알아서 전 
+영역으로 바꾸어 준다.</FONT></FONT></FONT></FONT></DIV>
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>if</FONT> wSour = <FONT 
+color=#008080>0 </FONT><FONT color=#0000ff>then</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; wSour := 
+pTexInfo.wSize;<BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>if</FONT> hSour = <FONT 
+color=#008080>0 </FONT><FONT color=#0000ff>then</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; hSour := 
+pTexInfo.hSize;<br>&nbsp;</FONT></FONT>
+<DIV><FONT size=2><FONT face=Fixedsys><FONT face=Fixedsys><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;2D 좌표를 3D의 실수 좌표에 매핑하기 위해서 
+-0.5를 해준다.</FONT></FONT></FONT></FONT></DIV>
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; x := xDest - <FONT 
+color=#008080>0.5</FONT>;<BR>&nbsp;&nbsp;&nbsp; y := yDest - <FONT 
+color=#008080>0.5</FONT>;<BR>&nbsp;&nbsp;&nbsp; w&nbsp; := wSour;<BR>&nbsp;&nbsp;&nbsp; h&nbsp; := hSour;<BR>&nbsp;&nbsp;&nbsp; tu := 
+xSour / pTexInfo.wTexture;<BR>&nbsp;&nbsp;&nbsp; tv := ySour / pTexInfo.hTexture;<BR>&nbsp;&nbsp;&nbsp; tw := 
+wSour / pTexInfo.wTexture;<BR>&nbsp;&nbsp;&nbsp; th := hSour / pTexInfo.hTexture;<br></FONT>&nbsp;</font>
+<DIV><FONT size=2><FONT face=Fixedsys><FONT face=Fixedsys><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;이미지의 중심점을 기준으로 출력을 할 
+경우다.</FONT></FONT></FONT></FONT></DIV>
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>if</FONT> m_imageOrigin = 
+ioCenter <FONT color=#0000ff>then begin</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; x := x - w / <FONT 
+color=#008080>2</FONT>;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; y := y - h / <FONT 
+color=#008080>2</FONT>;<BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT>;<br></FONT>&nbsp;</font>
+<DIV><FONT size=2><FONT face=Fixedsys><FONT face=Fixedsys><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;좌상단의 꼭지점을 
+지정한다.</FONT></FONT></FONT></FONT></DIV>
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>0</FONT>].x := 
+x;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>0</FONT>].y := y;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>0</FONT>].z := <FONT 
+color=#008080>1.0</FONT>;<BR>&nbsp;&nbsp;&nbsp; 
+vertices[<FONT 
+color=#008080>0</FONT>].rhw := <FONT 
+color=#008080>1.0</FONT>;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>0</FONT>].tu := 
+tu;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>0</FONT>].tv := tv;<br></FONT>&nbsp;</font>
+<DIV><FONT size=2><FONT face=Fixedsys><FONT face=Fixedsys><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;우상단의 꼭지점을 
+지정한다.</FONT></FONT></FONT></FONT></DIV>
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>1</FONT>].x := x + 
+w;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>1</FONT>].y := y;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>1</FONT>].z := <FONT 
+color=#008080>1.0</FONT>;<BR>&nbsp;&nbsp;&nbsp; 
+vertices[<FONT 
+color=#008080>1</FONT>].rhw := <FONT 
+color=#008080>1.0</FONT>;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>1</FONT>].tu := tu 
++ tw;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>1</FONT>].tv := tv;<br></FONT>&nbsp;</font>
+<DIV><FONT size=2><FONT face=Fixedsys><FONT face=Fixedsys><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;우하단의 꼭지점을 
+지정한다.</FONT></FONT></FONT></FONT></DIV>
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>2</FONT>].x := x + 
+w;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>2</FONT>].y := y + h;<BR>&nbsp;&nbsp;&nbsp; 
+vertices[<FONT 
+color=#008080>2</FONT>].z := <FONT 
+color=#008080>1.0</FONT>;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>2</FONT>].rhw := 
+<FONT 
+color=#008080>1.0</FONT>;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>2</FONT>].tu 
+:= tu + tw;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>2</FONT>].tv := tv + 
+th;<br></FONT>&nbsp;</font>
+<DIV><FONT size=2><FONT face=Fixedsys><FONT face=Fixedsys><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;좌하단의 꼭지점을 
+지정한다.</FONT></FONT></FONT></FONT></DIV>
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>3</FONT>].x := 
+x;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>3</FONT>].y := y + h;<BR>&nbsp;&nbsp;&nbsp; 
+vertices[<FONT 
+color=#008080>3</FONT>].z := <FONT 
+color=#008080>1.0</FONT>;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>3</FONT>].rhw := 
+<FONT 
+color=#008080>1.0</FONT>;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>3</FONT>].tu 
+:= tu;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>3</FONT>].tv := tv + th;<br></FONT>&nbsp;</font>
+<DIV><FONT size=2><FONT face=Fixedsys><FONT face=Fixedsys><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;이번 출력에 적용될 texture를 
+지정한다.</FONT></FONT></FONT></FONT></DIV>
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; m_pD3DDevice.SetTexture(<FONT 
+color=#008080>0</FONT>, pTexInfo.pTexture);<BR>
+</FONT></FONT><DIV><FONT size=2><FONT face=Fixedsys><FONT face=Fixedsys><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;파라미터가 좀 다르다. texture를 출력하기 
+때문이다.</FONT></FONT></FONT></FONT></DIV>
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; m_pD3DDevice.SetFVF(D3DFVF_XYZRHW <FONT color=#0000ff>or</FONT> D3DFVF_TEX1);<BR>
+</FONT></FONT><DIV><FONT size=2><FONT face=Fixedsys><FONT face=Fixedsys><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;Triangle fan 형식으로 
+출력한다.</FONT></FONT></FONT></FONT></DIV>
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; m_pD3DDevice.DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 
+MAX_VERTEX-<FONT 
+color=#008080>2</FONT>,<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@vertices, 
+sizeof(TVertex));</FONT>&nbsp;</font>
+                                        <p><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; result := TRUE;<BR><FONT color=#0000ff>end</FONT>;<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>위에서&nbsp;triangle fan 형식이 아니라&nbsp;triangle strip 형식으로 출력하려 했다면 vertices[2]와 
+vertices[3]의 내용은 서로 바뀌어야 한다. (그 이유는 DirectX SDK 매뉴얼을 뒤져보자)</font>
+                                    <p><font size=2>아마도&nbsp;위의 함수만 있으면 기존에 표현했던 2D 게임의 feature를 대부분 만족하지 않을까 싶긴하지만 우리가 3D를 이용하면서 얻은 
+이점 중에는 vertex color를 사용할 수 있다는 것과 이미지의 회전 또는 스케일링이 자유롭다는 것이 있다. 그래서 이 함수와는 별도로 
+확장 함수를 하나 더 만들었다.<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys>DrawImageEx<BR>&nbsp;&nbsp;&nbsp; (<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; xDest, yDest: 
+integer;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; hImage: integer;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; xSour, ySour: integer;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; wSour, hSour: integer;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// alpha 값, 0일때 완전 투명이고 
+255일때 완전 불투명</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; opacity: integer = <FONT 
+color=#008080>255</FONT>;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// 이미지의 밝기, &lt;R = R * 
+lighten / 255&gt;의 공식이 적용</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lighten: integer = <FONT 
+color=#008080>255</FONT>;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// 회전 각도, radian이 아니다. 
+degree 단위로 지정해야 함</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; angle: integer = <FONT 
+color=#008080>0</FONT>;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// 회전 각도, radian이 아니다. 
+degree 단위로 지정해야 함</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; scale: integer = <FONT 
+color=#008080>100</FONT><BR>&nbsp;&nbsp;&nbsp; );<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>DrawImage()에 비해 많은 파라미터가 늘었지만 실제 구현될 코드는 그리 많지 않다. 구현 자체도 그리 어렵지 않아서, 고등학교 
+수학에서 삼각함수 시간에 졸지만 않았다면 쉽게 이해될 부분들이다. (회전될 기준이 이미지의 left-top인지 center인지에 따라서 구현이 
+조금 달라지는데 이것만 좀 유심히 보면 된다)<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys><FONT 
+color=#0000ff><FONT face=Fixedsys><FONT color=#0000ff><FONT color=#000000><FONT 
+color=#0000ff>type<br></FONT></FONT></FONT></FONT>&nbsp;&nbsp;&nbsp; <FONT color=#008000>//&nbsp;texture 출력을 위한 vertex 구조체.&nbsp;vertex color가 
+추가되었다.</FONT><BR><FONT color=#000000>&nbsp;&nbsp;&nbsp; PVertexTL = ^TVertexTL;<BR>&nbsp;&nbsp;&nbsp; 
+TVertexTL = </FONT><FONT color=#0000ff>packed record</FONT><BR><FONT color=#000000>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; x, y, z, rhw : single;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; color&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : 
+longword;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; tu, tv&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : single;<BR></FONT><FONT color=#0000ff>&nbsp;&nbsp;&nbsp; 
+end;<br><BR></FONT>function</FONT> 
+TD3DDevice.DrawImageEx<br>&nbsp;&nbsp;&nbsp; (<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; xDest, yDest: integer;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; hImage: integer;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; xSour, ySour: integer;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; wSour, hSour: integer;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; opacity: 
+integer = <FONT 
+color=#008080>255</FONT>;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; lighten: integer = <FONT 
+color=#008080>255</FONT>;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; angle: integer = <FONT 
+color=#008080>0</FONT>;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; scale: integer = <FONT 
+color=#008080>100<br></FONT>&nbsp;&nbsp;&nbsp; ): boolean;<BR><FONT color=#0000ff>const</FONT><BR>&nbsp;&nbsp;&nbsp; MAX_VERTEX = <FONT 
+color=#008080>4</FONT>;<BR>&nbsp;&nbsp;&nbsp; <FONT color=#008000>//&nbsp;신경 쓰지 말자.&nbsp;필요없으면 그냥 
+지우자.</FONT><BR>&nbsp;&nbsp;&nbsp; OBLIQUE: single = <FONT 
+color=#008080>1.0</FONT>;<BR><FONT color=#0000ff>var<BR></FONT>&nbsp;&nbsp;&nbsp; pTexInfo: PTextureInfo;<BR>&nbsp;&nbsp;&nbsp; x, y, w, h, tu, 
+tv, tw, th: single;<BR>&nbsp;&nbsp;&nbsp; vertices: <FONT color=#0000ff>array</FONT>[<FONT 
+color=#008080>0</FONT>..pred(MAX_VERTEX)] <FONT color=#0000ff>of</FONT> 
+TVertexTL;</FONT></FONT>
+                                        <p><font size=2 face="Fixedsys">&nbsp;&nbsp;&nbsp;&nbsp;angle2: integer;<BR></font><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; radius: single;<BR><FONT color=#0000ff>begin</FONT><BR>&nbsp;&nbsp;&nbsp; result := FALSE;</FONT>&nbsp;</font>
+                                        <p><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>if</FONT> hImage = <FONT 
+color=#008080>0</FONT> <FONT color=#0000ff>then</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+exit;</FONT>&nbsp;</font>
+                                        <p><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; pTexInfo := PTextureInfo(hImage);</FONT>&nbsp;</font>
+                                        <p><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>if</FONT> wSour = <FONT 
+color=#008080>0</FONT> <FONT color=#0000ff>then</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; wSour := 
+pTexInfo.wSize;<BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>if</FONT> hSour = <FONT 
+color=#008080>0</FONT> <FONT color=#0000ff>then</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hSour := 
+pTexInfo.hSize;</FONT>&nbsp;</font>
+                                        <p><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; x&nbsp; := xDest - <FONT 
+color=#008080>0.5</FONT>;<BR>&nbsp;&nbsp;&nbsp; y&nbsp; := yDest - <FONT 
+color=#008080>0.5</FONT>;<BR>&nbsp;&nbsp;&nbsp; w&nbsp; := wSour;<BR>&nbsp;&nbsp;&nbsp; h&nbsp; := hSour;<BR>&nbsp;&nbsp;&nbsp; tu := 
+xSour / pTexInfo.wTexture;<BR>&nbsp;&nbsp;&nbsp; tv := ySour / pTexInfo.hTexture;<BR>&nbsp;&nbsp;&nbsp; tw := 
+wSour / pTexInfo.wTexture;<BR>&nbsp;&nbsp;&nbsp; th := hSour / pTexInfo.hTexture;</FONT>&nbsp;</font>
+                                        <p><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; <FONT color=#008000>//&nbsp;opacity와 lighten으로 vertex 
+color를 만든다.</FONT><BR>&nbsp;&nbsp;&nbsp; opacity := (opacity <FONT color=#0000ff>shl</FONT> 
+<FONT 
+color=#008080>24</FONT>) <FONT color=#0000ff>or<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>(lighten <FONT color=#0000ff>shl</FONT> <FONT 
+color=#008080>16</FONT>) <FONT color=#0000ff>or</FONT> (lighten <FONT color=#0000ff>shl</FONT> <FONT 
+color=#008080>8</FONT>) <FONT color=#0000ff>or</FONT> (lighten);</FONT>&nbsp;</font>
+                                        <p><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; <FONT color=#008000>//&nbsp;이미지의 중심을 기준으로 할 때는 회전에 사용되는 
+공식이<br> &nbsp;&nbsp;&nbsp;&nbsp;// 다르다.</FONT><BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>case</FONT> m_imageOrigin <FONT color=#0000ff>of</FONT><BR>&nbsp;&nbsp;&nbsp; ioLeftTop:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>if</FONT> angle = <FONT 
+color=#008080>0</FONT> <FONT color=#0000ff>then begin</FONT><BR><FONT color=#0000ff>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </FONT>&nbsp;&nbsp;&nbsp; <FONT color=#008000>//&nbsp;많이 보던 거다.</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; w := w * scale / <FONT 
+color=#008080>100</FONT>;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; h := h * scale / <FONT 
+color=#008080>100</FONT>;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>0</FONT>].x := x;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>0</FONT>].y := y;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>1</FONT>].x := x + w;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>1</FONT>].y := y;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>2</FONT>].x := x + w;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>2</FONT>].y := y + h;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>3</FONT>].x := x;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>3</FONT>].y := y + h;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <FONT color=#0000ff>else</FONT> <FONT color=#0000ff>begin</FONT><BR><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>&nbsp;&nbsp;&nbsp; <FONT color=#008000>//&nbsp;드디어 고등학교 수준의 수학이 나왔다.</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; w := w * scale / 
+<FONT 
+color=#008080>100</FONT>;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; h := h * scale / <FONT 
+color=#008080>100</FONT>;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; radius := round(SmSqrt(w * w + h * 
+h));<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; angle2 := round(SmAtan(-h, w)*ONE_RADIAN);</FONT>&nbsp;</font>
+                                        <p><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>0</FONT>].x := 
+x;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>0</FONT>].y := y;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+vertices[<FONT 
+color=#008080>1</FONT>].x := x + w * SmCos(angle);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+vertices[<FONT 
+color=#008080>1</FONT>].y := y - w * SmSin(angle) * 
+OBLIQUE;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>2</FONT>].x := x + radius * 
+SmCos(angle+angle2);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>2</FONT>].y := 
+y - radius * SmSin(angle+angle2)<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* OBLIQUE;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>3</FONT>].x := x + h * SmCos(angle-<FONT 
+color=#008080>90</FONT>);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>3</FONT>].y := y - h * SmSin(angle-<FONT 
+color=#008080>90</FONT>) 
+* OBLIQUE;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT>;<BR>&nbsp;&nbsp;&nbsp; 
+ioCenter:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>if</FONT> angle = <FONT 
+color=#008080>0</FONT> <FONT color=#0000ff>then begin</FONT><BR><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>&nbsp;&nbsp;&nbsp; <FONT color=#008000>//&nbsp;뭐, 아까랑 
+비슷하다.</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; w := w * scale / <FONT 
+color=#008080>100</FONT>;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; h := h * scale / <FONT 
+color=#008080>100</FONT>;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; x := x - w / <FONT 
+color=#008080>2</FONT>;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; y := y - h / <FONT 
+color=#008080>2</FONT>;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>0</FONT>].x 
+:= x;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>0</FONT>].y := y;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>1</FONT>].x := x + w;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+vertices[<FONT 
+color=#008080>1</FONT>].y := y;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>2</FONT>].x := x + w;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>2</FONT>].y := y + h;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>3</FONT>].x := x;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>3</FONT>].y := y + h;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>else</FONT> <FONT color=#0000ff>begin</FONT><BR><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>&nbsp;&nbsp;&nbsp; <FONT color=#008000>//&nbsp;다시 고등학교 수준의 수학이 나왔다. (라지만....)</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; w := w / 
+<FONT 
+color=#008080>2</FONT>;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; h := h / <FONT 
+color=#008080>2</FONT>;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; radius := round(SmSqrt(w * w + h * h)) * 
+scale / <FONT 
+color=#008080>100</FONT>;</FONT>&nbsp;</font>
+                                        <p><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; angle2 := round(SmAtan(h, 
+-w)*ONE_RADIAN);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>0</FONT>].x := x + 
+SmCos(angle + angle2) * radius;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>0</FONT>].y := y - SmSin(angle + angle2) * radius<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+OBLIQUE;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; angle2 := round(SmAtan(h, w)*ONE_RADIAN);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+vertices[<FONT 
+color=#008080>1</FONT>].x := x + SmCos(angle + angle2) * 
+radius;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>1</FONT>].y := y - 
+SmSin(angle + angle2) * radius<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+OBLIQUE;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; angle2 := 
+round(SmAtan(-h, w)*ONE_RADIAN);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>2</FONT>].x := x + SmCos(angle + angle2) * radius;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+vertices[<FONT 
+color=#008080>2</FONT>].y := y - SmSin(angle + angle2) * radius<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+OBLIQUE;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; angle2 := round(SmAtan(-h, -w)*ONE_RADIAN);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>3</FONT>].x := x + SmCos(angle + angle2) * 
+radius;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>3</FONT>].y := y - 
+SmSin(angle + angle2) * radius &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+OBLIQUE;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT>;<BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT>;</FONT>&nbsp;</font>
+                                        <p><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; <FONT color=#008000>//&nbsp;vertex의 나머지 부분을 
+채운다.</FONT><BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>0</FONT>].z := <FONT 
+color=#008080>0.0</FONT>;<BR>&nbsp;&nbsp;&nbsp; 
+vertices[<FONT 
+color=#008080>0</FONT>].rhw := <FONT 
+color=#008080>1.0</FONT>;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>0</FONT>].color := 
+opacity;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>0</FONT>].tu := tu;<BR>&nbsp;&nbsp;&nbsp; 
+vertices[<FONT 
+color=#008080>0</FONT>].tv := tv;</FONT>&nbsp;</font>
+                                        <p><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>1</FONT>].z := <FONT 
+color=#008080>0.0</FONT>;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>1</FONT>].rhw := 
+<FONT 
+color=#008080>1.0</FONT>;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>1</FONT>].color := opacity;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>1</FONT>].tu := tu + tw;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>1</FONT>].tv := tv;</FONT>&nbsp;</font>
+                                        <p><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>2</FONT>].z := <FONT 
+color=#008080>0.0</FONT>;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>2</FONT>].rhw := 
+<FONT 
+color=#008080>1.0</FONT>;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>2</FONT>].color := opacity;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>2</FONT>].tu := tu + tw;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>2</FONT>].tv := tv + th;</FONT>&nbsp;</font>
+                                        <p><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>3</FONT>].z := <FONT 
+color=#008080>0.0</FONT>;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>3</FONT>].rhw := 
+<FONT 
+color=#008080>1.0</FONT>;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>3</FONT>].color := opacity;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>3</FONT>].tu := tu;<BR>&nbsp;&nbsp;&nbsp; vertices[<FONT 
+color=#008080>3</FONT>].tv := tv + th;</FONT>&nbsp;</font>
+                                        <p><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; m_pD3DDevice.SetTexture(<FONT 
+color=#008080>0</FONT>, pTexInfo.pTexture);<BR>&nbsp;&nbsp;&nbsp; 
+m_pD3DDevice.SetFVF(D3DFVF_XYZRHW <FONT color=#0000ff>or</FONT> D3DFVF_DIFFUSE<br> 
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff>or</FONT> D3DFVF_TEX1);<BR>&nbsp;&nbsp;&nbsp; 
+m_pD3DDevice.DrawPrimitiveUP(D3DPT_TRIANGLEFAN, MAX_VERTEX-<FONT 
+color=#008080>2</FONT>,<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@vertices, sizeof(TVertexTL));</FONT>&nbsp;</font>
+                                        <p><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; result := TRUE;<BR><FONT color=#0000ff>end</FONT>;<br>&nbsp;</FONT></FONT></DIV></BLOCKQUOTE>
+<DIV dir=ltr><font size=2>위의 내용을 설명하기 전에 처음 나오는 수학 관련 함수가 있는데 그 정의는 아래와 같다. 별로 특이한 것은 아니고 
+radian 단위의 함수를 degree 단위로 쓸 수 있도록 한 것인데, 이렇게 사용한 가장 큰 이유는 나중에 이 함수들만 따로 최적화 할 수 
+있기 때문이다. 예를 들어 하나의 sine 테이블을 이용해서 고속으로 sine, cosine, tagent를 구할 수 있기도 하고, 정수형으로 
+전개해서 고속으로 square root를 구할 수 있기 때문이다. (실제로 원래의 소스는 최적화 되어 있으나 저작권 문제 때문에 이 강좌에서는 
+아래의 함수로 대체시켜 놓았다)<br>&nbsp;</font></DIV>
+<BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+<DIV><FONT size=2><FONT face=Fixedsys><FONT color=#0000ff>const</FONT><BR>&nbsp;&nbsp;&nbsp; ONE_RADIAN = 
+<FONT 
+color=#008080>180</FONT> / <FONT 
+color=#008080>3.14159265358979323846</FONT>;</FONT></FONT>
+                                        <p><font size=2><BR><FONT face=Fixedsys><FONT color=#0000ff>function</FONT> SmSin(degree : 
+integer) : single;<BR><FONT color=#0000ff>begin<BR></FONT>&nbsp;&nbsp;&nbsp; SmSin := 
+Sin(degree * ONE_RADIAN / <FONT 
+color=#008080>180.0</FONT>);<BR><FONT color=#0000ff>end</FONT>;</FONT>&nbsp;</font>
+                                        <p><FONT size=2><FONT face=Fixedsys><FONT color=#0000ff>function</FONT> SmCos(degree : 
+integer) : single;<BR><FONT color=#0000ff>begin</FONT><BR>&nbsp;&nbsp;&nbsp; SmCos := 
+Cos(degree * ONE_RADIAN / <FONT 
+color=#008080>180.0</FONT>);<BR><FONT color=#0000ff>end</FONT>;</FONT>&nbsp;</font>
+                                        <p><FONT size=2><FONT face=Fixedsys><FONT color=#0000ff>function</FONT> SmAtan(y, x: 
+extended): extended;<BR><FONT color=#0000ff>begin</FONT><BR>&nbsp;&nbsp;&nbsp; SmAtan := 
+ArcTan2(y, x);<BR><FONT color=#0000ff>end</FONT>;</FONT>&nbsp;</font>
+                                        <p><FONT size=2><FONT face=Fixedsys><FONT color=#0000ff>function</FONT> SmSqrt(Value : 
+single) : single;<BR><FONT color=#0000ff>begin</FONT><BR>&nbsp;&nbsp;&nbsp; SmSqrt := 
+Sqrt(Value);<BR><FONT color=#0000ff>end</FONT>;</FONT></FONT></DIV></BLOCKQUOTE>
+<DIV dir=ltr><font size=2>&nbsp;<br><br><br><STRONG><FONT size=4>10. 화면에 출력 하기</FONT></STRONG></FONT></DIV>
+<DIV>
+                                    <p><font size=2>사실 여태까지 화면에 직접 출력이 일어나는 것은 하나도 없었기 때문에 지루했을지도 모르겠다. 하지만 이번에는 정말로 화면에 출력이 
+일어나는 부분을 다룬다. 일단 모습은 2D 게임이라고 하더라도 그 실체는 Direct3D이기 때문에 아마도 다음과 같은 메인 루프를 돌 것이라는 
+예상을 해본다.<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys><FONT color=#0000ff>procedure</FONT> 
+MainLoop();<BR><FONT color=#0000ff>begin<br> </FONT></FONT></FONT><font size=2 face="Fixedsys"><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#008000>// 모든 객체의 행동을 처리</FONT><BR>&nbsp;&nbsp;&nbsp; ProcessSomething();</font>
+                                        <p><font size=2 face="Fixedsys">&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>// 그림을 그릴 수 있다면</FONT><br>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>if</FONT> (g_d3D.BeginScene()) 
+<FONT color=#0000ff>then</FONT> <FONT color=#0000ff>begin<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#008000>// 모든 객체들을 화면에 출력</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ProcessDisplaying();<br> 
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>// 출력이 끝났음</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; g_d3D.EndScene();<br> 
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>// 
+출력 결과물을 화면으로 보냄</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; g_d3DFlush();<BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT>;<BR></font><FONT size=2><FONT face=Fixedsys><FONT color=#0000ff>end</FONT>;<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>조금 IDirect3DDevice9를 아시는 분이라면 그 객체에도 같은 기능을 하는 것이 있다는 것을 알 것이다. 하지만 여기서 다시 
+그것을 한 번 더 래핑한 것은&nbsp; 그 안에서 사용자가 해주어야 할 기본 적인 처리를 부가적으로 더 해주기 위한 것이다.</font>
+                                    <p><font
+             size="2"><strong>- g_d3D.BeginScene()</strong></font>
+                                    <p><font size=2>IDirect3DDevice9.BeginScene()을 부르는 것이 가장 큰 역할이다. 하지만 그것이 선행되기 이전에 이미 이것이 
+불렸는지를 확인해야 하고 현재 동기화에 의해 화면 출력을 스킵해야 하는지 판별하는 부분도 들어가야 한다.</font>
+                                    <p><font
+             size="2"><strong>- g_d3D.EndScene()</strong></font>
+                                    <p><font size=2>IDirect3DDevice9.EndScene()을 부르는 것이 가장 큰 역할이다. 그리고 BeginScene()이 불리기 전에 이것이 
+호출되었는지도 확인해야 하며 화면 출력이 끝난 시점에서 사용자에게 표시하기 위한 디버깅 정보(예를 들면, Flip Per Second)를 
+출력하는데도 이용된다.</font>
+                                    <p><font
+             size="2"><strong>- g_d3DFlush()</strong></font>
+                                    <p><font size=2>IDirect3DDevice9.Present()을 부르는 것이 가장 큰 역할이다. 그리고 D3DERR_DEVICELOST 또는 
+D3DERR_DEVICENOTRESET 상태에 대한 복구를 하는 역할을 한다.<BR></font>
+                                    <p><font size=2>위에서는 이러 저러한 것을 추가해야 한다고 말했지만 현재 예제에서는 그것을 구현하고 있지는 않다.<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                        <p style="margin-right:0px;"><FONT size=2><FONT face=Fixedsys><FONT color=#0000ff>function</FONT> 
+TD3DDevice.BeginScene(): boolean;<BR><FONT color=#0000ff>begin<BR></FONT><FONT color=#008000>&nbsp;&nbsp;&nbsp; // IDirect3DDevice9.BeginScene()이 두 번 불리지 않도록 처리,<br> 
+&nbsp;&nbsp;&nbsp;&nbsp;// assert사용<BR>&nbsp;&nbsp;&nbsp; // 동기화 때문에 출력하지 말아해 한다면 FALSE를 리턴<BR>&nbsp;&nbsp;&nbsp; // 2D 게임은 view port가 
+하나일 경우가 많으므로<br> &nbsp;&nbsp;&nbsp;&nbsp;// IDirect3DDevice9.Clear()를 여기에 넣어도 무방<BR></FONT>&nbsp;&nbsp;&nbsp; result := 
+(m_pD3DDevice.BeginScene() = D3D_OK);<BR><FONT color=#0000ff>end</FONT>;</FONT>&nbsp;</font>
+                                        <p><FONT size=2><FONT face=Fixedsys><FONT color=#0000ff>function</FONT> 
+TD3DDevice.EndScene(): boolean;<BR><FONT color=#0000ff>begin<BR></FONT><FONT color=#008000>&nbsp;&nbsp;&nbsp; // IDirect3DDevice9.BeginScene()과 쌍이 되고 있는지 확인,<br> 
+                                        &nbsp;&nbsp;&nbsp;&nbsp;// assert사용<BR></FONT>&nbsp;&nbsp;&nbsp; result := (m_pD3DDevice.EndScene() = D3D_OK);<BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; // 리턴하기 전에 디버깅 관련 정보를 Back buffer에 기록할<br> 
+                                        &nbsp;&nbsp;&nbsp;&nbsp;// 수도 있다.<BR></FONT><FONT color=#0000ff>end</FONT>;</FONT></FONT>
+                                        <p><FONT size=2><FONT face=Fixedsys><FONT color=#0000ff>function </FONT>TD3DDevice.Flush(): 
+boolean;<BR><FONT color=#0000ff>var<BR></FONT>&nbsp;&nbsp;&nbsp; hr: HRESULT;<BR><FONT color=#0000ff>begin<BR></FONT><FONT color=#008000>&nbsp;&nbsp;&nbsp; // 그동안 그렸던 것을 실제 화면에 반영한다.<br> 
+                                        &nbsp;&nbsp;&nbsp;&nbsp;// 3번째 인자는 0으로 해도 된다.<BR></FONT>&nbsp;&nbsp;&nbsp; hr := m_pD3DDevice.Present(<FONT color=#0000ff>nil</FONT>, <FONT color=#0000ff>nil</FONT>, m_hWindow, <FONT color=#0000ff>nil</FONT>);</FONT></FONT>
+                                        <p><FONT size=2><FONT face=Fixedsys>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>if</FONT> FAILED(hr) <FONT color=#0000ff>then begin<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; case <FONT color=#000000>hr</FONT> 
+of</FONT><BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // 디바이스를 소실했고, 복구가 불가능 
+상태<BR></FONT>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; D3DERR_DEVICELOST:<BR><FONT color=#0000ff>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+begin<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; end<FONT color=#000000>;</FONT><BR></FONT><FONT color=#008000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // 디바이스를 소실했지만, 복구가 가능한경우<BR></FONT>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+D3DERR_DEVICENOTRESET:<BR><FONT color=#0000ff>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; begin<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+end<FONT color=#000000>;</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; end<FONT color=#000000>;</FONT><BR>&nbsp;&nbsp;&nbsp; end</FONT><FONT 
+color=#000000>;</FONT></FONT></FONT>
+                                        <p><font size=2 face="Fixedsys">&nbsp;&nbsp;&nbsp;&nbsp;result := (hr = D3D_OK);<BR></font><FONT size=2><FONT face=Fixedsys><FONT color=#0000ff>end</FONT>;<br>&nbsp;</FONT></FONT></BLOCKQUOTE>
+<font size=2>새로 나온 IDirect3DDevice9 메서드에는 IDirect3DDevice9.BeginScene()과 
+IDirect3DDevice9.EndScene()이 있다. Direct3D9의 모든 렌더링 함수는 BeginScene()과 EndScene() 
+사이에서 구현되어야 한다고 생각하면 된다. 이것은 아주 중요한 부분이면서도 너무나도 당연한 Direct3D의 특징이다.</font>
+                                    <p><font size=2>TD3DDevice.Flush()라고 표현한 클래스 함수에서는 굉장히 중요한 부분이 있다. 그것은 위의 소스에서 주석으로 설명하고 있는 
+<strong>D3DERR_DEVICELOST</strong>와 <strong>D3DERR_DEVICENOTRESET</strong>에 대한 
+것이다. 이것은 Device lost에 대한 것을 처리하는 것으로, DirectDraw 시절부터 항상 문제가 되어 왔던 것이다. 제한되어 있는 
+비디오 H/W의 자원을 여러 프로그램이 공유하려다 보니 이것은 필요악과 같이 존재해 왔다. 예를 들어, A라는 프로그램이 비디오 메모리를 
+사용하고 있는데 B라는 프로그램이 A를 minimize시키고 자신이 풀스크린을 차지하는 시나리오가 있다고 하면 B에게 비디오 자원을 할당 해주기 
+위해서 비활성화된 A의 자원을 뺐어서 B에게 주게 된다.</font>
+                                    <p><font size=2>먼저 Device lost가 일어나는 조건을 보자면,</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                        <p style="margin-right:0px;"><FONT size=2><FONT color=#000080>1. 풀스크린으로 게임 중에 alt-tab을 눌러 바탕 화면으로 갔을 때<BR>2. 풀스크린으로 
+게임 중에 다른 윈도우(다이얼로그 등)가 활성화되면서 풀스크린 게임이 minimize될 때<BR>3. 풀스크린으로 게임 중에 Windows에 
+의해 강제로 화면 모드가 전환될 때 (스크린 세이버 같은...)<BR>4. 창모드로 게임 중에 다른 게임이 풀스크린으로 실행될 
+때</FONT></FONT></BLOCKQUOTE>
+<font size=2>나의 경험으로는 이 정도의 경우에 Device lost가 발생했는데 아마도 찾아보면 더 있을 것 같다. 하지만 발생 조건과는 상관없이, 
+우리 쪽에서 방어적으로 Device lost에 대한 대비책을 만들어 놓으면 문제가 없을 것으로 생각된다.</font>
+                                    <p><font size=2>보통 Device lost는 언제라도 
+<strong>IDirect3DDevice9.TestCooperativeLevel()</strong>에서 확인할 수는 있지만 일반적으로는 
+IDirect3DDevice9.Present()에서 처리하는 것이 편하다. (편하다는 것일뿐 최선의 방법은 아니다)</font>
+                                    <p><font size=2>그렇다면 D3DERR_DEVICELOST와 D3DERR_DEVICENOTRESET의 차이점은 무엇인가? 이름에도 알 수 있지만 
+D3DERR_DEVICELOST는 완전히 Device의 자원을 잃어버린 상태이고 D3DERR_DEVICENOTRESET은 Device가 
+reset되지 않은 상태로 바뀌었다는 것이다. 이름만으로 봐도 전자가 후자의 superset이라는 것을 알 수 있다.</font>
+                                    <p><font size=2>먼저, D3DERR_DEVICENOTRESET 상태라면, 먼저 일부 texture를 해제해야한다. 
+IDirect3DDevice9.CreateTexture()에서 D3DPOOL_MANAGED로 생성한 texture는 시스템에 의해 자동 복구가 
+되고 D3DPOOL_SYSTEMMEM로 생성한 texture는 시스템 메모리기 때문에 H/W 자원이 아니다. 따라서 
+<strong>D3DPOOL_DEFAULT</strong>로 생성한 texture만 모두 해제(= nil)한다. 그리고 
+IDirect3DDevice9.Reset()을 통해 Device를 다시 세팅하고 D3DPOOL_DEFAULT로 생성할 texture를 다시 
+읽는다. 그리고 Device 초기화 때 했던 IDirect3DDevice9.SetTextureStageState() 등을 처음부터 다시 
+해준다.</font>
+                                    <p><font size=2>만약 D3DERR_DEVICELOST라면 오히려 더 간단하다. 완전히 Device를 해제하는 과정을 거친 후 다시 처음부터 다시 
+Device를 생성하면 된다. 일반적인 상황에서는 D3DERR_DEVICELOST가 더 많이 발생하기 때문에(게임하다가 alt-tab으로 다른 
+작업 하기 등) D3DERR_DEVICENOTRESET이라도 D3DERR_DEVICELOST와 같이 처리해도 상관없다. (이것은 나의 주관적인 
+생각으로, 다른 그래픽 H/W에서는 결과가 다를 수도 있다)<br><br><br><br><STRONG><FONT size=4>11. 예제 설명</FONT></STRONG></FONT><DIV>
+                                        <p><font size=2>여기까지 왔으면 이제 이 강좌도 다 끝났다. 전혀 자세하지도 않고 전혀 기술적인 부분도 없지만 다행스럽게도 우리는 이 정도만 알아도 
+2D 게임 정도는 만들 수가 있다. 사실 2D 게임이라는 것은 스프라이트만 찍을 수 있으면 누구라도 만들 수 있는 것 아니었던가. 여기에 첨부한 
+예제 게임도 마찬가지다. 딴 건 별로 없고 그냥 스프라이트만 열심히 찍었다. (게임의 메인 루프나 오브젝트 정의는 '2D'라는 단어와는 
+상관없으므로 이 강좌에서는 언급하지 않는다) 그래도 스프라이트만 찍기는 좀 뭐해서 시간을 좀 더 내어 약간의 효과도 줘보고 게임맵도 간단하게 
+구성했다. 원래부터 무성의하고 무책임한 강좌를 목표로 했기 때문에 그냥 예제하나 달랑 던져 놓고 도망가려 하였으나, 마지막까지 초보 델피언을 
+홀리고자 좀 더 힘을 내어 보겠다.<br><br>아래의 스크린샷은&nbsp;첨부된 예제를 실행한 결과로서, 일반적인 쿼터뷰(isometric-view)의 2D 화면을 보여준다. </font></DIV>
+</DIV>
+<DIV>
+<HR>
+</DIV>
+                                <p align="center"><img src="gd_data/gd0411_1.jpg" width="630" height="240" border="0">
+<DIV><DIV><STRONG><br><font size="2">조작키</font></STRONG><font size=2>&nbsp;</font>
+                                        <p><font size=2>화살표키: 8방향 이동<br>Ctrl 키: 점프<br>Esc 키: 종료&nbsp;</font>
+                                        <p><STRONG><font size="2">저작권</font></STRONG><font size=2>&nbsp;</font>
+                                        <p><font size=2>배경 그림: '별과 소녀' 팀</font><DIV><font size=2>타일 그림: 네토님 
+</font><DIV><font size=2>캐릭터 그림: 김병철님</font></DIV></DIV></DIV><HR>
+                                    <p><font size=2>예제는 게임이라고는 부를 수 있을만큼 완성도가 높지가 않다. 다만 이 강좌에서 설명했던 모든 것을 사용해서 2D의 화면 출력을 구현한 
+것이라고 볼 수 있다.&nbsp;컴파일이 가능하도록&nbsp;모든 소스가 들어가 있으며 테스트는 Delphi5에서 했다.<br><br>사실 게임 구성 자체에 대한 설명도 포함되어야 하나 그다지 특이한 것도 없기 때문에, 이 강좌의 의미에 맞는 </font><STRONG><font size="2">3D의 
+요소를 사용해 2D를 표현한 부분</font></STRONG><font size=2>만 추가적으로 설명하겠다.&nbsp;</font>
+                                    <p><STRONG><font size="2">1) 그림자 효과</font></STRONG><font size=2>&nbsp;</font>
+                                    <p><font size=2>지금까지 설명한 것 이외에 이 예제에서 특별히 하나 더 구현한 것은 그림자 효과이다. 과거의 일반 2D 엔진의 경우에는 그림자 효과를 
+구현하기 위해서는 지금 그림자 데이터를 추가하거나 그림자를 출력하기 위한 스프라이트 함수를 직접 만들어야 했다. 하지만 이제는 힘들지 않게 
+간단하게 구현할 수가 있다. 원래 출력하려는스프라이트를 사각형이 아닌 45도 기울어진 평행사변형으로 나타내면서 투명하지 않은 부분에 대해서 
+검은색 반투명으로 만들어 주면 된다.&nbsp;</font>
+                                    <p><font size=2>앞에서 설명할 때 그림자 효과를 주기 위한 render state를 다음과 같이 정의했다.<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+<FONT face=Fixedsys size=2>m_pD3DDevice.SetRenderState(D3DRS_SRCBLEND, 
+D3DBLEND_ZERO);<BR>m_pD3DDevice.SetRenderState(D3DRS_DESTBLEND, 
+D3DBLEND_INVSRCALPHA);<br>&nbsp;</FONT></BLOCKQUOTE>
+<font size=2>Source를 zero로 출력하라는 것은 R, G, B가 어떤 색이든 간에&nbsp;모두 검은 색으로 나타내어라는 것이며, 
+destination이 inverse source alpha라는 것은 destination에서는 source의 알파 값의 반대 값을 강제로 
+지정하겠다는 것인데 결과적으로 source에서 alpha 값이 0인 부분을 남겨 놓게 된다. 일단 이것만 지정하게 되면 스프라이트가 항상 검게 
+출력된다. (하지만 컬러키는 모두 적용된다) 그렇다면 이제는 이렇게 만든 검은색의 스프라이트를 반투명하게 45도 기울인 평행 사변형으로 만드는 
+것만 남았다. 이것 역시 어렵지 않은데, 여태껏 직사각형으로 지정해 왔던 4개의 vertex 좌표을 평행사변형으로 주기만 하면 된다.<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+<FONT face=Fixedsys size=2><FONT color=#0000ff>procedure</FONT> 
+TGameMain.PutSpriteShadow<BR>(<br><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;여기서의 z좌표는 3D 좌표가 아니라 2.5D의 
+z좌표를 말한다.<BR>&nbsp;&nbsp;&nbsp; //&nbsp;즉, 점프에&nbsp;대한 z좌표라고 볼 수 있다.<BR></FONT>&nbsp;&nbsp;&nbsp; xPos, yPos, zPos : 
+integer;<BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;texture에 대한 핸들<BR></FONT>&nbsp;&nbsp;&nbsp; index : 
+integer;<BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;texture에서 원본의 사각 영역<BR></FONT>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>const</FONT> smRect: TSmRect;<BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;투명도, 
+지정하지 않으면 100% (= 255)<BR></FONT>&nbsp;&nbsp;&nbsp; opacity: integer = <FONT 
+color=#008080>255<br></FONT>);<BR><FONT color=#0000ff>var</FONT><BR>&nbsp;&nbsp;&nbsp; x, y: 
+integer;<BR>&nbsp;&nbsp;&nbsp; vertices: <FONT color=#0000ff>array</FONT>[<FONT 
+color=#008080>0</FONT>..<FONT 
+color=#008080>3</FONT>] <FONT color=#0000ff>of</FONT> TVertexTL;<BR><FONT color=#0000ff>begin</FONT><BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;지정한 texture의 pixel 좌표를 vertex 값으로 바꿔서 돌려준다.</FONT><BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;이 부분은 shadow를 구현하는 것이기 때문에<br>&nbsp;&nbsp;&nbsp; // vertex color에 대한 투명도를 50% (= 
+128)로 지정했다.</FONT><BR>&nbsp;&nbsp;&nbsp; InitVertexTL(index, smRect.x, smRect.y, smRect.w, 
+smRect.h,<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vertices, <FONT 
+color=#008080>128</FONT>);<br><BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; 
+//&nbsp;실제 그림자가 시작하는 (x, y)를 계산</FONT><BR>&nbsp;&nbsp;&nbsp; x := xPos -(smRect.dx * smRect.dy 
+<FONT color=#0000ff>div</FONT> smRect.h) + zPos <FONT color=#0000ff>div</FONT> 
+<FONT 
+color=#008080>2</FONT>;<BR>&nbsp;&nbsp;&nbsp; y := yPos -(smRect.dy + 
+(smRect.h-smRect.dy) <FONT color=#0000ff>div</FONT> <FONT 
+color=#008080>2</FONT>) + zPos <FONT color=#0000ff>div</FONT> <FONT 
+color=#008080>2</FONT>;<br><BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;기울어진 평행사변형으로 출력하도록 vertex 
+좌표를 수정</FONT><BR>&nbsp;&nbsp;&nbsp; ShadowVertexTL(x, y, smRect.w, smRect.h, 
+vertices);<br><BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;계산된 vertex로 출력</FONT><BR>&nbsp;&nbsp;&nbsp; 
+g_d3Device.DrawTexture(index, vertices);<BR><FONT color=#0000ff>end</FONT>;<br><br></FONT></BLOCKQUOTE>
+<font size=2>이번에는 이전에 소개하지 않은 함수가 3개 정도 나왔다. 이 부분은 약간의 트릭을 요하는 것이기 때문에 일반적인 2D의 방법이 아닌 
+Direct3D9의 요소를 적적히 사용해야 하는 부분이므로 2D의 입장에서는 좀 더 native한 코드로 작성되어진 부분이다. 
+InitVertexTL()과 ShadowVertexTL()은 예제 코드에서 용법을 직접 파악하기 바라며 여기서는 DrawTexture()에 대한 
+부분만 짚고 넘어 가려 한다.</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+<FONT face=Fixedsys size=2><FONT color=#0000ff><br>function</FONT> 
+TD3DDevice.DrawTexture<br>(<br>&nbsp;&nbsp;&nbsp; hImage: integer;<br><FONT color=#0000ff>&nbsp;&nbsp;&nbsp; const</FONT> vertices: <FONT color=#0000ff>array of</FONT> TVertexTL<br>): boolean;<BR><FONT color=#0000ff>var</FONT><BR>&nbsp;&nbsp;&nbsp; 
+pTexInfo: PTextureInfo;<BR><FONT color=#0000ff>begin</FONT><BR>&nbsp;&nbsp;&nbsp; result := 
+FALSE;</FONT><font size=2>&nbsp;</font>
+                                        <p><FONT face=Fixedsys size=2>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>if</FONT> hImage = <FONT 
+color=#008080>0</FONT> <FONT color=#0000ff>then</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+exit;</FONT><font size=2>&nbsp;</font>
+                                        <p><FONT face=Fixedsys size="2"><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;핸들을 원래의 texture 구조체로 바꾸는 
+과정</FONT><BR>&nbsp;&nbsp;&nbsp; pTexInfo := PTextureInfo(hImage);</FONT><font size=2>&nbsp;</font>
+                                        <p><FONT face=Fixedsys size="2"><FONT color=#008000>&nbsp;&nbsp;&nbsp; //&nbsp;이미 vertex&nbsp;buffer 설정이 끝났으므로 
+바로 출력한다.</FONT><BR>&nbsp;&nbsp;&nbsp; t_SetTexture(<FONT 
+color=#008080>0</FONT>, 
+pTexInfo.pTexture);<BR>&nbsp;&nbsp;&nbsp; m_pD3DDevice.SetFVF(D3DFVF_XYZRHW <FONT color=#0000ff>or</FONT> D3DFVF_DIFFUSE <FONT color=#0000ff>or<br></FONT> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D3DFVF_TEX1);<BR>&nbsp;&nbsp;&nbsp; m_pD3DDevice.DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 
+high(vertices)-<FONT 
+color=#008080>1</FONT>,<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; @vertices, 
+sizeof(TVertexTL));</FONT><font size=2>&nbsp;</font>
+                                        <p><FONT face=Fixedsys size=2>&nbsp;&nbsp;&nbsp; result := TRUE;<BR><FONT color=#0000ff>end</FONT>;<br>&nbsp;</FONT></BLOCKQUOTE>
+<STRONG><font size="2">2) 파일에서 이미지 읽기</font></STRONG>
+                                    <p><font size=2>예제에서는 파일에서 bmp와 jpg을 읽어서 처리하고 있다. 아마도 실제 게임을 만든다고 해도 이 부분은 필요할 
+것이다.<BR><BR>원래 Direct3DX에서는 파일에서 bmp등을 읽어서 texture로 바꾸어 주는 함수를 제공한다. 하지만 간단하게 
+사용할 때는 편할지 모르겠으나 나중에 게임이 완성도를 갖추어 갈 때쯤이면 자체적인 이미지 포맷을 사용하거나 원본의 이미지에&nbsp;전처리를 거치는 일이 
+많아질 것이므로 이런 함수는 직접 하나 만들어 주는 것을 권장한다. 특히 델파이는 이미 TBitmap 클래스와 TJPEGImage 클래스가 
+지원되고 있으므로 다른 언어보다는 손쉽게 이미지 파일을 texture로 만들 수 있다.<BR><BR>여기서는 2종류의 이미지 읽기 함수를 
+제공하는데, 그냥 이미지를 읽는 함수인 LoadD3DImage()와 컬러키를 지정할 수 있도록 한 LoadD3DImageEx()를 소개하고자 
+한다. 그 두 함수는 다음과 같이 정의되어 있다.<br>&nbsp;</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+<FONT face=Fixedsys size=2><FONT color=#0000ff>function</FONT> 
+LoadD3DImage<br>(<br>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>const</FONT> d3Device : 
+TGfxDevice;<br>&nbsp;&nbsp;&nbsp; fileName&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <FONT color=#0000ff>string<br></FONT>): integer;<BR><FONT color=#0000ff>begin</FONT><BR>&nbsp;&nbsp;&nbsp; 
+result := LoadD3DImageSub(d3Device, fileName, FALSE);<BR><FONT color=#0000ff>end</FONT>;<br><br><FONT color=#0000ff>function</FONT> 
+LoadD3DImageEx<br>(<br>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>const</FONT> d3Device : 
+TGfxDevice;<br>&nbsp;&nbsp;&nbsp; fileName&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <FONT color=#0000ff>string</FONT>;<br>&nbsp;&nbsp;&nbsp; colorKey&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : longword<br>): integer;<BR><FONT color=#0000ff>begin</FONT><BR>&nbsp;&nbsp;&nbsp; 
+result := LoadD3DImageSub(d3Device, fileName, TRUE, colorKey);<BR><FONT color=#0000ff>end</FONT>;<BR></FONT>
+                                        <p><FONT face=Fixedsys size=2><FONT color=#0000ff>function</FONT> 
+LoadD3DImageSub<br>(<BR><FONT color=#008000>&nbsp;&nbsp;&nbsp; // TGfxDevice는 여기서 정의한 
+Direct3D Device를 래핑하는 객체<br></FONT>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>const</FONT> d3Device : 
+TGfxDevice;<br>&nbsp;&nbsp;&nbsp; fileName&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <FONT color=#0000ff>string</FONT>;<br>&nbsp;&nbsp;&nbsp; useColorKey&nbsp;&nbsp;&nbsp; : boolean;<br>&nbsp;&nbsp;&nbsp; colorKey&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : longword = <FONT 
+color=#008080>0<br></FONT>): integer;<BR><FONT color=#0000ff>var</FONT><BR>&nbsp;&nbsp;&nbsp; i, 
+j&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : integer;<BR>&nbsp;&nbsp;&nbsp; depth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : integer;<BR>&nbsp;&nbsp;&nbsp; ExtString&nbsp;&nbsp;&nbsp; : <FONT color=#0000ff>string</FONT>;<BR>&nbsp;&nbsp;&nbsp; hImage&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : integer;<BR>&nbsp;&nbsp;&nbsp; bitmap&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: TBitmap;<BR>&nbsp;&nbsp;&nbsp; jpgImage&nbsp;&nbsp;&nbsp;&nbsp; : TJPEGImage;<BR>&nbsp;&nbsp;&nbsp; pDest32&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : 
+Plongword;<BR>&nbsp;&nbsp;&nbsp; temp, _R, _B : longword;<BR>&nbsp;&nbsp;&nbsp; paletteEntry : <FONT color=#0000ff>array</FONT>[<FONT 
+color=#008080>0</FONT>..<FONT 
+color=#008080>255</FONT>] <FONT color=#0000ff>of</FONT> longword;<BR>&nbsp;&nbsp;&nbsp; 
+pPalette&nbsp;&nbsp;&nbsp;&nbsp; : Plongint;<br><BR><FONT color=#0000ff>begin</FONT><BR>&nbsp;&nbsp;&nbsp; 
+result&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; := <FONT 
+color=#008080>0</FONT>;<BR>&nbsp;&nbsp;&nbsp; pPalette&nbsp;&nbsp;&nbsp; &nbsp;:= <FONT color=#0000ff>nil</FONT>;<BR>&nbsp;&nbsp;&nbsp; depth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; := <FONT 
+color=#008080>32</FONT>;</FONT><font size=2>&nbsp;</font>
+                                        <p><FONT face=Fixedsys size=2>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>if not</FONT> 
+FileExists(fileName) <FONT color=#0000ff>then</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+exit;</FONT><font size=2>&nbsp;</font>
+                                        <p><FONT face=Fixedsys size=2>&nbsp;&nbsp;&nbsp; bitmap := TBitmap.Create;</FONT><font size=2>&nbsp;</font>
+                                        <p><FONT face=Fixedsys size=2>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>try</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ExtString 
+:= LowerCase(ExtractFileExt(fileName));<BR></FONT>
+                                        <p><FONT face=Fixedsys size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff>if </FONT>ExtString = <FONT 
+color=#008080>'.jpg'</FONT> <FONT color=#0000ff>then begin</FONT><BR>
+</FONT><DIV><FONT face=Fixedsys size="2"><FONT face=Fixedsys color=#008000>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // 확장자가 jpg일 때는 TJPEGImage를 
+통해 읽는다.</FONT></FONT></DIV><FONT face=Fixedsys size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; jpgImage := TJPEGImage.Create();<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+jpgImage.LoadFromFile(fileName);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; bitmap.Assign(jpgImage);<BR>&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; jpgImage.Free;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+<FONT color=#0000ff>else</FONT> <FONT color=#0000ff>begin</FONT><BR>
+</FONT><DIV><FONT face=Fixedsys size="2"><FONT face=Fixedsys color=#008000>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // 확장자가 jpg가 아닐&nbsp;때는 TBitmap을 
+                                            통해 읽는다.</FONT></FONT></DIV><FONT face=Fixedsys size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bitmap.LoadFromFile(fileName);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<FONT color=#0000ff>end</FONT>;</FONT><font size=2>&nbsp;</font>
+                                        <p><FONT face=Fixedsys size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>if </FONT>useColorKey <FONT color=#0000ff>then</FONT> <FONT color=#0000ff>begin</FONT><BR>
+</FONT><DIV><FONT face=Fixedsys size="2"><FONT face=Fixedsys color=#008000>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // 컬러키가 적용되는 경우에는 이미지 자체를 
+32-bit로 설정</FONT></FONT></DIV><FONT face=Fixedsys size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bitmap.PixelFormat := pf32Bit;<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; colorKey := colorKey <FONT color=#0000ff>and</FONT> <FONT 
+color=#008080>$00FFFFFF</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<FONT color=#0000ff>for</FONT> j := <FONT 
+color=#008080>0</FONT> to 
+pred(bitmap.Height) <FONT color=#0000ff>do</FONT> <FONT color=#0000ff>begin</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pDest32 := 
+bitmap.ScanLine[j];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>for</FONT> i := <FONT 
+color=#008080>0</FONT> to pred(bitmap.Width) <FONT color=#0000ff>do</FONT> <FONT color=#0000ff>begin</FONT><BR>
+</FONT><DIV><FONT face=Fixedsys size="2"><FONT face=Fixedsys color=#008000>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // 강좌의 앞 부분에 나왔던 
+부분</FONT></FONT></DIV><FONT face=Fixedsys size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>if </FONT>(pDest32^ <FONT color=#0000ff>and</FONT> <FONT 
+color=#008080>$00FFFFFF</FONT>) &lt;&gt; colorKey 
+<FONT color=#0000ff>then</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pDest32^ := pDest32^ 
+<FONT color=#0000ff>or</FONT> <FONT 
+color=#008080>$FF000000</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>else</FONT>&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pDest32^ := pDest32^ <FONT color=#0000ff>and</FONT> <FONT 
+color=#008080>$00FFFFFF</FONT>;<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; inc(pDest32);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<FONT color=#0000ff>end</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<FONT color=#0000ff>else</FONT> <FONT color=#0000ff>begin</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+depth := GetPixelDepth(bitmap);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>if </FONT>depth = <FONT 
+color=#008080>8</FONT> <FONT color=#0000ff>then</FONT> <FONT color=#0000ff>begin</FONT><BR>
+</FONT><DIV><FONT face=Fixedsys size="2"><FONT face=Fixedsys color=#008000>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // 8-bit 이미지는 팔레트 설정이 
+필요하다.</FONT></FONT></DIV><FONT face=Fixedsys size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GetPaletteEntries(bitmap.Palette, <FONT 
+color=#008080>0</FONT>, <FONT 
+color=#008080>256</FONT>,<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;paletteEntry);<BR>&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <FONT color=#0000ff>for</FONT> i := <FONT 
+color=#008080>0</FONT> to 
+<FONT 
+color=#008080>255</FONT> <FONT color=#0000ff>do</FONT> <FONT color=#0000ff>begin</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; temp := paletteEntry[i] <FONT color=#0000ff>or</FONT> <FONT 
+color=#008080>$FF000000</FONT>;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp; _R := (temp <FONT color=#0000ff>and</FONT> <FONT 
+color=#008080>$000000FF</FONT>) <FONT color=#0000ff>shl</FONT> <FONT 
+color=#008080>16</FONT>;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _B := (temp <FONT color=#0000ff>and</FONT> <FONT 
+color=#008080>$00FF0000</FONT>) <FONT color=#0000ff>shr</FONT> <FONT 
+color=#008080>16</FONT>;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+paletteEntry[i] := (temp <FONT color=#0000ff>and</FONT> <FONT 
+color=#008080>$FF00FF00</FONT>) <FONT color=#0000ff>or<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>_R <FONT color=#0000ff>or</FONT> _B;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT>;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; pPalette := 
+@paletteEntry;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT>;<br></FONT><font size=2>&nbsp;</font>
+<DIV><FONT face=Fixedsys size="2"><FONT face=Fixedsys color=#008000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // 일단 texture를 
+생성한다.</FONT></FONT></DIV><FONT face=Fixedsys size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hImage := d3Device.CreateImage(bitmap.Width, 
+bitmap.Height);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>if </FONT>hImage = <FONT 
+color=#008080>0</FONT> <FONT color=#0000ff>then</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+exit;<br><br><FONT face=Fixedsys color=#008000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //&nbsp;texture에 TBitmap에 저장되어 있는 
+이미지를 적용시킨다.<br></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; d3Device.AssignImage(hImage, bitmap.ScanLine[<FONT 
+color=#008080>0</FONT>],<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;bitmap.Width, bitmap.Height, depth,<br> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;integer(bitmap.ScanLine[<FONT 
+color=#008080>1</FONT>]) - integer(bitmap.ScanLine[<FONT 
+color=#008080>0</FONT>]),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pPalette);<br><br>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>finally</FONT><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
+bitmap.Free;<br><br>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>end</FONT>;<br><br>&nbsp;&nbsp;&nbsp; result := hImage;<BR><FONT color=#0000ff>end</FONT>;<br>&nbsp;</FONT></BLOCKQUOTE>
+<font size=2>나중에는 리소스 보호를 위해 이미지 등은 자체 포맷이나 통합 리소스 형태로 남게 된다. 그때는 그에 맞게 위의 소스를 수정하면 
+된다.<BR><BR>
+</font><DIV><STRONG><font size="2">3) 게임의 메인 루틴과 그래픽 이외의 설명<br><br></font></STRONG><font size=2>어차피 소스를 첨부한 예제이니 직접 살펴보시기 바란다. 나도 소중한 주말을 컴퓨터 앞에서 타이핑하면서 보내고 싶지는 
+않다.<br><br><br><br><STRONG><FONT size=4>12. 강좌를 접으며</FONT></STRONG></FONT></DIV>
+</DIV><DIV><DIV dir=ltr style="MARGIN-RIGHT: 0px">
+                                    <p style="margin-right:0px;"><font size=2>마지막으로 게임을 만들기 위해서 '2D'라는 화면 출력 이외에 
+프로그래머로서 생각해야 할 것들을 알아 보자.</font><BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+                                        <p style="margin-right:0px;"><FONT size=2><FONT color=#000080>- 게임의 메인 루프는 어떤 식으로 
+동작시킬 것인가? <BR>- 오브젝트의 정의 및 행동 양식 설계<BR>- 게임 맵의 구성과 로딩 방식<BR>- 한글 입출력 또는 지역화 관련 
+이슈<BR>- 사운드 라이브러리 (배경음 및 효과음)<BR>- 네트워크 프로그래밍<BR>- 게임 진행을 위한 스크립트 엔진<BR>- 게임의 
+세이브를 위한 object serialization<BR>- User interface 프로그래밍<BR>- 게임 패치를 위한 자동 업데이트 
+시스템<BR>- 프로그래머의 마지막 희열을 위한 easter egg 삽입<br>&nbsp;</FONT></FONT></DIV></BLOCKQUOTE>
+<DIV><font size=2>생각하는대로 적어 보았는데 아마도 빠진 부분이 많을 것이다. 이렇듯 '2D 게임'을 나타내기 위해 화면에 출력하는 것은 이렇게나 많은 
+'해야할 일' 중에 하나일뿐이다. 위의 내용들을 제대로 구현만 해 놓았다면 금방 자신의 게임을 3D로도 만들 수 있다. (자.... 또 속고 
+있는 것이다) 그리고 이러한 '게임 프로그래밍'도 게임 제작 전체에서 보면 또 일부이고, 이러함 '게임 제작'은, 상업적으로 성공한 게임을 통해 
+이익을 얻는&nbsp;방법에 대해서는 또 일부분일뿐이다.</font>
+                                    <p><font size=2>슬슬 눈치 챘겠지만&nbsp;이 강좌는 중요한 것을 많이 빼먹고 있다. Direct3D9의 가장 기본적인 부분은 모두 넘어가고 있는데, 그것은 
+이미 DirectX SDK 매뉴얼의 </font><font size="2" color="purple"><STRONG>DirectX Graphics - Programming 
+Guide - Getting Started with Direct3D</STRONG></font><font size=2> 부분에서 모두 설명하고 있기 때문에 특별히 
+여기서 타이핑의 양을 늘이고 싶지는 않았다.<BR></font>
+                                    </div>
+</DIV>                            
+                                <p><font size=2>강좌의 내용상으로 보면 부족한 
+                                부분도 많고 주관적인 생각도 많다. 내가 기술한 
+                                모든 것들은 절대적인 것이 아니며 읽는 사람들로 
+                                하여금 자신이 생각하고 있는 방식에 대한 참고 
+                                정도만 된다면 어느 정도 이 강좌의 목적은 달성한 
+                                것이라고 본다.<br><br>(강좌를 쓰고 나서 전체적으로 검토를 하지 않았으므로 오탈자가 많은 것이다. 하지만 불평하지 않는 당신이 아름답다)&nbsp;</font></p>
+<DIV><p align="center"><font size="3"><a href="gd_data/gd0411_1.zip">첨부파일 
+                            (275K)</a> (Delphi 5에서 작성되었음)<br>&nbsp;</font></p>
+                                </div>
+</td>
+                </tr>
+                <tr>
+                    <td height="2" bgcolor="#605870" colspan="3" width="637">
+                     </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td width="595" bgcolor="#605870" height="2">
+&nbsp;        </td>
+    </tr>
+</table>
+</div>
+
+<p>&nbsp;</p>
+</body>
+
+</html>

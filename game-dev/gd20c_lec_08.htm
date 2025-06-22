@@ -1,0 +1,192 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>MMX Technology 에 의한 고속 3D 행렬 연산</TITLE>
+<META name="generator" content="Namo WebEditor v5.0">
+<STYLE><!--
+.leading200 { line-height: 200% }
+.leading180 { line-height: 180% }
+.leading150 { line-height: 150% }
+.leading100 { line-height: 100% }
+-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="navy" text="white" link="blue" vlink="purple" alink="red">
+
+<P><font color="black"><span style="background-color:white;">이것은 1999년 하이텔 
+게임 제작 동호회에 올렸던 강좌 입니다.</span></font></P>
+<p><font color="#CCFF00">#####################################################</font></p>
+<p>
+
+<FONT face="굴림체">안녕하세요.. 안영기입니다.</FONT></p>
+<P><FONT face="굴림체">다름 아니라 이번에는 MMX Technology 를 이용하여 3D 에 사용되는 고속 행렬<BR>
+연산을 설명하고자 합니다.</FONT></P>
+<P><FONT face="굴림체">흔히 3D 게임을 만들 때 가장 기본이 되는 연산이며 확대, 축소, 이동, 각도<BR>
+변화등등에 걸쳐 다용도로 쓰이는 부분입니다.</FONT></P>
+<P><FONT face="굴림체">MMX 가 탄생한 배경이 빠른 Multimedia 지원이니 많큼 이런쪽에서도 지원이<BR>
+되는데요...</FONT></P>
+<P><FONT face="굴림체">이에, 제가 소개 하고자 하는 팁은 MMX 를 코드를 이용하여 그 행렬 계산을<BR>
+빠르게 해보자는 의도입니다.</FONT></P>
+<P><FONT face="굴림체">풀소스에 들어가기 전에 핵심 부분만 추려보면 다음과 같습니다.</FONT></P>
+<P><FONT face="굴림체"><BR>
+-------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&nbsp;&gt;&gt; MMX 이론</FONT></P>
+<P><FONT face="굴림체">구체적인 방식이라고 말한다면 MMX 명령어인 'pmaddwd'라는 명령어에 있습니다.<BR>
+이 명령어는 여타의 DSP 칩에서와 같이 곱하고 동시에 더하는 연산을 합니다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~~~~~~~~~~~~~~~~~~~~~~~~~<BR>
+그리고 한번에 하나의 곱셈이 아닌 동시에 word 형 데이터 4개를 곱하고<BR>
+더합니다.</FONT></P>
+<P><FONT face="굴림체">그렇다면 감이 오시겠죠 ?</FONT></P>
+<P><FONT face="굴림체">3D 게임에서 사용하는 행렬은 4-3 를 주로 사용하고 4-3 끼리 곱하는 연산을<BR>
+하기 위해서 4-4 행렬로 확장을 해서 사용하게 됩니다. 물론 마지막 값은<BR>
+항상 { 0, 0, 0, 1 }로 둡니다.</FONT></P>
+<P><FONT face="굴림체">( 4-3 과 4-3 끼리는 절대 곱해질수 없죠. 고교 정석 수학 책을 참고 하시길..)</FONT></P>
+<P><FONT face="굴림체">그리고 제가 이번에 실험하고자 하는 행렬식을 본다면...</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;| x' | &nbsp;&nbsp;&nbsp;&nbsp;| &nbsp;a1 &nbsp;a2 &nbsp;a3 &nbsp;a0 &nbsp;| | x |<BR>
+&nbsp;&nbsp;| y' | &nbsp;= &nbsp;| &nbsp;b1 &nbsp;b2 &nbsp;b3 &nbsp;b0 &nbsp;| | y |<BR>
+&nbsp;&nbsp;| z' | &nbsp;&nbsp;&nbsp;&nbsp;| &nbsp;c1 &nbsp;c2 &nbsp;c3 &nbsp;c0 &nbsp;| | z |<BR>
+&nbsp;&nbsp;| w' | &nbsp;&nbsp;&nbsp;&nbsp;| &nbsp;p1 &nbsp;p2 &nbsp;p3 &nbsp;p0 &nbsp;| | 1 |</FONT></P>
+<P><FONT face="굴림체">이렇습니다.. 또한,</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x' = a1 * x + &nbsp;a2 * y + a3 * z + a0</FONT></P>
+<P><FONT face="굴림체">로 계산이 됩니다.</FONT></P>
+<P><FONT face="굴림체">새로운 x 좌표인 x' 를 계산하기 위해서는 총 8개의 인자를 짝을 맞춰<BR>
+곱하고 그 4개의 값을 더하는 형식입니다.</FONT></P>
+<P><FONT face="굴림체">즉 이 방식이 바로 pmaddwd 명령어와 동일하죠 ?</FONT></P>
+<P><FONT face="굴림체">그럼 pmaddwd 의 구체적인 동작을 얘기해 보겠습니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1 &nbsp;&nbsp;&nbsp;2 &nbsp;&nbsp;&nbsp;3 &nbsp;&nbsp;&nbsp;4 &nbsp;&nbsp;&nbsp;5 &nbsp;&nbsp;&nbsp;6 &nbsp;&nbsp;&nbsp;7 &nbsp;&nbsp;&nbsp;8 &nbsp;&nbsp;&nbsp;&lt;- 각 byte별</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;mm0 = &nbsp;&nbsp;&nbsp;( &nbsp;w1 &nbsp;) &nbsp;( &nbsp;w2 &nbsp;) &nbsp;( &nbsp;w3 &nbsp;) &nbsp;( &nbsp;w4 &nbsp;)</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;mm1 = &nbsp;&nbsp;&nbsp;( &nbsp;w1' ) &nbsp;( &nbsp;w2' ) &nbsp;( &nbsp;w3' ) &nbsp;( &nbsp;w4' )</FONT></P>
+<P><FONT face="굴림체">가 들어 있을 때 ...</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;pmaddwd mm0, mm1</FONT></P>
+<P><FONT face="굴림체">이란 명령을 실행하면..</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1 &nbsp;&nbsp;&nbsp;2 &nbsp;&nbsp;&nbsp;3 &nbsp;&nbsp;&nbsp;4 &nbsp;&nbsp;&nbsp;5 &nbsp;&nbsp;&nbsp;6 &nbsp;&nbsp;&nbsp;7 &nbsp;&nbsp;&nbsp;8 &nbsp;&nbsp;&nbsp;&lt;- 각 byte별</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;mm0 = &nbsp;&nbsp;&nbsp;( w1*w1' + w2*w2') &nbsp;( w3*w3' + w4*w4')</FONT></P>
+<P><FONT face="굴림체">이렇게 word 가 DWORD 로 확장이 되면서 더해집니다.(mm0 레지스터는 8bytes짜리)</FONT></P>
+<P><FONT face="굴림체">그리고 상위 4bytes 와 하위 4bytes 를 더하면 되는데..</FONT></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;&nbsp;movq &nbsp;&nbsp;mm1, mm0<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;psrlq &nbsp;mm1, 32<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;paddd &nbsp;mm0, mm1<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;movd &nbsp;&nbsp;eax, mm0</font></P>
+<P><FONT face="굴림체">이렇게 하면 최종 결과인 w1*w1' + w2*w2' + w3*w3' + w4*w4' 가 eax 에 들어가게<BR>
+됩니다.</FONT></P>
+<P><FONT face="굴림체">위에 있는 MMX 레지스터끼리의 대입이나 쉬프트는 모두 1 클럭만 소비하므로<BR>
+빠른 속도로 행렬 계산을 해낼수가 있는 것입니다.</FONT></P>
+<P><FONT face="굴림체"><BR>
+-------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&nbsp;&gt;&gt; 구체적인 코드로 설명</FONT></P>
+<P><FONT face="굴림체">아래의 코드는 볼랜드 C++ 빌더에 의해 작성되었습니다.<BR>
+VC++ 유저들은 약간의 수정을 하셔야 할겁니다.</FONT></P>
+<P><FONT face="굴림체">위의 함수는 C = A * B 라는 행렬을 계산하기 위해 임의로 만들어진 예제식이며<BR>
+( A = 4*4, &nbsp;B = 4*1, &nbsp;C = 4*1 )</FONT></P>
+<P><font face="굴림체" color="yellow">&nbsp;&nbsp;&nbsp;short A[4][4];<BR>
+&nbsp;&nbsp;&nbsp;short B[4];<BR>
+&nbsp;&nbsp;&nbsp;short C[4];</font></P>
+<P><font face="굴림체" color="yellow">&nbsp;&nbsp;&nbsp;MMX_Matrix(A[0],B,C);</font></P>
+<P><FONT face="굴림체">위와 같은 방식으로 사용하시면 C[] 에 결과가 돌아오는 방식입니다.</FONT></P>
+<P><FONT face="굴림체">원래 우리들은 장황한 이론보다는 소스코드의 주석에 더 빨리 머리가 반응하므로<BR>
+바로 소스에 주석을 다는 식으로 설명하겠습니다.</FONT></P>
+<P><FONT face="굴림체"><BR>
+</FONT><font face="굴림체" color="yellow">void __fastcall MMX_Matrix(short *A, short *B, short *C)<BR>
+{</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;asm &nbsp;mov &nbsp;&nbsp;&nbsp;&nbsp;esi, eax &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// A 의 포인터 주소를 esi에</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;asm &nbsp;mov &nbsp;&nbsp;&nbsp;&nbsp;ebx, edx &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// B 의 포인터 주소를 ebx에<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;movq &nbsp;&nbsp;&nbsp;mm2, [ebx] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// mm2 에 B[]의 word형 인수 4개를 저장</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;asm &nbsp;mov &nbsp;&nbsp;&nbsp;&nbsp;edi, ecx &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// C 의 포인터를 edi에</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;asm &nbsp;pxor &nbsp;&nbsp;&nbsp;mm4, mm4 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// mm4 레지스터 초기화<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;mov &nbsp;&nbsp;&nbsp;&nbsp;eax, 0000FFFFh<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;movd &nbsp;&nbsp;&nbsp;mm4, eax &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// mm4 &lt;- 0000 0000 0000 FFFF</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;// 1 행<BR>
+&nbsp;&nbsp;asm &nbsp;movq &nbsp;&nbsp;&nbsp;mm0, [esi] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// A[0]의 4개의 word형 인수를 저장<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;movq &nbsp;&nbsp;&nbsp;mm1, mm2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// mm1 을 B 의 값으로</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;asm &nbsp;pmaddwd mm0, mm1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 문제의 연산, 설명은 위에서 했다..<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;movq &nbsp;&nbsp;&nbsp;mm1, mm0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 현재 곱하고 더한 결과가 4bytes씩 분리되어<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;psrlq &nbsp;&nbsp;mm1, 32 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 있으므로 상위와 하위 4bytes 를 더해서<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;paddd &nbsp;&nbsp;mm0, mm1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// mm0 레지스터에 저장<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;pand &nbsp;&nbsp;&nbsp;mm0, mm4 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// mm3 는 하위 2bytes 만 남게함<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;movq &nbsp;&nbsp;&nbsp;mm3, mm0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// mm3 의 C[0] 위치에 저장</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;// 2 행<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;movq &nbsp;&nbsp;&nbsp;mm0, [esi+8] &nbsp;&nbsp;&nbsp;// A[2]의 4개의 word형 인수를 저장<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;movq &nbsp;&nbsp;&nbsp;mm1, mm2</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;asm &nbsp;pmaddwd mm0, mm1<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;movq &nbsp;&nbsp;&nbsp;mm1, mm0<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;psrlq &nbsp;&nbsp;mm1, 32<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;paddd &nbsp;&nbsp;mm0, mm1<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;pand &nbsp;&nbsp;&nbsp;mm0, mm4<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;psllq &nbsp;&nbsp;mm0, 16<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;por &nbsp;&nbsp;&nbsp;&nbsp;mm3, mm0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// mm3 의 C[1] 위치에 저장</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;// 3 행<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;movq &nbsp;&nbsp;&nbsp;mm0, [esi+16]<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;movq &nbsp;&nbsp;&nbsp;mm1, mm2</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;asm &nbsp;pmaddwd mm0, mm1<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;movq &nbsp;&nbsp;&nbsp;mm1, mm0<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;psrlq &nbsp;&nbsp;mm1, 32<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;paddd &nbsp;&nbsp;mm0, mm1<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;pand &nbsp;&nbsp;&nbsp;mm0, mm4<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;psllq &nbsp;&nbsp;mm0, 32<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;por &nbsp;&nbsp;&nbsp;&nbsp;mm3, mm0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// mm3 의 C[2] 위치에 저장</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;// 3 행<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;movq &nbsp;&nbsp;&nbsp;mm0, [esi+24]<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;movq &nbsp;&nbsp;&nbsp;mm1, mm2</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;asm &nbsp;pmaddwd mm0, mm1<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;movq &nbsp;&nbsp;&nbsp;mm1, mm0<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;psrlq &nbsp;&nbsp;mm1, 32<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;paddd &nbsp;&nbsp;mm0, mm1<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;pand &nbsp;&nbsp;&nbsp;mm0, mm4<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;psllq &nbsp;&nbsp;mm0, 48<BR>
+&nbsp;&nbsp;&nbsp;asm &nbsp;por &nbsp;&nbsp;&nbsp;&nbsp;mm3, mm0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// mm3 의 C[3] 위치에 저장</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;asm &nbsp;movq &nbsp;&nbsp;&nbsp;[edi], mm3 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// mm3 의 내용을 C[] 에 복사</font></P>
+<P><font face="굴림체" color="lime">&nbsp;&nbsp;&nbsp;asm &nbsp;emms &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// FPU 상태 비움</font></P>
+<P><font face="굴림체" color="yellow">}</font></P>
+<P><FONT face="굴림체">pmaddwd 명령의 용도만 알면 쉽게 이해가 될만한 내용이라 따로 설명은 하지<BR>
+않겠고 4개의 행을 각각 풀어쓴것은 그나마 속도가 조금이나마 빨라지지<BR>
+않겠나라는 생각에 한것이며 평소때의 경험으로 볼때 4번의 루프로 돌려도<BR>
+속도 저하는 거의 없을 것으로 보아집니다.</FONT></P>
+<P><FONT face="굴림체"><BR>
+-------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&nbsp;&gt;&gt; 퍼포먼스</FONT></P>
+<P><FONT face="굴림체">일단 가장 중요한게 얼마나 빠르냐 ? 라는 것입니다.<BR>
+빠르지 않다면 구태여 이런것을 사용할 필요도 없고 사용해서도 안될것입니다.</FONT></P>
+<P><FONT face="굴림체">위의 코드의 MMX_Matrix()를 사용한 루틴은</FONT></P>
+<P><font face="굴림체" color="yellow">&nbsp;&nbsp;&nbsp;short A[4][4] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};<BR>
+&nbsp;&nbsp;&nbsp;short B[4] &nbsp;&nbsp;&nbsp;= {11,22,33,44};<BR>
+&nbsp;&nbsp;&nbsp;short C[4];</font></P>
+<P><font face="굴림체" color="yellow">&nbsp;&nbsp;&nbsp;DWORD StartTime = timeGetTime();</font></P>
+<P><font face="굴림체" color="yellow">&nbsp;&nbsp;&nbsp;for (int i = 0; i &lt; 1000000; i++)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MMX_Matrix(A[0],B,C); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 구체적인 용법임....</font></P>
+<P><font face="굴림체" color="yellow">&nbsp;&nbsp;&nbsp;Edit1-&gt;Text = IntToStr(timeGetTime() - StartTime);</font></P>
+<P><FONT face="굴림체">라는 코드를 통해 (4*4) * (4*1) 계산을 동시에 1000000번 수행 하엿고,</FONT></P>
+<P><FONT face="굴림체">일반 행렬계산은</FONT></P>
+<P><font face="굴림체" color="yellow">void __fastcall Matrix(short *_A, short *B, short *C)<BR>
+{</font></P>
+<P><font face="굴림체" color="yellow">&nbsp;&nbsp;&nbsp;short *A = _A;</font></P>
+<P><font face="굴림체" color="yellow">&nbsp;&nbsp;&nbsp;for (int i = 0; i &lt; 4; i++) {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C[i] = A[0] * B[0] + A[1] * B[1] + A[2] * B[2] + A[3] * B[3];<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A += 4;<BR>
+&nbsp;&nbsp;&nbsp;}<BR>
+}</font></P>
+<P><FONT face="굴림체">라는 함수로 호출하게 했습니다.<BR>
+( 왜 최적화가 안되었냐구요 ? 당연히 MMX와 최대한 속도차가 나게 하기 위해서! )</FONT></P>
+<P><FONT face="굴림체">그리고 결과는 다음과 같습니다.</FONT></P>
+<P><FONT face="굴림체">==============================================================================</FONT></P>
+<P><FONT face="굴림체" color="#80FF80"><BR>
+</FONT><font face="굴림체" color="fuchsia">일반 행렬 계산식으로 계산 &nbsp;&nbsp;&nbsp;: &nbsp;1000000 번 호출하는데 &nbsp;평균 0.483 초<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~~~~~~~~~~~~~</font></P>
+<P><font face="굴림체" color="fuchsia">MMX 행렬 계산식으로 계산: &nbsp;1000000 번 호출하는데 &nbsp;평균 0.222 초<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~~~~~~~~~~~~~</font></P>
+<P><FONT face="굴림체">( 펜티엄 2 266MHz 에서 테스트.. )</FONT></P>
+<P><FONT face="굴림체">==============================================================================</FONT></P>
+<P><FONT face="굴림체"><BR>
+약 2 배 이상의 성능 향상을 보이는 것으로 결과가 나왔습니다.</FONT></P>
+<P><FONT face="굴림체">이제는 단순 행렬 계산식인 위의 방식을 자신에게 맞는 3D 용 행렬 계산에<BR>
+적용시키는 일이 남았군요..</FONT></P>
+<P><FONT face="굴림체"><BR>
+그리고 트루컬러에서 MMX 알파 블랜딩 역시도 위의 소스와 거의 같은 것이므로<BR>
+그것에 대한 강좌는 생략하도록 하겠습니다..</FONT></P>
+<P><FONT face="굴림체">그렇다면 다음 강좌는 Direct Music 이 되겠군요...</FONT></P>
+<P><FONT face="굴림체">----------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;</FONT><font face="굴림체" color="aqua"> A Mountain is a mountain, Water is water </font><FONT face="굴림체">&quot;</FONT></P>
+<P><FONT face="굴림체"><BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;copyright SMgal 1999/05/28</FONT></P>
+<P>&nbsp;</P>
+</body>
+</HTML>

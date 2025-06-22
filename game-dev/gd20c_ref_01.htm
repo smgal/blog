@@ -1,0 +1,356 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<title>main_game.</title>
+<meta name="generator" content="Namo WebEditor v5.0">
+</head>
+
+<body background="back01.jpg" bgcolor="white" text="black" link="blue" vlink="purple"
+ alink="red">
+
+<div align="left">
+<table cellpadding="0" cellspacing="0" width="640">
+    <tr>
+        <td bgcolor="#605870" valign="top">
+            <p><font size="4"><b>&nbsp;</b></font><font size="4" color="white"><b>∇ 
+            게임 제작 기법 참조</b></font></p>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#605870" height="148">
+            <table align="center" cellpadding="0" cellspacing="0" width="636">
+                <tr>
+                    <td width="372" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ </b></font><a href="gd_data/gd20c_ref_01.zip"><font color="white">투명색을 
+                            지원하는 폼 만들기</font></a> </td>
+                    <td width="66" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">Delphi</font></td>
+                    <td width="58" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+                            <p><font size="2">예전에 게임 인스톨 프로그램을 
+                            만들 때 제작한 겁니다. GIF와 같이 투명색으로 지정된 
+                            색 모두를 투명한 배경으로 윈도우 폼을 만들어 줍니다. 
+                            실행 시키시면 그녀의 기사단 로고가 윈도우 바탕 화면에 
+                            스프라이트처럼 뜨는데 드래그 해보시면 이것도 윈도우라는 
+                            것을 알 수 있으실 겁니다.</font></p>
+                            <p><font size="2">API를 중점적으로 사용했기 때문에 
+                            타언어를 이용하시는 분들도 금방 이해가 되실거라 
+                            생각합니다.<br><br></font></p>
+                    </td>
+                </tr>
+                    <td width="372" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ </b></font><a href="gd_data/gd20c_ref_02.zip"><font color="white">이미지 
+                        확대/ 축소/ 회전 기법</font></a> </td>
+                    <td width="66" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">CB, Del</font></td>
+                    <td width="58" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+                        <p><font size="2">Borland C++ Builder 4 로 만들어 본 
+                        이미지 확대/ 축소/ 회전 에 대한 풀 소스와 실행 파일 
+                        (dll 은 빠진 것임)을 올립니다.<br><br>DIB 를 이용한 
+                        가상 페이지를 이용했고, 0 - 359 도까지의 이미지 회전, 
+                        20% 에서 180% 까지의 확대/축소가 연속 애니메이션으로 
+                        구현됩니다. 그리고 애니메이션을 정지시키고 직접 수동으로 
+                        회전각도와 확대 비율을 조정할 수도 있습니다.<br><br></font></p>
+                    </td>
+                </tr>
+                    <td width="372" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ </b></font><a href="gd_data/gd20c_ref_03.zip"><font
+             size="3" color="white">RGB 분리 없는 4bytes 동시 반투명</font></a> </td>
+                    <td width="66" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">Delphi</font></td>
+                    <td width="58" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+                            <p><font size="2">이건 제가 작년쯤 게임 제작 동호회 
+                            윈도우즈 프로그래밍란에 답변했던 내용인데 어떤분께서 
+                            예제를 만들어 달라고 하셔서 예제를 만든 것입니다.<br><br>16BPP 
+                            이상의 모드에서 반투명을 하기 위해서는 각각 RGB를 
+                            분리하여 비율을 곱한후, 더하고나서 반으로 나눠주는 
+                            고전적인 방법을 사용했었습니다. 하지만 위의 방식은 
+                            RGB 분리가 필요없이 바로 4 bytes씩 몇 줄 안되는 
+                            어셈블리어에 의해서 반투명이 됩니다.<br><br></font></p>
+                    </td>
+                </tr>
+                    <td width="372" align="left" valign="top" bgcolor="#908CB8" height="22"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ </b></font><a href="gd_data/gd20c_ref_04.zip"><font
+             size="3" color="white">DIB 출력 기법 예제</font></a></td>
+                    <td width="66" align="left" valign="top" bgcolor="#908CB8" height="22"><p align="center"><font
+             size="3" color="white">Delphi</font></td>
+                    <td width="58" align="left" valign="top" bgcolor="#908CB8" height="22"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+                        <p><font size="2">이것은 델파이에서 GDI 의 DIB 를 조작하는 
+                        예제입니다. (물론 풀 소스가 들어 있으며 타 언어를 사용하는 
+                        사람들을 위해 실행 파일도 첨부하였습니다. 컴파일 언어는 
+                        Delphi 3)</font></p>
+                        <p><font size="2">테스트에 쓰인 기법은 'Bump Mapping'이라고 
+                        하는 매끄럽지 못한 재질에 빛을 비추는 효과를 얻는 기법입니다. 
+                        도스때부터 아주 끈질기게 남용하는 예제입니다.. -_-;<br>&nbsp;</font></p>
+                    </td>
+                </tr>
+                <td width="372" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ </b></font><a href="gd_data/gd20c_ref_05.zip"><font
+             size="3" color="white">Direct X 쿼터뷰 스크롤 예제</font></a></td>
+                    <td width="66" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">Delphi</font></td>
+                    <td width="58" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+                    <p><font size="2">이것은 델파이로 만든 쿼터뷰 스크롤의 예제입니다. 
+                    이전에 Pascal 과 C 를 사용해서 도스용으로 만들었던 것을 
+                    다시 다이렉트 X 용으로 컨버젼했습니다.<br>&nbsp;</font></p>
+                    </td>
+                </tr>
+                <td width="372" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ </b></font><a href="gd_data/gd20c_ref_06.zip"><font
+             size="3" color="white">동급생2 패러디 최종</font></a></td>
+                    <td width="66" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">Pascali</font></td>
+                    <td width="58" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+                <p><font size="2">( 단지 8 K byes 용량의 실행 파일로 동급생 
+                2 맵 구현.. )<br><br>이번 것은 예전에도 올린 바 있는 '동급생 
+                2 패러디'입니다. 제 하드에 숨어 있던 96년 12월 작인데요.. &nbsp;저번 
+                것과는 달리 완벽하게 타일 속성을 알아낸 후에 만든거라 실제와 
+                더욱 유사합니다.<br><br>이것을 또 올리는 이유는 이 소스 속에는 
+                게임제작에 유용한 기법하나가 숨어 있는데 대부분 잘 모르고 지나친 
+                것 같아서 다시 한 번 올립니다.<br><br>그 기법이란 다름아닌 배경과 
+                전경의 속성이 따로 없이 타일을 이용하는 방법입니다. 동급생의 
+                필드에 보면 주인공이 밟고 지나가는 부분이 있는가 하면 주인공을 
+                가리는 타일이 있죠. 이런것들은 그냥 배경 타일과 전경 타일로 
+                구분해서 찍어 버리면 간단하죠. 하지만 이 게임에서는 그렇게 하지 
+                않고 하나의 같은 타일을 전경과 배경에 모두 사용하는데, 재미있게도 
+                그 모든 정보는 타일 내에 있었습니다.<br><br>타일의 Intensity 
+                Plane 을 투명색 Plane으로 사용하는 특이성을 보였는데 실제 그림을 
+                찍을때는 모든 3번 플레인을 무시하여 0에서 7번 색으로 찍고 다시 
+                주인공 위에 전경 타일로써 3번 플레인을 투명색으로하여 0에서 
+                7까지의 색으로 다시 찍어주는 방식이었습니다. (이렇게 하면 완벽한 
+                배경 겸 스프라이트가 되더군요.) 그리고 테두리의 그림들은 모든 
+                16색을 이용하여 그렸습니다.<br><br>16컬러 시대가 다가고 나서 
+                웬소리냐 하실지도 모르겠지만 이 방식은 16비트나 24비트 트루컬러에서도 
+                그 위력을 발휘하기 때문입니다. 만약 15비트라면 최상위비트, 16비트라면 
+                G의 최하위 비트, 24비트라면 B의 최하위 비트(사람눈은 상대적으로 
+                빨간 색보다 파란색 구분이 약함)를 이런 용도로 사용하면 어떻게 
+                될까요.) 이것을 구현하면 PCX그림 한장 달랑 올려 놓고도 그 위에서 
+                움직이는 캐릭터 위를 가리는 나뭇잎을 표현할 수 있습니다. 물론 
+                단점이 있다면 속도가 느려진다는 것과 가려지는 단계가 하나 이상 
+                안된다는 것이 단점이지만 이것을 강화 보강한다면 이런 단점들은 
+                충분히 극복할 수 있다고 생각합니다.<br><br>저 역시 이렇게 이론만 
+                가지고 실제 게임 제작은 안해 봤지만 ('그녀의 기사단'에서 사용하려 
+                했지만 위의 단점 때문에 포기) 좀 더 발전시키거나 다른 것과의 
+                접목을 한다면 좋은 방법이 되지 않을까 하고 생각합니다.<br><br>이상은 
+                저의 개인적인 생각이었습니다. 아마 알고 계시는 분도 많으리라 
+                생각합니다. 아주 오래된 기법이니까요.<br>&nbsp;</font></p>
+                    </td>
+                </tr>
+                <td width="372" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ </b></font><a href="gd_data/gd20c_ref_07.zip"><font color="white">DOT 
+            MORPHING 기법</font></a></td>
+                    <td width="66" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">Pascal</font></td>
+                    <td width="58" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+            <p><font size="2">이번 것은 'Dot Morphing' 이라고 하는 기법입니다. 
+            하나의 이미지를 다른 이미지로 변화시켜 나가는 방법 중에 하나인데... 
+            흔한 오버랩과는 달리 이것은 직접 도트가 색깔이 변화하며 움직여 나가서 
+            다음 이미지를 완성하는 것입니다.<br>&nbsp;</font></p>
+                    </td>
+                </tr>
+                <td width="372" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ </b></font><a href="gd_data/gd20c_ref_08.zip"><font color="white">BUMP 
+        MAPPING 응용</font></a></td>
+                    <td width="66" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">Pascal</font></td>
+                    <td width="58" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+        <p><font size="2">여러분도 잘 아실 2D Bump Mapping 을 약간(아주 약간만)만 
+        응용해서 여러가지 효과들을 내어 보았습니다.<br>실행하면 4개의 데모가 
+        나옵니다...</font></p>
+        <p><font size="2">&nbsp;1. 단순한 이미지에 대한 빛의 투사 효과<br> &nbsp;2. 
+        단순한 이미지에 대한 Bump Mapping 질감 효과<br>&nbsp;3. Motion Blur 
+        하는 이미지에 대한 Bump Mapping 질감 효과<br>&nbsp;4. 전형적인 Bump 
+        Mapping 질감 효과..<br></font>&nbsp;</p>
+                    </td>
+                </tr>
+                <td width="372" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ </b></font><a href="gd_data/gd20c_ref_09.zip"><font color="white">유이의 
+    MOTION BLUR</font></a></td>
+                    <td width="66" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">C, Pas</font></td>
+                    <td width="58" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+        <p><font size="2">갑자기 필요가 생겨서 간단하게 Motion Blur를 구현해 
+        보았습니다. Motion Blur를 간단히 설명하면 잔상을 남기며 이동하는 그런 
+        부류인데 직접 보시면 이해가 되리라 믿습니다.<br><br>이번 실험의 교재는 
+        동급생의 유이... 최적화를 안해서 386 기종에서는 느릴지도 모르겠습니다..<br>처음에 
+        파스칼로 만들었다가.. C 유저들을 위해 다시 C 로 번역을 했습니다. 두 
+        소스는 다 들어 있지만 실행 파일에서의 차이점은 거의 없다고 보시면 됩니다.<br></font>&nbsp;</p>
+                    </td>
+                </tr>
+                <td width="372" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ </b></font><a href="gd_data/gd20c_ref_10.zip"><font color="white">스파제로 
+    사쿠라 모션</font></a></td>
+                    <td width="66" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">Pascal</font></td>
+                    <td width="58" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+        <p><font size="2">이것은 스파 제로에 나오는 예쁜 세라복의 여고생 사쿠라의 
+        애니메이션입니다. 나우의 게제포의 어떤분이 그리신건데 (약 6 개월 - 1년 
+        전으로 추정) 허락없이 도용해서 애니메이션을 만들어 보았습니다.&nbsp;</font></p>
+        <p><font size="2">13H plane mode로 만들었고 소스도 넣었습니다. 배경은 
+        그냥 넣어 본거라 이상하거나 끊기더라도 이해하세요. 물론 그림자가 없어서 
+        걷는게 이상하더라도 이해를.... &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></p>
+        <p><font size="2">키 조종은요..</font></p>
+        <p><font size="2" face="굴림체">&nbsp;&nbsp;&nbsp;그냥 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ctrl 
+        : 스트레이트 펀치<br>&nbsp;&nbsp;&nbsp;오른쪽키 와 Ctrl : 파동권<br>&nbsp;&nbsp;&nbsp;왼쪽 
+        키와 &nbsp;&nbsp;Ctrl : 막기<br>&nbsp;&nbsp;&nbsp;위쪽 키와 &nbsp;&nbsp;Ctrl 
+        : 승룡권 ( 그렇게 보이나 ? ^^; )<br>&nbsp;&nbsp;&nbsp;아래쪽 키와 Ctrl 
+        : 발차기 ( 당연히 원작처럼 XX가 보입니당~~ )<br>&nbsp;&nbsp;&nbsp;Alt 
+        키 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 점프<br></font><font size="2"><br>원래는 
+        대전 겜으로 만들어 볼까도 생각했지만 아케이드는 전혀 저의 적성은 아니더군요.<br>&nbsp;</font></p>
+                    </td>
+                </tr>
+                <td width="372" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ </b></font><a href="gd_data/gd20c_ref_11.zip"><font color="white">16M그림을 
+    더 낮은 모드에서</font></a></td>
+                    <td width="66" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">Pascal</font></td>
+                    <td width="58" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+        <p><font size="2">이번의 자료는 뭐냐면.... 24bit 트루칼라의 그림을 베사 
+        모드를 이용해서</font></p>
+        <p><font size="2">&nbsp;&nbsp;&nbsp;1&gt; 640 * 480 * 16M<br>&nbsp;&nbsp;&nbsp;2&gt; 
+        800 * 600 * 65536<br>&nbsp;&nbsp;&nbsp;3&gt; 800 * 600 * 256</font></p>
+        <p><font size="2">에서 출력이 가능하게 해주는 것입니다. 기본적으로 PCX 
+        파일을 이용했는데 각각의 프로그램들이 달라진 부분은 단지 점찍는 루틴입니다. 
+        점찍는 좌표인 (x,y)와 R,G,B 의 3 bytes 를 인수로 주면 각각의 모드에 
+        따라서 알맞게 수치를 변화에서 그림을 출력합니다. (하지만 그림에 따라서는 
+        퀄리티 차이가 많이 나더군요. 특히 256 색이.&nbsp;256색은 고정 팔레트를 
+        사용하기 때문에 그런 것 같습니다.)<br>&nbsp;</font></p>
+                    </td>
+                </tr>
+                <td width="372" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ </b></font><a href="gd_data/gd20c_ref_12.zip"><font color="white">'애자매 
+    한글화' + 스크립터</font></a></td>
+                    <td width="66" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">Pascal</font></td>
+                    <td width="58" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+        <p><font size="2">96년에 보여 드렸던 '애자매 한글판'의 소스를 공개합니다. 
+        (또한 애자매 한글화한 것도 포함되어 있습니다.)<br></font></p>
+        <p><font size="2">공개하는 이유는 제가 시간이 없어 버전 업을 시킬 여건이 
+        안되어서 미흡한 소스이나마 여러분의 스크립터 공부에 도움이 되실까이 
+        렇게 공개 합니다. 여기서 중점적인 것은 제가 만든 스크립터 'C-- 0.9'의 
+        내용입니다. (데자뷰에도 쓰였고, 애자매에서도 쓰인...)</font></p>
+        <p><font size="2">여기에는 렉시칼 분석, 파서, 토큰등의 다분히 컴퓨터 
+        공학적인 어휘 분석의 요소는 없습니다. 단지 문장 분석으로만 필요한 함수를 
+        불러내고 조건 판단과 분기를 하는 방식을 썼습니다. 사실 게임을 위해서 
+        스크립터어에 대한 방대한 프로그램을 짠다는 것은 무언가 모순되는 점이 
+        많습니다. (주된 이유는 개발 시간이겠죠.)<br>&nbsp;</font></p>
+                    </td>
+                </tr>
+                <td width="372" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ </b></font><a href="gd_data/gd20c_ref_13.zip"><font color="white">베사 
+    쿼터뷰 최종</font></a></td>
+                    <td width="66" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">C++i</font></td>
+                    <td width="58" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+        <p><font size="2">저번에 보여 드렸던 '쿼터뷰 베사 롤플레잉 스크롤'의 
+        최종 버전입니다. 대부분의 사람들이 C 언어를 사용하는 관계로 이번에는 
+        C++ 로 만들었습니다. 저번에 보여 드린 Pascal 버전과는 비교도 안될 정도로 
+        변했습니다.<br><br>...이번의 변경점은,&nbsp;</font></p>
+        <p><font size="2" face="굴림체">&nbsp;&nbsp;1. 쿼터뷰로 풀화면 구현 
+        ( 640 * 480 * 256 )<br>&nbsp;&nbsp;2. 풀화면 화면 갱신 속도 개선 ( 펜티엄+ET6000 
+        에서 초당 26회 )<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;== 속도는 그래픽 
+        카드에 더 영향을 받더군요...<br></font><font size="2"><br>...파일 속에 
+        포함된 내용은,</font></p>
+        <p><font size="2" face="굴림체">&nbsp;&nbsp;QV_VESA.CAP : 지금 보는 
+        이 파일입니다.<br>&nbsp;&nbsp;QV_VESA.CPP : 문제의 소스 파일이죠. ( 
+        BC 3.1 )<br>&nbsp;&nbsp;MAP &nbsp;&nbsp;&nbsp;.DAT : 지도 데이타<br>&nbsp;&nbsp;_NETO 
+        &nbsp;.DAT : 타일 데이타<br>&nbsp;&nbsp;QV_PAS .EXE : 파스칼로 만든 
+        원본 실행 파일<br>&nbsp;&nbsp;QV_VESA.EXE : C++ 로 번역해서 만든 실행 
+        파일</font></p>
+        <p><font size="2">기본적으로 가상페이지를 화면에 복사하는 방식이고 덕분에 
+        뱅크의 경계선에 걸릴때를 판별하는 계산이 없어졌습니다. 어떻게 없어졌냐면, 
+        flipPage() 라는 함수를 보면 아시겠지만 CX의 하나 하나에 그에 맞는 상수 
+        값을 넣어서 계산 없이 뱅크를 바꿔 나갔죠. (loop가 없어 코드는 좀 길어졌겠지만 
+        속도는 대신 빠르겠죠.)</font></p>
+        <p><font size="2">이것을 800 * 600 이나 그 이상의 모드로 바꾸려면 640 
+        을 곱해주는 부분을 그 모드의 가로 해상도로 해주면 됩니다. 물론 그 이상의 
+        모드에서 가상 페이지를 쓰려면 보호모드가 지원되는 컴파일러를 권합니다.&nbsp;(저는 
+        보호모드를 지원하는 C 컴파일러가 없어서.. ^^; )</font></p>
+        <p><font size="2">이걸 만들면서 느낀건데 쿼터뷰라는 방식은 정말 속도나 
+        타일의 용량면에서는 좋은 방법이 아니더군요. 스킵되어 보이지 않거나 겹치는 
+        부분이 반 이상이니, 노력한 결과가 반은 보이지 않는 셈이죠.&nbsp;(물론 
+        그런걸 보완하는 방법은 많죠... 하지만 원론에 충실하자면&nbsp;&nbsp;이렇다는 
+        것입니다.)<br>&nbsp;</font></p>
+                    </td>
+                </tr>
+                <td width="372" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ </b></font><a href="gd_data/gd20c_ref_14.zip"><font color="white">FLI 
+    PLAYER</font></a></td>
+                    <td width="66" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">C. Pas</font></td>
+                    <td width="58" align="left" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+        <p><font size="2">5 K Bytes 약간 넘는 FLI 플레이어<br>&nbsp;</font></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="496" height="2" bgcolor="#605870" colspan="2">
+		    </td>
+    <td></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td width="595" bgcolor="#605870" height="2">
+        </td>
+    </tr>
+</table>
+</div>
+</body>
+
+</html>

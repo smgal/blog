@@ -1,0 +1,744 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<title>Direct Sound (1/4)</title>
+<meta name="generator" content="Namo WebEditor v5.0">
+<style><!--
+.leading200 { line-height: 200% }
+.leading180 { line-height: 180% }
+.leading150 { line-height: 150% }
+.leading100 { line-height: 100% }
+-->
+</style>
+</head>
+
+<body bgcolor="navy" text="white" link="blue" vlink="purple" alink="red">
+
+<P><font color="black"><span style="background-color:white;">이것은 1999년 하이텔 
+게임 제작 동호회에 올렸던 강좌 4회분 입니다.</span></font></P>
+<p><font color="#CCFF00">#####################################################</font></p>
+<p>
+<FONT face="굴림체">------------------------------------------------------------------------<br>
+### 델파이로 하는 Direct X - Direct Sound (1/4)</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;1. Direct Sound 의 개요<br>
+</FONT><font face="굴림체" color="aqua">&nbsp;&nbsp;&nbsp;&nbsp;~~~~~~~~~~~~~~~~~~~~~~~<br>
+</font><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;2. Direct Sound 초기화와 
+Wave 읽기<br>
+&nbsp;&nbsp;&nbsp;&nbsp;3. 버퍼를 통한 출력과 믹싱<br>
+&nbsp;&nbsp;&nbsp;&nbsp;4. 3D 버퍼를 통한 출력과 믹싱</FONT></p>
+<p><FONT face="굴림체">------------------------------------------------------------------------<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;작성자 
+: 안영기 ( HiTEL ID : SMgal )</FONT></p>
+<p><FONT face="굴림체">------------------------------------------------------------------------</FONT></p>
+<p><FONT face="굴림체">(1) Direct Sound 란 무엇인가 ?</FONT></p>
+<p><FONT face="굴림체">Direct Sound 는 Direct X 에서 &nbsp;Wav 를 출력하거나 
+믹싱 하는데 주로 사용되<br>
+며 사운드를 캡춰 하는 데도 사용된다.</FONT></p>
+<p><FONT face="굴림체">이전 DOS 시절에는, 사운드 카드를 사운드 포트를 통해 직접 
+입출력하는 방식<br>
+으로 모든 음을 출력하는 때가 있었다. AdLib 포트나 MPU-401 MIDI 포트를 통<br>
+해 배경음악을 연주했으며 사운드 블래스터 DMA 로 WAV 를 출력해야 했었는데,<br>
+그 정도의 실력을 갖추면 꽤나 인정받던 때였다.</FONT></p>
+<p><FONT face="굴림체">하지만 이제는 시대가 변했다. 윈도우즈라는 OS가 등장하더니 
+이런 식으로 하<br>
+드웨어에 접근하는 방법을 모두 막아 버린 것이다. &nbsp;그리고는 WAV 를 제어 할<br>
+수 있는 API 기본 함수들과 waveOut.... 으로 시작하는 저수준 WAV 입출력 함<br>
+수를 제공했다. 하지만 그 함수만으로는 직접 사운드 카드의 하드웨어 가속을<br>
+이용한 믹싱이나 latency 거의 없는 고속의 출력은 제공하지 못했다.</FONT></p>
+<p><FONT face="굴림체">이런 연유에서 Microsoft 에서는 Game SDK 라는 것을 통해, 
+&nbsp;하드웨어 가속을<br>
+이용할 수 있는 방법을 제시하였고 그것이 Direct Sound 가 되었던 것이다.</FONT></p>
+<p><FONT face="굴림체">Direct Sound 도 역시 COM 을 기반으로 한다. &nbsp;모든 
+인터페이스는 IUnknown을<br>
+기반으로 하고 있으며 QueryInterface 를 통해 &nbsp;다음 인터페이스의 &nbsp;포인터를<br>
+얻어 오는 방식을 그대로 택하고 있다. &nbsp;Direct Sound 의 인터페이스 &nbsp;계통은<br>
+다음과 같다.</FONT></p>
+<p><FONT face="굴림체">IDirectSound<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+------ IDirectSoundBuffer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+----------- 
+IDirectSound3DBuffer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+----------- 
+IDirectSound3DListener<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+----------- 
+IDirectSoundNotify <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+----------- 
+IKsPropertySet</FONT></p>
+<p><FONT face="굴림체">IDirectSoundCapture<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+----------- IDirectSoundCaptureBuffer</FONT></p>
+<p><FONT face="굴림체"><br>
+그럼 하나씩 인터페이스를 설명해 보면,</FONT></p>
+<p><FONT face="굴림체">1) IDirectSound</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;- Direct Sound 의 주가 되는 객체이다. 
+&nbsp;여기서 IDirectSoundBuffer 객체<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;를 생성 할 수 있고, 1차 버퍼와 2차 버퍼를 만들어 
+낸다.</FONT></p>
+<p><FONT face="굴림체">2) IDirectSoundBuffer</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;- 1차 버퍼 또는 2차 버퍼가 되는 객체이다. 
+1차 버퍼는 하나만 있어야 하<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;지만 &nbsp;2차 버퍼는 여러 개가 동시에 존재할 
+수 있으며 &nbsp;2차 버퍼에 있는<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WAV들이 믹싱 되어서 1차 버퍼로 가거나 직접 버퍼에 
+접근하여 데이터를<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;조작할 수도 있다.</FONT></p>
+<p><FONT face="굴림체">3) IDirectSound3DBuffer</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;- 3D 상의 음향 효과를 나타낼 때 &nbsp;아주 
+편하게 그 효과를 나타낼 수 있게<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;해준다. 단지 소리가 나올 (x,y,z) 좌표에 대한 크기 
+값만 정해주면 &nbsp;알<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;아서 효과음을 그에 맞게 출력해준다. &nbsp;일단 
+&nbsp;IDirectSound3DBuffer &nbsp;는<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDirectSoundBuffer 의 연장이기 때문에 &nbsp;IDirectSoundBuffer 
+에서 구현<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;하는 것보다는 느려진다. ( 사운드 카드의 영향을 
+많이 받아서, 실제 그<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;카드의 성능에 따라 3D 음향이 전해진다. )</FONT></p>
+<p><FONT face="굴림체">4) IDirectSound3DListener</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;- IDirectSound3DBuffer 가 음원을 기준으로 
+소리가 나는 위치를 정했다면<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDirectSound3DListener 는 &nbsp;듣는 사람을 &nbsp;기준으로 
+한다. &nbsp;음향을 듣는<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;사람이 위치를 이동한다면 음원이 고정되어 있더라도 
+&nbsp;귀에서 들리는 위<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;치는 다르기 때문이다.</FONT></p>
+<p><FONT face="굴림체">5) IDirectSoundCapture</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;- DirectSound 의 요소이지만 IDirectSound 
+와는 별도로 Create 해줘야 하<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;는 &nbsp;객체이다. &nbsp;이것은 &nbsp;사운드를 
+&nbsp;캡춰하기 &nbsp;위해서 &nbsp;사용하는 것인데, <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;waveIn... 의 접두어로 시작하는 사운드 입력 API 
+를 &nbsp;래핑(wrapping)한<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;수준으로, 하드웨어 가속등의 이점은 없으나 손쉽게 
+사운드 입력 버퍼를<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;관리할 수 있고 자동으로 순환 버퍼를 구성해준다.</FONT></p>
+<p><FONT face="굴림체">6) IDirectSoundCaptureBuffer</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;- IDirectSoundCapture 를 &nbsp;사용하기 
+위한 버퍼이다. &nbsp;IDirectSoundBuffer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;와 같은 맥락으로 이해하면 된다.</FONT></p>
+<p><FONT face="굴림체">7) IDirectSoundNotify</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;- WAV 출력의 플레이백이나 입력에 대한 
+알림 이벤트를 설정할 수 있다.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SetNotificationPositions() 이라는 &nbsp;단 하나의 
+오리지날 메쏘드를 가지<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;고 있다.</FONT></p>
+<p><FONT face="굴림체">8) IKsPropertySet</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;- 사운드 카드 자체의 확장된 정보를 
+얻거나 다시 설정 할 때 사용한다. <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;이름이 여타의 Direct Sound 의 인터페이스와는 다른데, 
+&nbsp;이 인터페이스<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;는 WDM KS (Win32 driver model kernel streaming) 
+의 부분이기 &nbsp;때문이<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;다.</FONT></p>
+<p><FONT face="굴림체"><br>
+이번의 Direct Sound 강좌에서는 IDirectSoundCapture 이후의 것은 다루지 않<br>
+겠다. 실제로 waveIn... 계열의 API 만으로도 충분히 가능한 기능들이고, &nbsp;필<br>
+자가 Direct Sound 의 캡춰 기능을 알기 전에 &nbsp;이미 waveIn 으로 녹음 루틴을<br>
+만들었었기 때문에 지금도 그것을 사용하고 있다. &nbsp;즉, &nbsp;IDirectSoundCapture<br>
+쪽은 &nbsp;모른다는 이야기다. &nbsp;그리고 IDirectSoundNotify 나 IKsPropertySet 
+의<br>
+용도에 맞는 프로그램을 짜본 적이 없어서 그쪽의 지식도 전무하다.</FONT></p>
+<p><FONT face="굴림체">혹시나 필자가 다루지 않는 부분에 대해서 궁금하신 분들은 
+직접 DirectX SDK<br>
+에 딸려오는 도큐멘트를 읽어보시기 바란다. 정말 자세하게 설명되어 있기 때<br>
+문에 다른 책이 전혀 필요가 없을 정도이다. &nbsp;지금 이 글을 적으면서도 또 다<br>
+른 창에는 Direct Sound 도큐멘트를 띄워 놓고 같이 참조하고 있다.</FONT></p>
+<p><FONT face="굴림체">------------------------------------------------------------------------</FONT></p>
+<p><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1999 
+/ 11 / 07</FONT></p>
+<p><font color="#CCFF00">#####################################################</font></p>
+<p>
+<FONT face="굴림체"><BR>------------------------------------------------------------------------<BR>### 
+델파이로 하는 Direct X - Direct Sound (2/4)</FONT></p>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;1. Direct Sound 의 개요<BR>&nbsp;&nbsp;&nbsp;&nbsp;2. Direct Sound 초기화와 Wave 
+읽기<BR></FONT><FONT color=aqua face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<BR></FONT><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;3. 
+버퍼를 통한 출력과 믹싱<BR>&nbsp;&nbsp;&nbsp;&nbsp;4. 3D 버퍼를 통한 출력과 믹싱</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;작성자 
+: 안영기 ( HiTEL ID : SMgal )</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(1) Direct Sound 의 초기화</FONT></P>
+<P><FONT face="굴림체">Direct Sound 도 COM 을 기반으로 하는 여타의 Direct X 의 요소들과 와 같이,<BR>COM 
+방식의 초기화와 Create 방식의 초기화 둘 다를 지원하다. ( 단, 가장 최<BR>근에 생긴 Direct Music 의 경우에는 COM 
+방식만 지원한다. )</FONT></P>
+<P><FONT face="굴림체">COM 방식의 초기화는 </FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;CoInitialize(nil);<BR>| 
+&nbsp;&nbsp;CoCreateInstance(CLSID_ .... );</FONT></P>
+<P><FONT face="굴림체">와 같은 전형적인 모습을 하고 있는데.. 이 방법은 다음의 Direct Music 강좌<BR>에서 자세하게 
+다루겠다.</FONT></P>
+<P><FONT face="굴림체">Create 함수에 의한 방법은 DirectSoundCreate 라는 함수를 사용하는 것이다.<BR>실제 
+사용법은 아래와 같다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;DirectSoundCreate(nil,DirectSound,nil);<BR>| 
+&nbsp;&nbsp;if not Assigned(DirectSound) then ..... // 생성 실패</FONT></P>
+<P><FONT face="굴림체">첫번째 파라메터는 사운드 디바이스의 GUID 를 넣는 부분인데, 사운드 카드가<BR>2개 이상일 때 어떤 것을 
+사용할 것인지를 알려주는 것이다. 만약 GUID가 nil<BR>이라면 디폴트의 사운드 디바이스가 선택된다.</FONT></P>
+<P><FONT face="굴림체">두번째 파라메터는 Direct Sound 객체를 받기 위한 &nbsp;Direct Sound 인터페이스<BR>의 
+인스턴스를 레퍼런스로 넣는다. 여기서는 DirectSound 가 IDirectSound 로<BR>선언된 객체의 변수이며, &nbsp;함수가 실패하게 되면 
+DirectSound 가 nil 이 되게<BR>된다.</FONT></P>
+<P><FONT face="굴림체">세번째 파라메터는 항상 nil 이다.</FONT></P>
+<P><FONT face="굴림체"><BR>이렇게 Direct Sound 객체를 받았으면 이 프로그램이 다른 프로그램과 어떠한<BR>방식으로 
+&nbsp;사운드 디바이스를 공유할 것인가를 알려주는 &nbsp;'협력 레벨 설정'을<BR>해야 한다. 그 사용법을 보면 다음과 같다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| 
+&nbsp;&nbsp;DirectSound.SetCooperativeLevel(Handle,DSSCL_NORMAL);</FONT></P>
+<P><FONT face="굴림체">첫번째 파라메터는 윈도우의 핸들이 들어간다.</FONT></P>
+<P><FONT face="굴림체">두번째 파라메터에는 협력 레벨을 설정하는 값이 들어가는데...</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;DSSCL_NORMAL &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 다른 프로그램과 사운드 디바이스를 공유한다. 
+윈도<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;우의 미디어 플레이어에서 MP3 를 연주하면서, 
+다시<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;미디어 플레이어로 &nbsp;동영상을 돌려도 &nbsp;둘 다 소리가 
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;제대로 나오는 이유가 이렇게 서로의 레벨을 
+설정하<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;기 때문이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;DSSCL_PRIORITY &nbsp;&nbsp;&nbsp;&nbsp;: 이 프로그램에 사운드 디바이스에 대한 우선 
+순위를<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;준다. 이 레벨일 때, SetFormat() 함수와 
+Compack()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;함수를 사용할 수 있다. 즉 1차 버퍼의 출력 
+포맷을<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;변경할 수가 있다는 것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;DSSCL_EXCLUSIVE &nbsp;&nbsp;&nbsp;: 이 프로그램 사운드 디바이스를 
+독점적(배타적)으로<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;사용한다. WinAMP 에서 MP3 를 듣고 있을 때 
+미디어<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;플레이어에서 음악을 들으려면 &nbsp;에러가 나는 이유가 
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;이 때문이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;DSSCL_WRITEPRIMARY : 1 차 버퍼에 &nbsp;바로 접근 할 수 있는 &nbsp;최고의 
+권한을<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가진다. 1 차 버퍼에서 직접 믹싱을 가능하게 해 
+주<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;기 때문에 사용자가 사운드 믹싱을 해야하는 
+의무를<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가진다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(2) Wave 파일 읽기</FONT></P>
+<P><FONT face="굴림체">실제로 Wave 파일 읽기는 Direct Sound 의 객체나 메쏘드와는 무관하다. 도리<BR>어 
+waveOut... 접두어를 가진 멀티미디어 API 를 위한 &nbsp;방식이라고 보는 것이<BR>맞다. 하지만 Direct Sound 에서는 직접 
+WAV 파일을 작업하는 버퍼에 올려 주<BR>는 함수가 없기 때문에 직접 WAV 파일을 읽어서 버퍼에 올리는 수 밖에 없다.<BR>하지만 
+다행이도 멀티미디어 I/O API 에 &nbsp;WAV 같은 RIFF 포맷을 읽기 위한 입<BR>출력 함수가 미리 정의되어 있는데다가 &nbsp;WAV 포맷 
+자체가 굉장히 간단하기 때<BR>문에 그나마 우리가 머리를 싸매야 할 정도는 아니게 되었다.</FONT></P>
+<P><FONT face="굴림체">아래의 소스는 Wave 파일을 버퍼에 읽는 함수이다. 설명은 당연히 주석에다가<BR>해 놓겠다.<BR>( 직접 
+사용하던 것인데, 불필요 한것을 빼다보니 혹시 오류가 있을지도 모른<BR>&nbsp;&nbsp;다. )</FONT></P>
+<P><FONT color=yellow face=굴림체>| var<BR>| &nbsp;&nbsp;&nbsp;Buffer &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: PByte; &nbsp;// 전역 변수, 
+또는 클래스내의 멤버 변수<BR>|<BR>|<BR>| function &nbsp;&nbsp;&nbsp;LoadWave(FileName : PChar) : 
+integer;<BR>| var<BR>| &nbsp;&nbsp;&nbsp;mmIO &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: HmmIO;<BR>| &nbsp;&nbsp;&nbsp;Parent, Child : 
+TmmCkInfo;<BR>| &nbsp;&nbsp;&nbsp;WaveFormatEx &nbsp;: TWaveFormatEx;<BR>| begin<BR>| &nbsp;&nbsp;&nbsp;LoadWave := 
+-1; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 실패 코드<BR>| <BR>| 
+&nbsp;&nbsp;&nbsp;FillChar(Parent,sizeof(TmmCkInfo),0); // 부모 청크 초기화<BR>| &nbsp;&nbsp;&nbsp;FillChar(Child 
+,sizeof(TmmCkInfo),0); // 자식 청크 초기화<BR>| <BR>| &nbsp;&nbsp;&nbsp;mmIO &nbsp;:= 
+mmioOpen(FileName,nil,MMIO_READ or MMIO_ALLOCBUF);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// FIleName 의 파일을 
+읽기 전용으로 연다.<BR>| <BR>| &nbsp;&nbsp;&nbsp;if mmIO = 0 then exit;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 만약 파일 핸들인 mmIO 가 
+0 이면 ( 함수 실패 ) 종료<BR>| <BR>| &nbsp;&nbsp;&nbsp;Parent.fccType := 
+mmioFOURCC('W','A','V','E');<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Parent 청크의 타입을 'WAVE' 라는 4bytes 문자로 
+넣는다.<BR>| &nbsp;&nbsp;&nbsp;if mmioDescend(mmIO,@Parent,nil,MMIO_FINDRIFF) &lt;&gt; 0 then 
+begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 'RIFF' 를 찾은 후 그 아래의 'WAVE' 문자열을 찾는다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 만약 0 이 아닌 
+값이 돌아오면 이 파일은 Wav 파일이 아니다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 여기에 보면 Parent 변수를 Child 청크 쪽으로 
+넣는다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 나중에 재활용을 위해서 이렇게 한 것이지 딴 뜻은 없다.<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mmioClose(mmIO,0);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit;<BR>| &nbsp;&nbsp;&nbsp;end;<BR>| <BR>| &nbsp;&nbsp;&nbsp;Child.ckid 
+:= mmioFOURCC('f','m','t',' ');<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Child 청크의 ID 를 'fmt ' 라는 문자열로 
+만든다.<BR>| &nbsp;&nbsp;&nbsp;if mmioDescend(mmIO,@Child,@Parent,0) &lt;&gt; 0 then begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 만약 0 이 아닌 값이 돌아오면 fmt 청크가 없다는 것이다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mmioClose(mmIO,0);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>| &nbsp;&nbsp;&nbsp;end;<BR>| <BR>| &nbsp;&nbsp;&nbsp;if 
+mmIORead(mmIO,PChar(@WaveFormatEx),sizeof(TWaveFormatEx)) &lt;&gt; <BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sizeof(TWaveFormatEx) then begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 현재 mmioDescend 에 의해 파일 포인터가 'fmt '라는 문자열 바로<BR></FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 다음의 4 bytes ( WaveFormatEx 의 크기가 들어 있음 
+) 까지 읽은<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 상태가 되기 때문에 바로 읽으면 WaveFormatEx 구조체가 읽어진다.<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mmioClose(mmIO,0);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>| &nbsp;&nbsp;&nbsp;end;<BR>| <BR>| 
+&nbsp;&nbsp;&nbsp;if WaveFormatEx.wFormatTag &lt;&gt; WAVE_FORMAT_PCM then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+읽어들인 WaveFormatEx의 태그가 WAVE_FORMAT_PCM 가 아니라면 이<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 파일은 PCM 형식이 아닌 WAV 
+이다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mmioClose(mmIO,0);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>| 
+&nbsp;&nbsp;&nbsp;end;<BR>| <BR>| &nbsp;&nbsp;&nbsp;if mmioAscend(mmIO,@Child,0) &lt;&gt; 0 then begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 다시 'fmt ' 라는 문자열이 있는 포인터로 파일 포인터를 옮긴다.<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mmioClose(mmIO,0);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>| &nbsp;&nbsp;&nbsp;end;<BR>| <BR>| 
+&nbsp;&nbsp;&nbsp;Child.ckid := mmioFOURCC('d','a','t','a');<BR>| &nbsp;&nbsp;&nbsp;if 
+mmioDescend(mmIO,@Child,@Parent,MMIO_FINDCHUNK) &lt;&gt; 0 then begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 'fmt ' 라는 문자열의 위치에서 &nbsp;'data'&nbsp;라는 문자열로 파일의 포<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 인터를 옮긴다. 여기서 0 
+이 아닌 값이 돌아 오면 data 청크가 없<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 다는 것이다.<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mmioClose(mmIO,0);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>| &nbsp;&nbsp;&nbsp;end;<BR>| <BR>| 
+&nbsp;&nbsp;&nbsp;GetMem(Buffer,Child.cksize);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Child 의 청크 ID 가 'data' 이므로 
+Child.cksize 에는 'data' 청<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 크의 사이즈가 들어간다. &nbsp;실제로 WAV 구조에서 'data' 라는 
+문자<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 열 다음의 4 bytes 가 data 사이즈가 된다.<BR>| <BR>| &nbsp;&nbsp;&nbsp;if not 
+Assigned(Buffer) then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mmIOClose(mmIO,0);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit;<BR>| 
+&nbsp;&nbsp;&nbsp;end;<BR>| <BR>| &nbsp;&nbsp;&nbsp;if mmIORead(mmIO,PChar(Buffer),Child.cksize) &lt;&gt; 
+Child.cksize then <BR>| &nbsp;&nbsp;&nbsp;begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// data 사이즈만큼 버퍼에 읽어 들인다.<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mmioClose(mmIO,0);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>| &nbsp;&nbsp;&nbsp;end;<BR>| <BR>| 
+&nbsp;&nbsp;&nbsp;mmIOClose(mmIO,0);<BR>| <BR>| end;</FONT></P>
+<P><FONT face="굴림체">위에서는 WAV 파일 구조가 쉽다고 했었는데.... 설명을 하다보니 괜히 어렵게<BR>느껴지기는 한다. 하지만 
+정말 쉽다. mmIO 가 어렵게 느껴질 뿐인 것이다...</FONT></P>
+<P><FONT face="굴림체">위의 소스대로 하면 &nbsp;WaveFormatEx 에는 WAV 파일에 대한 헤더가 들어오게 되<BR>고 Buffer 
+에는 wave data 가 들어온다.</FONT></P>
+<P><FONT face="굴림체">이것은 나중에 &nbsp;Direct Sound 버퍼를 만들고 &nbsp;데이터를 집어넣을 때 핵심적인<BR>자료가 
+된다.</FONT></P>
+<P><FONT face="굴림체">위에 보면 Delphi 에는 함수가 하나 나온다. &nbsp;mmioFOURCC 라는 것인데 VC에서<BR>는 이것이 
+mmsystem.h 의 #define 으로 처음부터 지원하는 MAKEFOURCC() 라는<BR>것인데 어찌된 것인지 Delphi 에는 없어서 
+&nbsp;VC 에 있는 #define 을 그대로 컨<BR>버팅 했다. 소스는 아래와 같다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| function &nbsp;&nbsp;&nbsp;mmioFOURCC(Data1,Data2,Data3,Data4 
+: char) : FOURCC;<BR>| var<BR>| &nbsp;&nbsp;&nbsp;Buffer : FOURCC;<BR>| begin<BR>| &nbsp;&nbsp;&nbsp;Buffer := 
+ord(Data4);<BR>| &nbsp;&nbsp;&nbsp;Buffer := Buffer shl 8;<BR>| &nbsp;&nbsp;&nbsp;Buffer := Buffer or 
+ord(Data3);<BR>| &nbsp;&nbsp;&nbsp;Buffer := Buffer shl 8;<BR>| &nbsp;&nbsp;&nbsp;Buffer := Buffer or 
+ord(Data2);<BR>| &nbsp;&nbsp;&nbsp;Buffer := Buffer shl 8;<BR>| &nbsp;&nbsp;&nbsp;Buffer := Buffer or 
+ord(Data1);<BR>|<BR>| &nbsp;&nbsp;&nbsp;mmioFOURCC := Buffer;<BR>| end;</FONT></P>
+<P><FONT face="굴림체">( 지금보니 가변 record 로 하는게 더 나을 것 같다... )</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1999 
+/ 11 / 07</FONT></P>
+<P><font color="#CCFF00">#####################################################</font></P>
+<p>
+<FONT face="굴림체"><BR>------------------------------------------------------------------------<BR>### 
+델파이로 하는 Direct X - Direct Sound (3/4)</FONT></p>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;1. Direct Sound 의 개요<BR>&nbsp;&nbsp;&nbsp;&nbsp;2. Direct Sound 초기화와 Wave 
+읽기<BR>&nbsp;&nbsp;&nbsp;&nbsp;3. 버퍼를 통한 출력과 믹싱<BR></FONT><FONT color=aqua face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;~~~~~~~~~~~~~~~~~~~~~~~~~~<BR></FONT><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;4. 3D 버퍼를 
+통한 출력과 믹싱</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;작성자 
+: 안영기 ( HiTEL ID : SMgal )</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(1) Direct Sound 의 버퍼</FONT></P>
+<P><FONT face="굴림체">Direct Sound 는 1 개의 1 차 버퍼 ( Primary Buffer ) 와 &nbsp;1 개 이상의 2 
+차<BR>버퍼 ( Secondary Buffer ) 를 가질 수가 있다. </FONT></P>
+<P><FONT face="굴림체">1 차 버퍼는 생성될 때, &nbsp;22 KHz 8 bit 스테레오가 디폴트로 설정된다. &nbsp;2 장<BR>에 말했듯이 
+협력 레벨이 DSSCL_PRIORITY 이상이 되어야 이 포맷을 변경할 수<BR>가 있는데, &nbsp;실제 Direct Sound 가 최고의 퍼포먼스를 
+내려면 &nbsp;1 차 버퍼와 2<BR>차 버퍼가 같은 포맷일 때 가능하므로 2 차 버퍼에 맞는 1 차 버퍼 포맷을 유<BR>저가 직접 바꿔 주어야 
+하는 경우가 생긴다.<BR>( 이번에 예로 들, DSSCL_NORMAL 의 예제에서는 이 부분과 상관없다. )</FONT></P>
+<P><FONT face="굴림체">2 차 버퍼는 실제로 믹싱될 wave data 가 들어 있는 부분이다. &nbsp;말 그대로 버<BR>퍼이기 때문에 다른 
+버퍼의 개념과 같으나, Lock()에 의해서만 접근 할 수 있<BR>다는 것과 원형 버퍼이기 때문에 &nbsp;끝 부분을 넘어가면 &nbsp;처음부터 다시 
+포인터<BR>가 증가한다는 것이다.</FONT></P>
+<P><FONT face="굴림체">2 차 버퍼에는 크게 스태틱 버퍼와 스트리밍 버퍼가 있다.</FONT></P>
+<P><FONT face="굴림체">스태틱 버퍼는, 슈팅 게임에서 발사 버튼을 누르면 계속 나와야 하는 짧은 소<BR>리 같은 것에 쓰인다. 
+디폴트는 하드웨어 버퍼 ( 사운드 카드 내에 있는 ) 에<BR>만들어져서 최대한 빨리 출력을 할 수 있게 하며, 항상 버퍼에 모든 
+데이터가<BR>상주해 있는다.</FONT></P>
+<P><FONT face="굴림체">스트리밍 버퍼는, WAV 파일로 배경 음악을 연주하거나 할 때 사용된다. &nbsp;실제<BR>배경 음악용 WAV 파일은 
+굉장히 크기 때문에 &nbsp;하드웨어 버퍼에나 &nbsp;소프트웨어 <BR>버퍼 ( 시스템 램 ) 에 모두 올려놓은 후 연주하기에는 맞지 않다. 
+</FONT></P>
+<P><FONT face="굴림체">스트리밍 버퍼를 운용하는 방법에 있어서는, 2 초 정도의 버퍼 공간만을 만든<BR>후에 멀티미디어 타이머 ( 
+이전에 강좌를 했다. 거길 참고하시길 ) 로 일정한<BR>주기동안에 &nbsp;타이머 콜백을 만든 후 &nbsp;갱신될 부분만 계속 파일에서 읽어 들여 
+<BR>버퍼에 쓰는 식이다. WinAMP 같은 음악 연주 프로그램이, 사용자의 무슨 작업<BR>에 의해 그쪽에 모든 부하가 가버리면 &nbsp;타이머 
+이벤트를 받지 못해 &nbsp;1-2 초의 <BR>구간을 계속 반복하는 것을 경험하셨을 분도 계실 것이다. &nbsp;이것은 &nbsp;스트리밍<BR>버퍼 구조를 사용하기 
+때문에 생기는 일이다.</FONT></P>
+<P><FONT face="굴림체">일단 다음 강좌에 할 Direct Music 이라는 부분이 Direct X 로 배경음악을 연<BR>주하는 부분이 
+있으므로 이번 강좌에서는 스트리밍 버퍼에 대한 것은 하지 않<BR>기로 한다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(2) Direct Sound Buffer 생성</FONT></P>
+<P><FONT face="굴림체">먼저 1차 버퍼 생성부터 알아보겠다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| const<BR>| &nbsp;&nbsp;&nbsp;DS_BITPERSAMPLE &nbsp;&nbsp;= 8;<BR>| 
+&nbsp;&nbsp;&nbsp;DS_CHANSPERSAMPLE = 1;<BR>| &nbsp;&nbsp;&nbsp;DS_SAMPLERATE &nbsp;&nbsp;&nbsp;&nbsp;= 22050;</FONT></P>
+<P><FONT color=yellow face=굴림체>| var<BR>| &nbsp;&nbsp;&nbsp;BufferLength &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: DWORD;<BR>| 
+&nbsp;&nbsp;&nbsp;DirectSoundBuffer : IDirectSoundBuffer;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 전역 변수 또는 클래스의 멤버 변수가 되는 
+Sound Buffer 객체</FONT></P>
+<P><FONT color=yellow face=굴림체>| function &nbsp;&nbsp;&nbsp;CreatePrimaryBuffer : boolean;<BR>| 
+var<BR>| &nbsp;&nbsp;&nbsp;DSBufferDesc &nbsp;: TDSBUFFERDESC;<BR>| &nbsp;&nbsp;&nbsp;WaveFormatEx &nbsp;: 
+TWaveFormatEx;<BR>| &nbsp;&nbsp;&nbsp;DSBCaps &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: TDSBCaps;<BR>| &nbsp;&nbsp;&nbsp;DSResult &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 
+HResult;<BR>| begin<BR>| &nbsp;&nbsp;&nbsp;CreatePrimaryBuffer := FALSE;<BR>| &nbsp;&nbsp;&nbsp;if not 
+Assigned(DirectSound) then exit;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Direct Sound 가 초기화 되어 있지 않다면 이 
+함수는 실패<BR>|<BR>| &nbsp;&nbsp;&nbsp;FillChar(WaveFormatEx,sizeof(TWaveFormatEx),0);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// WaveFormatEx 구조체 초기화<BR>|<BR>| &nbsp;&nbsp;&nbsp;WaveFormatEx.wFormatTag &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= 
+WAVE_FORMAT_PCM;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// wave 포맷은 PCM 형식<BR>| &nbsp;&nbsp;&nbsp;WaveFormatEx.nChannels 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= DS_BITPERSAMPLE;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 1 이면 모노이고 2 이면 스테레오.<BR>| 
+&nbsp;&nbsp;&nbsp;WaveFormatEx.nSamplesPerSec &nbsp;:= DS_SAMPLERATE;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 초당 샘플링 수, 이 경우에는 
+22KHz<BR>| &nbsp;&nbsp;&nbsp;WaveFormatEx.wBitsPerSample &nbsp;:= DS_BITPERSAMPLE;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 샘플 
+비트, 이 경우에는 8 bit 사운드<BR>| &nbsp;&nbsp;&nbsp;WaveFormatEx.nBlockAlign &nbsp;&nbsp;&nbsp;&nbsp;:= 
+WaveFormatEx.nChannels<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* DS_BITPERSAMPLE 
+div 8;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 하나의 샘플에 대한 할당 바이트 수<BR>| &nbsp;&nbsp;&nbsp;WaveFormatEx.nAvgBytesPerSec := 
+WaveFormatEx.nSamplesPerSec<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+WaveFormatEx.nBlockAlign;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 초당 샘플 바이트 수<BR>| &nbsp;&nbsp;&nbsp;WaveFormatEx.cbSize 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= 0;<BR>| <BR>| 
+&nbsp;&nbsp;&nbsp;FillChar(DSBufferDesc,sizeof(TDSBufferDesc),0);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// DSBufferDesc 
+구조체 초기화<BR>| <BR>| &nbsp;&nbsp;&nbsp;DSBufferDesc.dwSize &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= 
+sizeof(TDSBufferDesc);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 항상 자신의 사이즈를 표시 ( 안 그러면 에러 발생 )<BR>| 
+&nbsp;&nbsp;&nbsp;DSBufferDesc.dwFlags &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= DSBCAPS_PRIMARYBUFFER;<BR>| <BR>| &nbsp;&nbsp;&nbsp;DSResult 
+:= DirectSound.SetCooperativeLevel(Handle,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DSSCL_WRITEPRIMARY);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 협력 레벨을&nbsp;설정, 2 장에서도 말했듯이 DSSCL_NORMAL 은 안된다.<BR>| &nbsp;&nbsp;&nbsp;if DSResult = DS_OK 
+then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DSResult := 
+DirectSound.CreateSoundBuffer(DSBufferDesc,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectSoundBuffer,nil);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 1 차버퍼를 얻음<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if DSResult = DS_OK then begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DSResult := DirectSoundBuffer.SetFormat(WaveFormatEx);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// WaveFormatEx 에 설정한대로 1 차 버퍼 포맷을 바꿈<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if DSResult = 
+DS_OK then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DSBCaps.dwSize &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= sizeof(TDSBCaps);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectSoundBuffer.GetCaps(DSBCaps);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 생성한 사운 
+버퍼에 대한 정보를 읽음<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BufferLength &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= 
+DSBCaps.dwBufferBytes;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 버퍼에 할당된 바이트 수를 저장<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CreatePrimaryBuffer := TRUE;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 함수 성공<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;&nbsp;&nbsp;end;<BR>|<BR>| 
+&nbsp;&nbsp;&nbsp;DirectSoundBuffer := nil;<BR>| &nbsp;&nbsp;&nbsp;BufferLength &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= 0;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 함수 
+실패<BR>| end;</FONT></P>
+<P><FONT face="굴림체">1 차 버퍼를 생성할 때에는 &nbsp;협력 레벨이 달라지며 &nbsp;사용자 포맷을 정의할 수<BR>있다는 것 정도만 주의하면 
+된다.</FONT></P>
+<P><FONT face="굴림체"><BR>이번에는 2 차 버퍼이다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| var<BR>| &nbsp;&nbsp;&nbsp;DirectSoundBuffer : 
+IDirectSoundBuffer;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 전역 변수 또는 클래스의 멤버 변수가 되는 Sound Buffer 
+객체</FONT></P>
+<P><FONT color=yellow face=굴림체>| function &nbsp;&nbsp;CreateSoundBuffer(WaveFormatEx &nbsp;: 
+TWaveFormatEx) : boolean;<BR>| var<BR>| &nbsp;&nbsp;&nbsp;DSBufferDesc &nbsp;: TDSBUFFERDESC;<BR>| 
+&nbsp;&nbsp;&nbsp;DSResult &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: HResult;<BR>| begin<BR>| &nbsp;&nbsp;&nbsp;CreateSoundBuffer := FALSE;<BR>| 
+&nbsp;&nbsp;&nbsp;if not Assigned(DirectSound) then exit;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Direct Sound 가 초기화 되어 
+있지 않다면 이 함수는 실패<BR>| <BR>| &nbsp;&nbsp;&nbsp;WaveFormatEx.cbSize &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= 
+sizeof(TWaveFormatEx);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 보통 WAV 파일에서 WaveFormatEx 를 가져 올 때 &nbsp;cbSize 
+부분까지<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 정보를 저장하지 않는 WAV 포맷이 있다. 그럴 때를 대비해서 수동<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 으로 넣어 준다. 
+안 넣어도 될지도 모른다.<BR>| <BR>| 
+&nbsp;&nbsp;&nbsp;FillChar(DSBufferDesc,sizeof(TDSBufferDesc),0);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// DSBufferDesc 
+구조체 초기화<BR>| <BR>| &nbsp;&nbsp;&nbsp;DSBufferDesc.dwSize &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= 
+sizeof(TDSBufferDesc);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 항상 자신의 사이즈를 표시 ( 안 그러면 에러 발생 )<BR>| 
+&nbsp;&nbsp;&nbsp;DSBufferDesc.dwFlags &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= DSBCAPS_CTRLDEFAULT or <BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DSBCAPS_STATIC or DSBCAPS_GETCURRENTPOSITION2<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// DSBCAPS_CTRLDEFAULT - 볼륨, 팬, 주파수 제어 가능<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// DSBCAPS_STATIC 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- 이 버퍼는 스태틱 버퍼<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// DSBCAPS_GETCURRENTPOSITION2 - 현재 플레이 위치 얻기 
+가능<BR>| &nbsp;&nbsp;&nbsp;DSBufferDesc.dwBufferBytes &nbsp;&nbsp;:= BufferLength;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 생성할 버퍼의 
+크기, 보통 스태틱 버퍼에서는 WAV 전체의 크기<BR>| &nbsp;&nbsp;&nbsp;DSBufferDesc.lpwfxFormat &nbsp;&nbsp;&nbsp;&nbsp;:= 
+@WaveFormatEx;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 적용할 WaveFormatEx 구조체가 있는 곳의 포인터<BR>| &nbsp;&nbsp;&nbsp;DSResult := 
+DirectSound.CreateSoundBuffer(DSBufferDesc,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectSoundBuffer,nil);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 사운드 버퍼 생성<BR>| <BR>| &nbsp;&nbsp;&nbsp;if DSResult &lt;&gt; DS_OK then begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectSoundBuffer := nil;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 생성 실패<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit;<BR>| 
+&nbsp;&nbsp;&nbsp;end;<BR>| <BR>| &nbsp;&nbsp;&nbsp;CreateSoundBuffer := TRUE;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 생성 성공<BR>| 
+end;</FONT></P>
+<P><FONT face="굴림체">1차 버퍼일 때와 가장 크게 다른 점은 DSBufferDesc 에서 플래그 
+설정이다.<BR>DSBCAPS_PRIMARYBUFFER 라는 플래그 대신 현재 버퍼에 쓸 다른 여러 플래그들<BR>을 설정해 주었다. 그리고 
+WaveFormatEx 구조체 같은 경우에는 2 장에서 언급<BR>한 LoadWave() 함수에서 얻을 수 있었다.</FONT></P>
+<P><FONT face="굴림체"><BR>하지만 위의 소스에는 단지 일정 크기의 버퍼만 생성했을 뿐 &nbsp;그 버퍼에 자료<BR>를 넣지는 않았다. 
+&nbsp;그럼 이번에는 생성한 버퍼에다가 자료를 쓰는 법을 알아<BR>보자.</FONT></P>
+<P><FONT color=yellow face=굴림체>| function &nbsp;&nbsp;&nbsp;FillBuffer : boolean;<BR>| var<BR>| 
+&nbsp;&nbsp;&nbsp;AudioPtr1, &nbsp;&nbsp;AudioPtr2 &nbsp;&nbsp;: Pointer;<BR>| &nbsp;&nbsp;&nbsp;AudioBytes1, AudioBytes2 : 
+DWORD;<BR>| &nbsp;&nbsp;&nbsp;DSResult &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: HResult;<BR>| begin<BR>| &nbsp;&nbsp;&nbsp;FillBuffer 
+:= FALSE;<BR>| &nbsp;&nbsp;&nbsp;if not Assigned(DirectSound) then exit;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Direct 
+Sound 가 초기화되어 있지 않다면 이 함수는 실패<BR>|<BR>| &nbsp;&nbsp;&nbsp;DSResult &nbsp;&nbsp;:= DS_OK;<BR>| 
+&nbsp;&nbsp;&nbsp;repeat<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if DSResult = DSERR_BUFFERLOST then 
+DirectSoundBuffer.Restore;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 만약 사운드 버퍼를 잃어버린 상태라면 복구<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DSResult := DirectSoundBuffer.Lock(0,BufferLength,AudioPtr1,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AudioBytes1,AudioPtr2,AudioBytes2,0);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 버퍼를 Lock 해서 쓸 포인터를 얻음<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- 시작 오프셋 ( 0 은 
+제일 처음 )<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// BufferLength - 이전에 구해 놓았던 이 버퍼의 크기<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+AudioPtr1 &nbsp;&nbsp;&nbsp;- 첫 번째 블록 포인터<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// AudioBytes1 &nbsp;- 첫 번째 블록 크기<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// AudioPtr2 &nbsp;&nbsp;&nbsp;- 두 번째 블록 포인터<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// AudioBytes2 &nbsp;- 두 번째 블록 
+크기<BR>| &nbsp;&nbsp;&nbsp;until DSResult &lt;&gt; DSERR_BUFFERLOST;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 버퍼를 잃었다는 메세지가 
+아니면 탈출<BR>| <BR>| &nbsp;&nbsp;&nbsp;if DSResult &lt;&gt; DS_OK then exit;<BR>| <BR>| 
+&nbsp;&nbsp;&nbsp;CopyMemory(AudioPtr1,Buffer,AudioBytes1);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Buffer 의 내용을 
+AudioPtr1 에 AudioBytes1 만큼 복사<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 이것은 API 함수<BR>| &nbsp;&nbsp;&nbsp;if 
+Assigned(AudioPtr2) then begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CopyMemory(AudioPtr2,PByte(DWORD(Buffer)+AudioBytes1),<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AudioBytes2);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 만약 두 번째 포인터가 있다면 그것도 복사<BR>| &nbsp;&nbsp;&nbsp;end;<BR>| <BR>| &nbsp;&nbsp;&nbsp;DSResult := 
+DirectSoundBuffer.UnLock(AudioPtr1,AudioBytes1,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AudioPtr2,AudioBytes2);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 쓰기를 위해 잠궜던 버퍼를 다시 해제한다.<BR>|<BR>| &nbsp;&nbsp;&nbsp;if DSResult &lt;&gt; DS_OK then 
+exit;<BR>|<BR>| &nbsp;&nbsp;&nbsp;FillBuffer := TRUE;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 함수 성공<BR>| end;</FONT></P>
+<P><FONT face="굴림체">여기서 Buffer 변수와 DirectSoundBuffer 객체와 BufferLength 는 &nbsp;이미 
+구해<BR>져 있던 것이다.</FONT></P>
+<P><FONT face="굴림체">이번에는 Lock() 과 Unlock() 이라는 함수가 등장했다. &nbsp;이 함수들은 &nbsp;버퍼에<BR>직접 읽고 쓰는 
+것을 가능하게 해주는 IDirectSoundBuffer 의 메쏘드다.</FONT></P>
+<P><FONT face="굴림체">Lock() 을 하게 되면 포인터와 사이즈가 각각 2개가 돌아오게 된다. &nbsp;그 이유<BR>는 버퍼가 원형이라는데 
+있다. 이번의 경우에는 0 번 오프셋부터 쓰기 때문에<BR>해당 사항은 없지만 만약 1000 바이트의 크기인 버퍼에서 900 바이트 째 
+오프<BR>셋으로부터 200 바이트만큼을 쓰기 가능으로 하려면 어떻게 되겠는가. 그렇다,<BR>900 - 1000 까지가 첫 번째 블록으로 
+지정되고 0 - 100 까지가 &nbsp;두 번째 블록<BR>으로 지정되는 것이다. 1000 번은 바로 0 번으로 이어지기 때문이다. &nbsp;그리고<BR>이런 
+식으로 &nbsp;버퍼의 끝에서 다시 돌아오는 일이 없다면 &nbsp;두 번째 포인터에는<BR>항상 nil 이 돌아온다.</FONT></P>
+<P><FONT face="굴림체">Lock 의 마지막 인자에 현재는 0 이 들어갔는데, 그 이외에도 2가지 플래그가<BR>더 들어 갈 수가 
+있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;DSBLOCK_FROMWRITECURSOR - 현재 쓰기 커서가 있는 부분부터 &nbsp;오프셋을 
+잡<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;는다. 이것을 사용하게 되면 오프셋 인자를 
+무<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;시하게 된다.<BR>&nbsp;&nbsp;&nbsp;DSBLOCK_ENTIREBUFFER &nbsp;&nbsp;&nbsp;- 전체 버퍼에 
+대해서 Lock 을 수행한다. 이것을<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;사용하게 되면 Lock 할 버퍼 사이즈는 
+&nbsp;무시된<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;다. </FONT></P>
+<P><FONT face="굴림체">그리고 물론 Lock() 에 대응하는 Unlock() 도 잊으면 안 된다. ( Direct Draw<BR>와 
+마찬가지로 이것도 쌍이다. ) &nbsp;단 Direct Draw 의 Unlock() 과 &nbsp;다른 점은<BR>Lock() 으로 받은 4 개의 인자를 모두 
+Unlock() 에서도 기입을 해주어야 한다<BR>는 것이다.</FONT></P>
+<P><FONT face="굴림체">그리고 repeat until 부분에 보면 &nbsp;버퍼를 잃는 것에 대한 &nbsp;대비책이 있었다.<BR>Lock() 을 
+시도하려는데 어떠한 외부적인 상황 ( 메모리 반환 요구 ) &nbsp;때문에<BR>버퍼 메모리를 잃었을 때는 Lock 이 되지 않고 
+&nbsp;DSERR_BUFFERLOST 라는 &nbsp;에러<BR>코드가 돌아온다. &nbsp;이때는 IDirectSoundBuffer 객체의 Restore() 메쏘드를 
+쓰<BR>면 다시 버퍼가 복구된다. &nbsp;( 거의 모든 메쏘드가 &nbsp;DSERR_BUFFERLOST 에러 코<BR>드를 리턴 할 수가 있으며 실제로 
+메소드를 쓸 때마다 항상 검사 해주어야 정<BR>석이다. )</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(3) Wave 재생</FONT></P>
+<P><FONT face="굴림체">재생하기 위한 최소의 절차는 다음과 같다.</FONT></P>
+<P><FONT face="굴림체">1. Direct Sound 객체를 생성한다.<BR>2. WAV 파일을 읽어 들인다.<BR>3. 버퍼를 하나 
+생성한다. ( 1, 2 차 상관없음 )<BR>4. 그 버퍼에 wave data 를 쓴다.<BR>5. 플레이 할 위치 설정<BR>6. 
+플레이<BR>7. 정지</FONT></P>
+<P><FONT face="굴림체">현재까지 한 것은 4번까지의 절차였다. &nbsp;다행하게도 5 번 이후의 절차는 모두<BR>메쏘드 하나만으로 실행이 
+가능하다.</FONT></P>
+<P><FONT face="굴림체"><BR>먼저 플레이할 위치를 설정하기 위해서는 다음과 같이 한다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| 
+&nbsp;&nbsp;DirectSoundBuffer.SetCurrentPosition(0);</FONT></P>
+<P><FONT face="굴림체">위와 같이 하면 제일 처음부터 연주를 시작하라는 뜻이 되고, &nbsp;파라메터에 들<BR>어갈 값은 연주를 시작할 
+위치를 바이트 단위로 넣어야 한다. 이미 버퍼의 정<BR>보는 알고 있으므로 1 초가 몇 바이트인지 알 수가 있기 때문에 &nbsp;쉽게 
+위치를<BR>지정할 수가 있다.( 참고 -&gt; WaveFormatEx.nAvgBytesPerSec 초당 바이트 수 )</FONT></P>
+<P><FONT face="굴림체"><BR>그리고 연주를 시작하게 하기 위해서는 다음과 같은 메쏘드를 사용하면 된다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;DirectSoundBuffer.Play(0,0,0);</FONT></P>
+<P><FONT face="굴림체">첫 번째 파라메터는 항상 0 이다.</FONT></P>
+<P><FONT face="굴림체">두 번째 파라메터는 하드웨어 믹싱 리소스를 지정할 때 &nbsp;그 우선 순위 권한을<BR>결정하기 위해서 쓰이는데, 
+버퍼가 DSBCAPS_LOCDEFER 플래그로 지정되지 않았<BR>으면 &nbsp;항상 0 으로 &nbsp;둬야한다. &nbsp;DSBCAPS_LOCDEFER 플래그는 
+&nbsp;Direct X 7.0 의<BR>Direct Sound에서 처음 생긴 것이기 때문에 하위호환을 위해서 0 으로 두자.</FONT></P>
+<P><FONT face="굴림체">세 번째 파라메터에 0 을 넣으면 &nbsp;그냥 한 번만 연주한다. &nbsp;따로 멈춰줘야 할<BR>필요는 없다. 그리고 
+DSBPLAY_LOOPING 을 넣으면 계속 반복되게 된다. 그리고<BR>그 이외에 다음과 같은 것들이 있다. &nbsp;( 예전엔 이 두 가지가 
+전부였는데 &nbsp;DX<BR>7.0 에서 새로 생긴 것들이다. )</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;Voice Allocation 
+flags<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DSBPLAY_LOCHARDWARE<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DSBPLAY_LOCSOFTWARE</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;Voice Management 
+flags<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DSBPLAY_TERMINATEBY_TIME<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DSBPLAY_TERMINATEBY_DISTANCE<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DSBPLAY_TERMINATEBY_PRIORITY</FONT></P>
+<P><FONT face="굴림체">이것들은 모두 DSBCAPS_LOCDEFER 로 생성된 버퍼에서만 쓰인다고 한다. &nbsp;자세<BR>한 것은 필자도 
+모를뿐더러 앞으로도 모른 채로 지낼 것 같다. ( Direct X 는<BR>1 년도 안되어서 새 버전이 나오고, 또 이런 식으로 기능이 추가가 
+된다. &nbsp;그<BR>리고 이런 식으로 다 알려면 새 버전 공부만 하다가 또 새 버전을 맞을 것 같<BR>다.. -_-; )</FONT></P>
+<P><FONT face="굴림체"><BR>연주되고 있는 WAV 를 멈추려면 다음의 메쏘드를 이용한다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;DirectSoundBuffer.Stop;</FONT></P>
+<P><FONT face="굴림체">아주 간단하다. 우리 모두 이런 용법의 함수를 좋아하지 않는가 ?</FONT></P>
+<P><FONT face="굴림체"><BR>------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(4) wave data 믹싱</FONT></P>
+<P><FONT face="굴림체">믹싱법은 협력 레벨에 따라 다르다. &nbsp;</FONT></P>
+<P><FONT face="굴림체">DSSCL_WRITEPRIMARY 로 설정을 했다면 &nbsp;1 차 버퍼에서 &nbsp;직접 믹싱을 
+해야하고<BR>DSSCL_NORMAL 로 설정했다면 &nbsp;1 차 버퍼를 생성할 필요 없이 2 차 버퍼들만으<BR>로 믹싱이 
+가능하다.</FONT></P>
+<P><FONT face="굴림체">1. DSSCL_NORMAL 의 경우</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;위에서 한 방법대로 2 차 버퍼를 2 개 이상 만들어 본다. 버퍼에 데이터를<BR>&nbsp;&nbsp;&nbsp;올린 후, &nbsp;둘 다 
+같이 연주하거나 시간차를 두고 Play() 함수를 실행해 보<BR>&nbsp;&nbsp;&nbsp;자. &nbsp;우리는 아무 것도 안 했지만, Direct Sound 가 스스로 
+알아서 연주되<BR>&nbsp;&nbsp;&nbsp;고 있는 2 차 버퍼끼리 믹싱을 하게 되고, &nbsp;동시에 두 가지 이상의 소리가<BR>&nbsp;&nbsp;&nbsp;나오게 
+된다.</FONT></P>
+<P><FONT face="굴림체">2. DSSCL_WRITEPRIMARY 의 경우</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;솔직하게 이 모드로 작업을 해본 적은 없다. 쓸 일이 없었으니까. &nbsp;하지만<BR>&nbsp;&nbsp;&nbsp;예전 도스 때는 직접 
+하드웨어에 믹싱을 했으니 그때 사운드 블래스터 DMA<BR>&nbsp;&nbsp;&nbsp;에 믹싱하기 위해 만들었던 필자의 소스를 예로 들겠다. &nbsp;( 이건 
+델파이에<BR>&nbsp;&nbsp;&nbsp;바로 적용할 수는 없으니 알고리즘 차원에서 알아두는 정도면 되겠다. )</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;&nbsp;if (is_playing_voice) and (is_multivoice) 
+then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c := SBreadDMAChannel(SB_DMA_PORT);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if c = 
+$FFFF then exit;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move(m_multivoice_data^[m_multivoice_size-c],<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_multivoice_data^[1],c);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 음성 데이터 영역으로 복사<BR>| &nbsp;&nbsp;&nbsp;&nbsp;{$IFDEF DPMI}<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;physical := 
+longint(m_multivoice_ptr shr 16) shl 4;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 보호모드일 때 음성 데이터의 물리적 주소 
+얻기<BR>| &nbsp;&nbsp;&nbsp;&nbsp;{$ELSE}<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;physical := longint(Seg(m_multivoice_data^)) shl 
+4 + <BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ofs(m_multivoice_data^);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 리얼모드일 때 음성 데이터의 물리적 주소 얻기<BR>| &nbsp;&nbsp;&nbsp;&nbsp;{$ENDIF}<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for i := 1 to 
+m_voice_data[handle].size do begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 버퍼 사이즈만큼 믹싱을..<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (m_multivoice_size &gt;= i) and (m_multivoice_data^[i] &lt;&gt; 
+<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_voice_data[handle].data^[i]) then 
+begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;j := m_multivoice_data^[i];<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 새로 들어올 
+데이터<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;k := m_voice_data[handle].data^[i];<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+이미 버퍼에 들어 와 있는 데이터<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;j := j+k-128;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 믹싱 ( 이 
+부분의 공식은 직접 귀로 듣고 맞춰야 함 )<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if j &lt; 0 then j := 0;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 언더 플로우일 때<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if j &gt; $FF then j := $FF;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 오버 플로우일 때<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end else j := 
+m_voice_data[handle].data^[i];<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 믹싱 할 데이터 영역이 아니면 그대로<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_multivoice_data^[i] := j;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 믹싱 된 데이터를 버퍼에 넣기<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>|<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if c &lt; m_voice_data[handle].size then <BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_multivoice_size := m_voice_data[handle].size<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else <BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_multivoice_size := c;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;playDMAVoice(physical,m_multivoice_size);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 사운드 블래스터 DMA 로 
+플레이한다.<BR>| &nbsp;&nbsp;&nbsp;end<BR>| &nbsp;&nbsp;&nbsp;else begin</FONT></P>
+<P><FONT face="굴림체"><BR>------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(5) Direct Sound 소멸</FONT></P>
+<P><FONT face="굴림체">필자가 사용하고 있는 소멸자의 한 부분이다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| &nbsp;&nbsp;&nbsp;for i := 0 to MAX_CHANNEL do begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Assigned(DirectSoundBuffer[i]) then begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectSoundBuffer[i]._Release;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pointer(DirectSoundBuffer[i]) := nil;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if 
+Assigned(DirectSound3DBuffer[i]) then begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectSound3DBuffer[i]._Release;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pointer(DirectSound3DBuffer[i]) := nil;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<BR>| 
+&nbsp;&nbsp;&nbsp;end;<BR>|<BR>| &nbsp;&nbsp;&nbsp;if Assigned(DirectSound) then begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectSound._Release;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pointer(DirectSound) := nil;<BR>| 
+&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">자기가 만든 버퍼의 개수만큼 Release 시켜 주는데 ( 물론 할당된 버퍼에만 )<BR>2D 버퍼이든, 3D 
+버퍼이든 간에 모두 해제해야 하고, 버퍼를 해제했으면 마지<BR>막으로 IDirectSound 인터페이스 객체를 Release 
+시킨다.</FONT></P>
+<P><FONT face="굴림체">즉, 자기가 만든 것만 책임을 지면 되는 것이다.</FONT></P>
+<P><FONT face="굴림체"><BR>------------------------------------------------------------------------<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1999 
+/ 11 / 07</FONT></P>
+<p><font color="#CCFF00">#####################################################</font></p>
+<p>
+<FONT face="굴림체"><BR>------------------------------------------------------------------------<BR>### 
+델파이로 하는 Direct X - Direct Sound (4/4)</FONT></p>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;1. Direct Sound 의 개요<BR>&nbsp;&nbsp;&nbsp;&nbsp;2. Direct Sound 초기화와 Wave 
+읽기<BR>&nbsp;&nbsp;&nbsp;&nbsp;3. 버퍼를 통한 출력과 믹싱<BR>&nbsp;&nbsp;&nbsp;&nbsp;4. 3D 버퍼를 통한 출력과 믹싱<BR></FONT><FONT color=aqua face=굴림체>&nbsp;&nbsp;&nbsp;&nbsp;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;작성자 
+: 안영기 ( HiTEL ID : SMgal )</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(1) Direct Sound Buffer 의 스테레오 제어</FONT></P>
+<P><FONT face="굴림체">일단 3D 버퍼에 들어가기 전에 먼저 해야 할 것이 있는데, &nbsp;그것은 다름 아니<BR>라 Volume 제어와 
+Pan 제어이다. &nbsp;Volume 은 다 아실 것이고 &nbsp;Pan 은 Balance<BR>와 같은 말이다. 좌우 스피커의 어느 쪽으로 음이 편향되는 
+가를 말한다.<BR>( 실제 Pan 은 양쪽 Volume 을 서로 다르게 조절하는 것뿐이다. )</FONT></P>
+<P><FONT face="굴림체">IDirectSoundBuffer 에는 다음의 4 개의 메쏘드가 있다.<BR>물론 이것은 버퍼가 생성될 때 
+&nbsp;DSBCAPS_CTRLDEFAULT 플래그를 사용해서 생성<BR>했을 때만 사용 가능한 것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;SetVolume() - Volume 을 조절한다. 
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DSBVOLUME_MIN 이 &nbsp;가장 작은 값 &nbsp;( 소리가 안 들림 ) 이고 
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DSBVOLUME_MAX 가장 큰 값 ( 원래의 소리 크기 ) 이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;GetVolume() - 현재의 Volume 을 
+가져온다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DSBVOLUME_MIN = 
+-10000;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DSBVOLUME_MAX = 0; 으로 설정되어 있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;SetPan() &nbsp;&nbsp;&nbsp;- Pan 을 조절한다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DSBPAN_LEFT 는 
+왼쪽 편향의 최대 값이고 &nbsp;DSBPAN_RIGHT 는<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;오른쪽 편향의 최대 값이다. &nbsp;양쪽을 같은 크기로 
+만들려면<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DSBPAN_CENTER 을 사용하면 된다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;GetPan() &nbsp;&nbsp;&nbsp;- 현재의 Pan 을 
+가져온다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DSBPAN_LEFT = 
+-10000;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DSBPAN_CENTER = 0;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DSBPAN_RIGHT 
+= 10000; 으로 설정되어 있다.</FONT></P>
+<P><FONT face="굴림체"><BR>실제로 class 를 구성해 본다는 아래처럼 만들 수 있겠다.<BR>아래에서는 Volume 과 Pan 을 
+property 로 &nbsp;설정하면서 &nbsp;그 값의 범위를 우리<BR>에게 익숙한 0 과 255 의 값으로 리스케일링 했다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| type<BR>|<BR>|&nbsp;&nbsp;&nbsp;&nbsp;TDXSound = class<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;&nbsp;&nbsp;Volume[Channel : integer] : Longint <BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read &nbsp;GetVolume write SetVolume;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 볼륨은 0 - 255 의 범위를 가진다.<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property &nbsp;&nbsp;&nbsp;Pan &nbsp;&nbsp;[Channel : 
+integer] : Longint <BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read &nbsp;GetPan 
+&nbsp;&nbsp;&nbsp;write SetPan;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// LEFT 최대 : -256, RIGHT 최대 : 256<BR>| 
+&nbsp;&nbsp;&nbsp;end;<BR>| <BR>| const<BR>| &nbsp;&nbsp;&nbsp;MAX_PAN_VALUE &nbsp;&nbsp;= 256;<BR>| &nbsp;&nbsp;&nbsp;MIN_PAN_VALUE 
+&nbsp;&nbsp;= -256;<BR>| &nbsp;&nbsp;&nbsp;MIN_VOL_VALUE &nbsp;&nbsp;= 0;<BR>| &nbsp;&nbsp;&nbsp;MAX_VOL_VALUE &nbsp;&nbsp;= 256;<BR>| 
+&nbsp;&nbsp;&nbsp;SHIFT_VOL_VALUE = -256;<BR>| &nbsp;&nbsp;&nbsp;SHIFT_PAN_VALUE = -0;<BR>| &nbsp;&nbsp;&nbsp;MUL_PAN_VALUE 
+&nbsp;&nbsp;= 20;<BR>| &nbsp;&nbsp;&nbsp;MUL_VOL_VALUE &nbsp;&nbsp;= 20;<BR>| <BR>| procedure 
+&nbsp;&nbsp;TDXSound.SetVolume(Channel : integer; Value : Longint);<BR>| var<BR>| &nbsp;&nbsp;&nbsp;HR : 
+Longint;<BR>| begin<BR>| &nbsp;&nbsp;&nbsp;if not Assigned(DirectSound) then exit;<BR>| <BR>| 
+&nbsp;&nbsp;&nbsp;if Channel in [1..MAX_CHANNEL] then<BR>| &nbsp;&nbsp;&nbsp;if 
+Assigned(DirectSoundBuffer[Channel]) then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Value &lt; 
+MIN_VOL_VALUE then Value := MIN_VOL_VALUE;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Value &gt; 
+MAX_VOL_VALUE then Value := MAX_VOL_VALUE;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HR := 
+DirectSoundBuffer[Channel].SetVolume(<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Value + 
+SHIFT_VOL_VALUE) * MUL_VOL_VALUE);<BR>| &nbsp;&nbsp;&nbsp;end;<BR>| end;<BR>| <BR>| function 
+&nbsp;&nbsp;&nbsp;TDXSound.GetVolume(Channel : integer) : Longint;<BR>| var<BR>| &nbsp;&nbsp;&nbsp;HR &nbsp;&nbsp;&nbsp;: 
+Longint;<BR>| &nbsp;&nbsp;&nbsp;Value : Longint;<BR>| begin<BR>| &nbsp;&nbsp;&nbsp;GetVolume := 0;<BR>| &nbsp;&nbsp;&nbsp;if 
+not Assigned(DirectSound) then exit;<BR>| <BR>| &nbsp;&nbsp;&nbsp;if Channel in 
+[1..MAX_CHANNEL] then<BR>| &nbsp;&nbsp;&nbsp;if Assigned(DirectSoundBuffer[Channel]) then 
+begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Value := 0;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HR := 
+DirectSoundBuffer[Channel].GetVolume(Value);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetVolume := Value div 
+MUL_VOL_VALUE - SHIFT_VOL_VALUE;<BR>| &nbsp;&nbsp;&nbsp;end;<BR>| end;<BR>|<BR>| procedure 
+&nbsp;&nbsp;TDXSound.SetPan(Channel : integer; Value : Longint);<BR>| var<BR>| &nbsp;&nbsp;&nbsp;HR : 
+Longint;<BR>| begin<BR>| &nbsp;&nbsp;&nbsp;if not Assigned(DirectSound) then exit;<BR>|<BR>| 
+&nbsp;&nbsp;&nbsp;if Channel in [1..MAX_CHANNEL] then<BR>| &nbsp;&nbsp;&nbsp;if 
+Assigned(DirectSoundBuffer[Channel]) then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Value &lt; 
+MIN_PAN_VALUE then Value := MIN_PAN_VALUE;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Value &gt; 
+MAX_PAN_VALUE then Value := MAX_PAN_VALUE;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HR := 
+DirectSoundBuffer[Channel].SetPan(<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Value + 
+SHIFT_PAN_VALUE) * MUL_PAN_VALUE);<BR>| &nbsp;&nbsp;&nbsp;end;<BR>| end;<BR>|<BR>| function 
+&nbsp;&nbsp;&nbsp;TDXSound.GetPan(Channel : integer) : Longint;<BR>| var<BR>|&nbsp;&nbsp;&nbsp;&nbsp;HR &nbsp;&nbsp;&nbsp;: 
+Longint;<BR>| &nbsp;&nbsp;&nbsp;Value : Longint;<BR>| begin<BR>| &nbsp;&nbsp;&nbsp;GetPan := 0;<BR>| &nbsp;&nbsp;&nbsp;if not 
+Assigned(DirectSound) then exit;<BR>|<BR>| &nbsp;&nbsp;&nbsp;if Channel in [1..MAX_CHANNEL] 
+then<BR>| &nbsp;&nbsp;&nbsp;if Assigned(DirectSoundBuffer[Channel]) then begin<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Value 
+:= 0;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HR := DirectSoundBuffer[Channel].GetPan(Value);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetPan := Value div MUL_PAN_VALUE - SHIFT_PAN_VALUE;<BR>| &nbsp;&nbsp;&nbsp;end;<BR>| 
+end;</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(2) Direct Sound 3D Buffer 의 개요</FONT></P>
+<P><FONT face="굴림체">3D 버퍼는 지금까지 언급한 2D 버퍼와는 달리 실제 공간상에서의 음원을 시뮬<BR>레이트 해준다. 사람의 귀는 
+두 개이기 때문에 어느 쪽에서 소리가 났는지 알<BR>수가 있다. 이론상으로 2 개이기 때문에 &nbsp;오른쪽인지 왼쪽인지의 1 차원 적으<BR>로 
+소리의 방향을 알 수 있어야 한다. 하지만 실제는 그렇지 않다. &nbsp;위쪽에서<BR>소리가 났다는 것도 알 수 있고 소리가 멀어지고 있는지 다가오는 
+소리인지도<BR>알 수 있고 오른쪽이나 왼쪽으로 얼마나 치우쳐진 곳에서 소리가 나는지도 알<BR>수 있다.</FONT></P>
+<P><FONT face="굴림체">도대체 사람의 귀는 어떤 메카니즘으로 그런 소리들을 분해 할 수 있는가..<BR>그리고 &nbsp;그 원리만 안다면 
+&nbsp;컴퓨터로 충분히 시뮬레이트 할 수 있을 것이라는<BR>생각에서 나온 것이 Head - Relative transfer 라는 
+것이다.</FONT></P>
+<P><FONT face="굴림체">소리가 오른쪽으로 얼마나 치우쳤는지 귀가 알 수 있는 방법을 알아보자. &nbsp;먼<BR>저 귀의 달팽이관 안에는 각 
+주파수 대역별로 공진을 할 수 있는 돌기가 있어<BR>서 &nbsp;현재 들어온 주파수에 대해 공진 함으로써 &nbsp;청신경에 어떤 주파수의 음이<BR>들어오고 
+있다는 것을 알 수 있다. 그리고 그 돌기는 주파수와 음의 피치( 음<BR>색을 결정 )와 들어온 시간은 세밀하게 분석 할 수 있다. 지금 
+말하려고 하는<BR>'어느 쪽으로 치우쳤는가' 하는 문제는 바로 시간차에 있다. &nbsp;한 음원에서 나<BR>온 소리가 이동하지 않는다면 주파수와 
+피치는 같다. &nbsp;하지만 왼쪽 귀와 오른<BR>쪽 귀는 어느 정도 거리를 두고 있고 굉장히 짧은 순간이지만 왼쪽 귀에서 음<BR>을 받았을 때와 
+오른 쪽 귀에서 음을 받았을 때의 시간 차이가 있는데, &nbsp;이것<BR>을 뇌가 분석해서 어느 쪽에서 소리가 들어오는 가를 알 수가 있는 
+것이다.</FONT></P>
+<P><FONT face="굴림체">그리고 소리가 다가오거나 멀어지는 것도 귀가 감지 할 수 있다. 이것은 천문<BR>학에서 사용하는 도플러효과로 
+설명될 수가 있다. &nbsp;원래 도플러효과는 멀어지<BR>는 항성은 '적색 편이'가 일어나고 &nbsp;다가오는 별은 '청색 편이'가 일어난다고<BR>고등학교 
+때 배웠었다. &nbsp;적색 편이라는 것은 원래 색보다 &nbsp;적색으로 변한다는<BR>것인데, 빛 역시 주파수임을 생각해보면 주파수가 감소한다는 개념으로 알 
+수<BR>있다. 반대로 청색 편이는 주파수가 원래보다 증가하는 것이다. &nbsp;소리도 마찬<BR>가지인데, 다가오는 소리는 주파수가 증가하고 멀어지는 
+소리는 주파수가 &nbsp;감<BR>소한다. 그래서 귀가 그 주파수의 변화를 감지해서 음원의 이동 여부를 알 수<BR>가 있는 
+것이다.</FONT></P>
+<P><FONT face="굴림체">위의 둘을 합한다면 왼쪽에서 오른쪽으로 멀어지게 이동하는 음원을 스피커로<BR>도 표현 할 수 있을 
+것이다.<BR>( 1인칭 3D 게임에서 물체가 획~~하고 날아서 지나가는 소리의 표현이 가능해<BR>진다 )</FONT></P>
+<P><FONT face="굴림체">그리고 &nbsp;그 이외에 '롤오프'라는 개념이 있다. &nbsp;이것은 소리가 멀어지거나 할<BR>때 감쇠 정도를 말하는 
+것이다. 소리가 퍼져 나갈 때 거리의 제곱으로 에너지<BR>가 반으로 줄 기 때문에 &nbsp;이 개념이 필요한 것이다. &nbsp;( 3 차원 공간에서 
+퍼져<BR>나가는 쪽을 시간 축으로 잡을 수 있기 때문에 남은 것은 2 차원.. 따라서 제<BR>곱만큼 에너지가 퍼진다. ) 하지만 실제의 게임 
+&nbsp;제작에서는 실세계의 롤오프<BR>를 적용하면 안 된다. &nbsp;그렇기 때문에 Direct Sound 에서도 롤오프 수치를 직<BR>접 지정할 수 
+있게 해준다.</FONT></P>
+<P><FONT face="굴림체"><BR>------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(3) Direct Sound 3D Buffer 의 생성</FONT></P>
+<P><FONT face="굴림체">DirectSound3DBuffer 를 생성하는 방법이 아래에 있다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| var<BR>| &nbsp;&nbsp;&nbsp;DirectSoundBuffer : 
+IDirectSoundBuffer;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 전역 변수 또는 클래스의 멤버 변수가 되는 Sound Buffer 
+객체</FONT></P>
+<P><FONT color=yellow face=굴림체>| function &nbsp;&nbsp;CreateSoundBuffer(WaveFormatEx &nbsp;: 
+TWaveFormatEx) : boolean;<BR>| var<BR>| &nbsp;&nbsp;&nbsp;DSBufferDesc &nbsp;: TDSBUFFERDESC;<BR>| 
+&nbsp;&nbsp;&nbsp;DSResult &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: HResult;<BR>| begin<BR>| &nbsp;&nbsp;&nbsp;CreateSoundBuffer := FALSE;<BR>| 
+&nbsp;&nbsp;&nbsp;if not Assigned(DirectSound) then exit;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Direct Sound 가 초기화 되어 
+있지 않다면 이 함수는 실패<BR>| <BR>| &nbsp;&nbsp;&nbsp;WaveFormatEx.cbSize &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= 
+sizeof(TWaveFormatEx);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 보통 WAV 파일에서 WaveFormatEx 를 가져 올 때 &nbsp;cbSize 
+부분까지<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 정보를 저장하지 않는 WAV 포맷이 있다. 그럴 때를 대비해서 수동<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 으로 넣어 준다. 
+안 넣어도 될지도 모른다.<BR>| <BR>| 
+&nbsp;&nbsp;&nbsp;FillChar(DSBufferDesc,sizeof(TDSBufferDesc),0);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// DSBufferDesc 
+구조체 초기화<BR>| <BR>| &nbsp;&nbsp;&nbsp;DSBufferDesc.dwSize &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= 
+sizeof(TDSBufferDesc);<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 항상 자신의 사이즈를 표시 ( 안 그러면 에러 발생 )<BR>| 
+&nbsp;&nbsp;&nbsp;DSBufferDesc.dwFlags &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:= DSBCAPS_CTRL3D;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 3D 버퍼를 사용함<BR>| 
+&nbsp;&nbsp;&nbsp;DSBufferDesc.dwBufferBytes &nbsp;&nbsp;:= BufferLength;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 생성할 버퍼의 크기, 보통 
+스태틱 버퍼에서는 WAV 전체의 크기<BR>| &nbsp;&nbsp;&nbsp;DSBufferDesc.lpwfxFormat &nbsp;&nbsp;&nbsp;&nbsp;:= @WaveFormatEx;<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 적용할 WaveFormatEx 구조체가 있는 곳의 포인터<BR>| &nbsp;&nbsp;&nbsp;DSResult := 
+DirectSound.CreateSoundBuffer(DSBufferDesc,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectSoundBuffer,nil);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 사운드 버퍼 생성<BR>| <BR>| 
+&nbsp;&nbsp;&nbsp;DirectSoundBuffer.QueryInterface(IID_IDirectSound3DBuffer,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectSound3DBuffer);<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 아래에 설명 참조<BR>|<BR>| &nbsp;&nbsp;&nbsp;if DSResult &lt;&gt; DS_OK then begin<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectSoundBuffer := nil;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 생성 실패<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit;<BR>| 
+&nbsp;&nbsp;&nbsp;end;<BR>| <BR>| &nbsp;&nbsp;&nbsp;CreateSoundBuffer := TRUE;<BR>| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 생성 성공<BR>| 
+end;</FONT></P>
+<P><FONT face="굴림체">보시면 알겠지만 2D 버퍼와 별 다를 게 없다. 단지 다른 점이라면 DSBufferDe<BR>sc 의 
+dwFlags 에 DSBCAPS_CTRL3D 라는 플래그를 넣는다는 것이다. &nbsp;그리고는<BR>그냥 일반 사운드 버퍼와 같이 
+만든다.</FONT></P>
+<P><FONT face="굴림체">IDirectSound3DBuffer 의 경우에는 IDirectSoundBuffer &nbsp;객체에서 
+인터페이스<BR>쿼리에 의해 그 객체를 받을 수가 있다. </FONT></P>
+<P><FONT color=yellow face=굴림체>| 
+&nbsp;&nbsp;&nbsp;DirectSoundBuffer.QueryInterface(IID_IDirectSound3DBuffer,<BR>| 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DirectSound3DBuffer);</FONT></P>
+<P><FONT face="굴림체">여기 이 구문인데.. 전형적인 COM 의 방식 그대로이다. 파라메터에 3D 버퍼의<BR>인터페이스 ID 를 넣고 
+버퍼의 객체를 빼오면 된다.</FONT></P>
+<P><FONT face="굴림체">이렇게 하면 &nbsp;그 다음부터는 DirectSound3DBuffer 에서 메쏘드를 사용하면 된<BR>다. <BR>( 
+Pan 관련 메쏘드를 제외한 모든 2D 버퍼의 메쏘드를 사용할 수가 있다. )</FONT></P>
+<P><FONT face="굴림체">IDirectSound3DBuffer 에 있는 메쏘드의 기능을 요약하면 다음과 같다.</FONT></P>
+<P><FONT face="굴림체">1) SetAllParameters &nbsp;&nbsp;&nbsp;&nbsp;- <BR>&nbsp;&nbsp;&nbsp;주어진 TDS3DBuffer 구조체로부터 &nbsp;한번에 
+3D 사운드 버퍼에 대한 모든 파<BR>&nbsp;&nbsp;&nbsp;라메터를 설정한다. TDS3DBuffer 구조체는 아래와 같이 정의되어져 있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;TDS3DBuffer = packed record<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dwSize &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 
+DWORD; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// TDS3DBuffer 구조체 크기<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vPosition &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: TD3DVector; // 
+음원 위치<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vVelocity &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: TD3DVector; // 음원 
+속도<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dwInsideConeAngle &nbsp;: DWORD; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 내부 사운드 콘 
+각도<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dwOutsideConeAngle : DWORD; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 외부 사운드 콘 
+각도<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vConeOrientation &nbsp;&nbsp;: TD3DVector; // 사운드 콘이 향하는 
+방향<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lConeOutsideVolume : Longint; &nbsp;&nbsp;&nbsp;// 사운드 콘에서 발생하는 
+볼륨<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;flMinDistance &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: TD3DValue; &nbsp;// 최소 거리 설정<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;flMaxDistance 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: TD3DValue; &nbsp;// 최대 거리 설정<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dwMode &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: DWORD; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 3D 
+버퍼 설정 모드<BR>&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;TD3DValue = single;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;TD3DVector = packed record<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case Integer 
+of<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0: (<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x : TD3DValue;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y : 
+TD3DValue;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;z : TD3DValue;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1: (<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dvX 
+: TD3DValue;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dvY : TD3DValue;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dvZ : 
+TD3DValue;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<BR>&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">2) SetConeAngles &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<BR>&nbsp;&nbsp;&nbsp;내부 사운드 콘 각도와 외부 사운드 콘 각도를 줄 수 
+있다. 사운드 콘이란<BR>&nbsp;&nbsp;&nbsp;확성기 모양으로 퍼져 나가는 음을 추상화한 것이다.</FONT></P>
+<P><FONT face="굴림체">3) SetConeOrientation &nbsp;&nbsp;-<BR>&nbsp;&nbsp;&nbsp;디폴트는 z 만 1 이 된다. 현재 사운드 콘이 향하는 
+방향을 지정한다.</FONT></P>
+<P><FONT face="굴림체">4) SetConeOutsideVolume -<BR>&nbsp;&nbsp;&nbsp;사운드 콘의 볼륨이다.</FONT></P>
+<P><FONT face="굴림체">5) SetMaxDistance &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <BR>&nbsp;&nbsp;&nbsp;미터 단위의 최대 거리 설정. 실제 들리지 않을 
+곳까지 설정해서 CPU 에게<BR>&nbsp;&nbsp;&nbsp;부담을 &nbsp;줘서는 안 된다. 게임에 맞는 수치를 넣으면 된다. 디폴트는 
+10억<BR>&nbsp;&nbsp;&nbsp;미터</FONT></P>
+<P><FONT face="굴림체">6) SetMinDistance &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<BR>&nbsp;&nbsp;&nbsp;미터 단위의 최소 거리 설정. &nbsp;최소거리를 설정하지 
+않으면 음원과 부딪혔<BR>&nbsp;&nbsp;&nbsp;을 때 바로 귀에다가 소리치는 효과를 내주어야 하지만 &nbsp;최소거리 설정 덕<BR>&nbsp;&nbsp;&nbsp;분에 어느 정도 접근하면 
+소리의 db 증가는 없어진다. 디폴트는 1 미터</FONT></P>
+<P><FONT face="굴림체">7) SetMode &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<BR>&nbsp;&nbsp;&nbsp;버퍼의 모드를 설정하는데 총 3 가지의 경우가 
+있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;DS3DMODE_NORMAL &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- 절대 좌표적인 위치의 버퍼가 된다. 디폴트 
+<BR>&nbsp;&nbsp;&nbsp;DS3DMODE_HEADRELATIVE - 1 인칭 시점으로 듣는 사람 중심이 된다.<BR>&nbsp;&nbsp;&nbsp;DS3DMODE_DISABLE 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- 사운드 버퍼에 대한 3D 기능을 끈다.</FONT></P>
+<P><FONT face="굴림체">8) SetPosition &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<BR>&nbsp;&nbsp;&nbsp;음원의 위치를 결정한다. x 가 + 이면 오른쪽, y 
+가 + 이면 위쪽을, &nbsp;z 가<BR>&nbsp;&nbsp;&nbsp;+ 이면 뒤쪽을 가리킨다.</FONT></P>
+<P><FONT face="굴림체">9) SetVelocity &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<BR>&nbsp;&nbsp;&nbsp;음원의 이동 속도를 나타낸다. 단위는 
+미터이다.</FONT></P>
+<P><FONT face="굴림체">------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">(4) Direct Sound 3D Buffer 의 재생</FONT></P>
+<P><FONT face="굴림체">재생은 2D 버퍼일 때와 별반 다르지 않다.<BR>만약 &nbsp;음원의 위치를 지정하지 않고 &nbsp;디폴트를 그대로 쓴다면 
+전혀 2D 버퍼와<BR>다른 점을 느낄 수 없을 정도이다.</FONT></P>
+<P><FONT face="굴림체">간단하게 (x,y,z) 좌표에 있는 음원에서 나는 소리를 &nbsp;플레이 해보면 
+&nbsp;다음과<BR>같다.</FONT></P>
+<P><FONT color=yellow face=굴림체>| 
+&nbsp;&nbsp;DirectSound3DBuffer.SetPosition(x,y,z,DS3D_IMMEDIATE);<BR>| 
+&nbsp;&nbsp;DirectSoundBuffer.SetCurrentPosition(0);<BR>| 
+&nbsp;&nbsp;DirectSoundBuffer.Play(0,0,0);</FONT></P>
+<P><FONT face="굴림체">SetPosition() 대신 위의 다른 메쏘드를 써서도 시험을 해보면 결과를 &nbsp;알 수<BR>있을 
+것이다.</FONT></P>
+<P><FONT face="굴림체"><BR>------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">&lt;&lt; 에필로그 &gt;&gt;</FONT></P>
+<P><FONT face="굴림체">지금까지 설명한 것은 Direct X 의 사운드 디바이스 부분인 &nbsp;Direct Sound 부<BR>분이었습니다. 
+델파이로 게임 만드시려는 분들께 조금이나마 도움이 되었으면<BR>좋겠습니다.</FONT></P>
+<P><FONT face="굴림체">지금까지 델파이로 Direct Draw, 멀티미디어 타이머, DIB, Direct Input, 
+MMX,<BR>Direct Sound 까지의 강좌를 했는데... 이 모든 강좌들은 제 홈페이지에 오시<BR>면 바이너리 자료도 같이 구하실 수가 
+있습니다. &nbsp;( 물론 바이너리 자료가 있<BR>는 것만.. )</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&lt; http://smgal.com/ &gt;</FONT></P>
+<P><FONT face="굴림체">앞으로 강좌 예정이 Direct Music 과 Direct Play 입니다. 될 수 있으면 끝까<BR>지 강좌를 
+&nbsp;써 보고 싶습니다... </FONT></P>
+<P><FONT face="굴림체">그럼 마지막으로 한마디 남기겠습니다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot; </FONT><FONT color=aqua face=굴림체>A mountain is a 
+mountain, Water is water.</FONT><FONT face="굴림체"> 
+&quot;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;copyright SMgal 
+1999/11/07</FONT></P>
+<P>&nbsp;</P></body>
+
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<title>main_game.</title>
+<meta name="generator" content="Namo WebEditor v5.0">
+</head>
+
+<body background="back01.jpg" bgcolor="white" text="black" link="blue" vlink="purple"
+ alink="red">
+
+<div align="left">
+<table cellpadding="0" cellspacing="0" width="640">
+    <tr>
+        <td bgcolor="#605870" valign="top">
+            <p><font size="4"><b>&nbsp;</b></font><font size="4" color="white"><b>∇ 
+            스크립트 강좌</b></font></p>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#605870" height="148">
+            <table align="center" cellpadding="0" cellspacing="0" width="637">
+                <tr>
+                    <td width="477" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="left"><font size="4" color="white"><b>&nbsp;</b></font><font
+             size="3" color="white"><b>▼ 자체 스크립트 엔진 IMF 1.2</b></font></td>
+                    <td width="84" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">Delphi</font></td>
+                    <td width="76" align="center" valign="top" bgcolor="#908CB8" height="19"><p align="center"><font
+             size="3" color="white">소스有</font></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#E1DBFF" colspan="3">
+                            <p><font size=2>야겜을 만들 수 있을지도 모르는 
+                    자체 스크립트 엔진인 IMF에 대한 소스와 강좌용 샘플 스크립트가 
+                    들어 있다. 원래는 </font><b><font size="2">그녀의 기사단</font></b><font size=2>에 사용된 스크립트 
+                    엔진의 2000년 업그레이드 버전으로, 산술 기능 강화 및 문법적인 
+                    확장이 있었다.<br><br>Embedded 스크립트라는 것은 이론적으로는 어떤 게임에라도 
+                    적용 가능한 것이지만 이것은 RPG용이 아닌 미연시 등에 사용되는 
+                    스크립트 명령으로 수정되었으며 실제로 '코코로'라는 게임에서 
+                    사용하는 리소스를 이용해 모든 것을 표현하였다. (여기에 
+                    사용된 이미지 리소스는 모두 '코코로'에서 가져 왔으며 원작자의 
+                    허락은 당연히 받지 못한.......)&nbsp;</font></p>
+                            <p><font size="2" color="#003366"><b>IMF_Proj.dpr</b></font><font size=2><br>- 
+                            이 프로젝트에 대한 Delphi 프로젝트 파일</font></p>
+                            <p><font size="2" color="#003366"><b>IMFMain.pas</b></font><font size=2><br>- 
+                            IMF라는 스크립트 문법을 해석하기 위한 unit. 파서, 
+                            산술 계산, 변수 스택 관리, 매크로 등등의 스크립트의 
+                            문형을 해석한다.</font></p>
+                            <p><font size="2" color="#003366"><b>IMFUnit.pas</b></font><font size=2><br>- 
+                            IMF라는 스크립트 문법 내에서 procedure와 function을 
+                            정의한다. 이것을 정의하는 방식에 따라 사용되는 스트립트의 
+                            용법이 달라진다. 현 스크립트의 standard library를 
+                            정의하고 그것을 원래의 프로그램에 embedding하기 
+                            위한 역할이라고 할 수 있다.<br></font></p>
+                            <p><font size="2" color="#003366"><b>MainUnit.pas</b></font><font size=2><br>- 
+                            실제 게임의 GUI(Graphic User Interface)를 구성하기 
+                            위한 기본 form을 정의한다.</font></p>
+                            <table align="center" cellpadding="0" cellspacing="0" width="400">
+                                <tr>
+                                    <td width="400">
+                                        <p align="center"><font size="2" face="Courier New" color="#0033CC">IMF_Proj.dpr<br></font><font size="2" face="Courier New" color="black">|</font><font size="2" face="Courier New" color="#0033CC"><br> 
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MainUnit.pas&nbsp;</font><font size="2" face="Courier New" color="black">-</font><font size="2" face="Courier New" color="#0033CC">&nbsp;MainUnit.dfm<br></font><font size="2" face="Courier New" color="black">|</font><font size="2" face="Courier New" color="#0033CC"><br>IMFUnit.pas<br></font><font size="2" face="Courier New" color="black">|<br></font><font size="2" face="Courier New" color="#0033CC">*.imf 
+                                        </font><font size="2" face="Courier New" color="black">- 
+                                        </font><font size="2" face="Courier New" color="#0033CC">IMFMain.pas 
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font size="2" face="Courier New" color="black"><br></font></p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p align="center"><font size="3"><a href="gd_data/gd0510_2.zip">첨부파일 
+                            (841K)</a> (Delphi 5에서 작성되었음)</font></p>
+                            <p><font size=2><br>원래 이 스크립트의 근간는 '데자뷰'에 
+                            사용된 스크립트이며 그 스크립트는 나중에 CMM(C minus 
+                            minus)라는 스크립트가 되어 '애자매 한글화'등등의 
+                            프로젝트에 사용되었으며 아마도 소스도 웹 상에 공개 
+                            되었던 것으로 알고 있다.<br><br>CMM 스크립트에 이어 
+                            만들어진 IMF(Interpreted Modlue File) 스크립트는 
+                            <b>그녀의 기사단</b>이라는 상용 게임을 만들 때 제작한 
+                            스크립트 엔진으로서, 너무 복잡하고 기능이 많았던 
+                            CMM에서 정말 필요한 기능만을 다시 추려 내어 새로 
+                            제작한 것이다. 초기 1.0의 경우에는 <b>그녀의 기사단</b>에 
+                            특화되어 캐릭터의 시간 스케쥴 제어나 각 이벤트와 
+                            연동 기능 그리고 캐릭터의 상태에 대한 대화 분기 
+                            등의 기능이 있었지만 현재 공개하는 1.2 버전에서는 
+                            1.0의 <b>연극 모드</b>라고 하는 부분만 따로 떼어 
+                            내어 간략화 시킨 버전이다. <b>연극 모드</b>는 독립적으로 
+                            구동 가능한 sequential script라서 스크립트의 처음부터 
+                            라인 단위로 계속 해석해 나가는 방식이다. (IMF라는 
+                            이름은 이것을 만들 때 IMF 시절이였기 때문이며 특별한 
+                            의미를 두고 있지는 않다.)<br><br>IMF 스크립트를 
+                            1.2으로 업그레이드 할 때 대상이 되었던 것은 일본식 
+                            연애 시뮬레이션 게임이었다. 그중 목표로 잡았단 <b>코코로</b>라는 
+                            게임을 분기가 발생할 때까지 한글화한 것으로 버전업을 
+                            끝냈었다. (그 원본은 몇몇 친구들에게 가 있지만 이 
+                            강좌는 건전 지향이므로 내용을 각색한 스크립트 파일이 
+                            들어 있다.)&nbsp;<br><br><br><br><br>여기에 첨부된 
+                            실행 파일을 실행하면 스크립트로 만들어진 '야겜 게임 
+                            만들기 강좌'가 들어 있다. 직접 그 내용을 참고하면되므로 
+                            여기서는 생략한다.&nbsp;(스크립트의 문법이나 함수 
+                            embedding하는 부분 등의 설명이 생략되어 있긴하지만 
+                            모든 소스가 첨부되어 있으므로 아름다운 IQ의 소유자인 
+                            당신은 무리없이 이해가 가능하리라고 생각한다)</font></p>
+</td>
+                </tr>
+                <tr>
+                    <td height="2" bgcolor="#605870" colspan="3" width="637">
+                     </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td width="595" bgcolor="#605870" height="2">
+&nbsp;        </td>
+    </tr>
+</table>
+</div>
+
+<p>&nbsp;</p>
+</body>
+
+</html>

@@ -1,0 +1,409 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>Timer 제어 방식 (1/2)</TITLE>
+<META name="generator" content="Namo WebEditor v5.0">
+<STYLE><!--
+.leading200 { line-height: 200% }
+.leading180 { line-height: 180% }
+.leading150 { line-height: 150% }
+.leading100 { line-height: 100% }
+-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="navy" text="white" link="blue" vlink="purple" alink="red">
+
+<P><font color="black"><span style="background-color:white;">이것은 1999년 하이텔 
+게임 제작 동호회에 올렸던 강좌 2회분 입니다.</span></font></P>
+<p><font color="#CCFF00">#####################################################</font></p>
+<p>
+<FONT face="굴림체">&nbsp;아래의 글은 3 가지의 타이머 (하드웨어적, API, 멀티미디어) 에 대한 저의 견해<BR>
+와 개요를 적은 글입니다. 예전에 세미나 할 때 사용했던 글인데 &nbsp;그냥 썩혀 두기<BR>
+도 그렇고 해서 강의란에 올립니다. </FONT></p>
+<P><FONT face="굴림체">&nbsp;그리고 아래부터는 존칭은 생략하겠습니다.</FONT></P>
+<P><FONT face="굴림체">----------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">1. 하드웨어적 타이머 제어</FONT></P>
+<P><FONT face="굴림체">&nbsp;Windows95 라는 운영체제는 유저로 하여금 직접 하드웨어를 제어할 수 없는 구조<BR>
+로 되어 있다. 예를 들어 메모리의 0xA000:0000 으로 매핑 &nbsp;되어졌던 그래픽 카드<BR>
+에 대한 제어나 0x388 포트로 정의 되어졌던 FM 사운드 카드에 대한 제어를 할 수 <BR>
+없는 것이 바로 그것이다. 항상 운영체제의 API 를 거쳐야 &nbsp;제어가 가능하다는 점<BR>
+은, 프로그램의 안정성이나 개발자들에 대해 내부 캡슐화로 인한 &nbsp;빠른 개발 기간<BR>
+으로 그 장점이 대표되어 질 &nbsp;수도 있다. 하지만 게임이나 궁극적인 &nbsp;실시간 음악<BR>
+(또는 음성) 연주 프로그램에서는 상당히 속도 면에서 불리한 것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;예를 들자면 사운드 카드의 DMA 나 하드웨어 가속기능은 전혀 사용할 수 없게 되<BR>
+는 것이기 때문에 각 카드의 장점을 살리지 못한 채 속도만 많이 &nbsp;잡아 먹는 골칫<BR>
+덩이로 전락하게 된 것이다.<BR>
+( 물론 기존 게임 업체들의 &nbsp;불만을 해소하고자, 사운드 카드의 DMA &nbsp;와 하드웨어 <BR>
+가속을 지원하기 위해<BR>
+&nbsp;&nbsp;MS 에서는 DirectSound 라는 SDK 를 제공했다. )</FONT></P>
+<P><FONT face="굴림체">어쨌든 윈도우에서는 운영체제에서 지원하는 함수 이외는 사용할 &nbsp;수 없으니 이전<BR>
+의 도스 리얼 모드에서의 타이머 제어를 다루도록 한다.</FONT></P>
+<P><FONT face="굴림체">1&gt; 사운드 카드의 제어</FONT></P>
+<P><FONT face="굴림체">&nbsp;요즘에 나오는 &nbsp;&nbsp;모든 사운드 &nbsp;카드들이 &nbsp;기본적으로 호환 &nbsp;&nbsp;시키고 있는 &nbsp;AdLib <BR>
+Compatible 은 그 원리가 FM(Frequency Modulation)을 기본으로 하고 있기 때문에 <BR>
+일정 주파수를 일정 딜레이 동안 나게 하면 그것이 바로 음원을 구성하게 되는 구<BR>
+조이다. 참고로 MOD, S3M, IT 등의 모듈음악은 각 &nbsp;음원이 모듈로 소프트웨어적인 <BR>
+구성을 하고 있으며 MIDI 는 하드웨어적인 음원을 가지고 있다. 그 모듈음악은 음<BR>
+원 정보가 모두 음악 파일 내부에 들어가기 때문에 MIDI 보다 훨씬 &nbsp;더 큰 사이즈<BR>
+인 것이며 Adlib용 음악 파일인 ROL, IMS, MDI, SOD 등은 음원을 '뱅크'라는 개념<BR>
+으로 가지고 있다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;아래의 소스는 바로 AdLib 호환 사운드 카드에서 음을 발생 시키는 원리이다.</FONT></P>
+<P><FONT face="굴림체">const<BR>
+&nbsp;&nbsp;&nbsp;ADLIB = $388; &nbsp;&nbsp;// 애드립의 포트 번호</FONT></P>
+<P><FONT face="굴림체">procedure AdLibOut(Address, Data : byte); assembler;<BR>
+asm<BR>
+&nbsp;&nbsp;mov dx, ADLIB<BR>
+&nbsp;&nbsp;mov al, Address<BR>
+&nbsp;&nbsp;out dx, al</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov &nbsp;cx, &nbsp;&nbsp;6<BR>
+@@LOOP1:<BR>
+&nbsp;&nbsp;in &nbsp;al, dx &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 사운드 카드가 명령을 해석하는<BR>
+&nbsp;&nbsp;loop @@LOOP1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 동안 대기</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;inc dx<BR>
+&nbsp;&nbsp;mov al, Data<BR>
+&nbsp;&nbsp;out dx, al<BR>
+&nbsp;&nbsp;dec dx</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;mov cx, 35<BR>
+@@LOOP2:<BR>
+&nbsp;&nbsp;in &nbsp;al, dx &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 사운드 카드가 주파수 데이터를<BR>
+&nbsp;&nbsp;loop @@LOOP2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 해석하는 동안 대기<BR>
+end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;위의 소스는 각 명령이 있는 Address &nbsp;를 먼저 알린 후에 주파수 &nbsp;정보를 보내는 <BR>
+것이 전부이다. 하지만 이것으로 모든 음이 다 표현될 수 &nbsp;있다. 각각의 주파수를 <BR>
+각각 다른 딜레이를 통해 정의하기 때문에 피아노에서 &nbsp;드럼까지의 다양한 음원을 <BR>
+합성해 낼 수 있게 되는 것이다. ( 물론 이론상에서.. )</FONT></P>
+<P><FONT face="굴림체">2&gt; 타이머의 제어</FONT></P>
+<P><FONT face="굴림체">&nbsp;원래 도스에서 지원하는 클럭은 1초에 18.2 번 호출하게 되어 &nbsp;있는 시스템 시간<BR>
+을 위한 클럭이다. 하지만 이것보다 더 빠른 클럭을 원한다면 Port 40h 부터 Port <BR>
+43h 까지 할당되어 있는 8253 칩을 이용하는 방법이 있다. 아래의 소스는 클럭 주<BR>
+파수를 다시 만드는 함수는 이며 이렇게 만든 클럭 주파수에 맞추어서 delay() 나 <BR>
+sleep() 같은 함수가 작동하게 된다. </FONT></P>
+<P><FONT face="굴림체">&nbsp;그럼.. &nbsp;정확한 타이머 딜레이를 주기 위한 방법도 알아 보자.</FONT></P>
+<P><FONT face="굴림체">const<BR>
+&nbsp;&nbsp;&nbsp;FREQ_8253 = 1193280;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 이 값은 8253/8254 칩의 고유 쥬파수<BR>
+procedure SetNewTimer(frequency : word);<BR>
+begin<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;port[$43] := $34; &nbsp;// 8253 control word를 쓰겠다는 선언<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// $34 ==&gt; 00110100<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| | | &nbsp;+-- 2 진의 control type 을 선언..<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| | +----- 주파수 비율을 조정 하겠다...<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| +------- 래치의 상위, 하위 byte read 포맷으로..<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+--------- 타이머 0 번으로.. ( Clock이 쓰는 타이머임 )<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;port[$40] := (FREQ_8253 div frequency) mod 256);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;port[$40] := (FREQ_8253 div frequency) div 256);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 주파수를 나눈 값을 포트에 하위 8 bit 상위 8 bit 순<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 으로 써 넣음.<BR>
+end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;이렇게 클럭 최소 주파수를 조정하여서 인터럽트 0x08를 가로채면 자신의 타이머 <BR>
+핸들러가 만들어진다. 하지만 여기에는 단점이 생기는데 18.2 초에 한번씩 갱신되<BR>
+게 되어 있는 PC 의 시계가 다른 주파수로 갱신되기 때문에 시계가 빨라지거나 느<BR>
+려지는 현상이 발생한다. 이 때는 자신의 타이머 핸들러 &nbsp;안에다가 원래의 카운터<BR>
+에 맞게 시계를 작동 시키는 루틴을 넣어야 하는 번거로운 절차가 따른다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&lt;참고&gt; 내부 타이머<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Voice 파일 출력 프로그램 등을 보면 타이머 2 번을 조정하기도 하는 것 같<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;다. 타이머 2 번은 스피커 등에 사용되는 타이머인데 시계에 영향을 주지 않<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;으니 장점이 있다.. 하지만 대부분의 실시간 음악 연주 루틴 등은 모두 타이<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;머 0 번을 쓰고 있다.</FONT></P>
+<P><FONT face="굴림체">3&gt; 타이머를 통한 실시간 배경 음악 연주</FONT></P>
+<P><FONT face="굴림체">&nbsp;도스에서는 인터럽트 벡터를 가로채어서 비교적 윈도우 보다는 더욱 정밀한 타이<BR>
+머 제어가 가능하다. 도스 인터럽트 0x08 번은 18.2 초마다 한번씩 시스템에 의해<BR>
+서 불리어지는 인터럽트로 디폴트는 시간을 위한 카운터를 &nbsp;증가시킨 후에 함수를 <BR>
+리턴 시키는 것이다. 그렇기 때문에 우리가 실시간으로 음악을 연주 하려면 이 부<BR>
+분의 인터럽트 벡터를 가로챔으로써 가능해지는 것이다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;먼저 초기화 하는 부분부터 살펴 보자.</FONT></P>
+<P><FONT face="굴림체">const<BR>
+&nbsp;&nbsp;&nbsp;TIMER_INTERRUPT = $08; &nbsp;// 타이머 인터럽트에 대한 번호이다.<BR>
+var<BR>
+&nbsp;&nbsp;&nbsp;OldInt08 : procedure; &nbsp;&nbsp;// 이전의 인터럽트 벡터를 보관하기 위한 함수형 포<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 인터이다.</FONT></P>
+<P><FONT face="굴림체">procedure ClockInterrupt; interrupt; assembler;<BR>
+&nbsp;&nbsp;// 이 함수는 인터럽트가 가능한 void 함수로 선언 되어 있다.</FONT></P>
+<P><FONT face="굴림체">( 초기화 코드 &nbsp;&nbsp;)<BR>
+&nbsp;&nbsp;&nbsp;getIntVec(TIMER_INTERRUPT,@OldInt08);<BR>
+&nbsp;&nbsp;&nbsp;// OldInt08 이란 변수에 현재 0x08 번 인터럽트 벡터를 저장한다.<BR>
+&nbsp;&nbsp;&nbsp;setIntVec(TIMER_INTERRUPT,@ClockInterrupt);<BR>
+&nbsp;&nbsp;&nbsp;// 0x08 번 인터럽트 벡터가 ClockInterrupt 를 가리키게 한다.<BR>
+&nbsp;&nbsp;&nbsp;setNewTimer(298295 div basic_tempo);<BR>
+&nbsp;&nbsp;&nbsp;// 현재의 클럭을 조절한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;물론 종료 코드는 다음과 같이 초기화의 반대로 하면 된다.</FONT></P>
+<P><FONT face="굴림체">( 종료 코드 )<BR>
+&nbsp;&nbsp;&nbsp;setNewTimer(0);<BR>
+&nbsp;&nbsp;&nbsp;// 클럭 호출 빈도를 디폴트로 바꾼다.<BR>
+&nbsp;&nbsp;&nbsp;setIntVec(TIMER_INTERRUPT,@OldInt08);<BR>
+&nbsp;&nbsp;&nbsp;// 0x08 번 인터럽트를 예전의 것으로 복귀 시킨다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;이렇게 하면 유저가 지정한 클럭을 기준으로 0x08 인터럽트가 호출되게 된다.<BR>
+&nbsp;그럼 먼저 실시간 배경 음악을 위한 핵심 함수인 ClockInterrupt 를 살펴 보기로 <BR>
+하자.</FONT></P>
+<P>&nbsp;</P>
+<P><FONT face="굴림체">var<BR>
+&nbsp;&nbsp;&nbsp;TimeOutFunction : function : word;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 음악을 실제적으로 연주하는 부분으로 미리 함수의 포인터로 대입되어 져 <BR>
+있다.<BR>
+procedure ClockInterrupt; interrupt; assembler;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 이 함수는 최대한 빨리 수행 되어야 하므로 어셈블러로 제작 되어졌다.<BR>
+asm<BR>
+&nbsp;MOV &nbsp;&nbsp;&nbsp;&nbsp;AX, clock_division_low &nbsp;&nbsp;// 유저가 변경한 클럭은 이전의 &nbsp;&nbsp;<BR>
+&nbsp;ADD &nbsp;&nbsp;&nbsp;&nbsp;clock_mode, AX &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 클럭과는 주파수가 다르기 때문에<BR>
+&nbsp;MOV &nbsp;&nbsp;&nbsp;&nbsp;AX, clock_division_high &nbsp;// 이전의 주파수와 동기화 시켜서<BR>
+&nbsp;ADC &nbsp;&nbsp;&nbsp;&nbsp;AX, 0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// OldInt08 를 실행 해야 한다.<BR>
+&nbsp;JNZ &nbsp;&nbsp;&nbsp;&nbsp;@@ClockInterrupt8 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 그렇지 않으면 시계가 빨리 가 버린다.<BR>
+&nbsp;MOV &nbsp;&nbsp;&nbsp;&nbsp;AL, 00100000b &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;OUT &nbsp;&nbsp;&nbsp;&nbsp;20h, AL<BR>
+&nbsp;JMP &nbsp;&nbsp;&nbsp;&nbsp;@@ClockInterrupt7</FONT></P>
+<P><FONT face="굴림체">@@ClockInterrupt8:<BR>
+&nbsp;PUSHF &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 플래그를 스택에 저장<BR>
+&nbsp;CALL &nbsp;&nbsp;OldInt08 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 시스템 시계를 가게 하기 위해서<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 1 초에 18.2 번 호출<BR>
+@@ClockInterrupt7:<BR>
+&nbsp;DEC &nbsp;&nbsp;&nbsp;&nbsp;sound_delay &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 아직도 음이 딜레이 중이면<BR>
+&nbsp;JNZ &nbsp;&nbsp;&nbsp;&nbsp;@@ClockInterruptEnd &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 함수를 종료</FONT></P>
+<P><FONT face="굴림체">@@GoUser:</FONT></P>
+<P><FONT face="굴림체">&nbsp;STI &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 인터럽트를 가능하게 한다<BR>
+&nbsp;CALL &nbsp;&nbsp;&nbsp;TimeOutFunction; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 음악 데이터를 읽고 포트로 츨력<BR>
+&nbsp;CLI &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 모든 인터럽트를 불가능하게 한다</FONT></P>
+<P><FONT face="굴림체">&nbsp;MOV &nbsp;&nbsp;&nbsp;&nbsp;BX, sound_delay &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// if (-sound_delay &lt; ax) break;<BR>
+&nbsp;NEG &nbsp;&nbsp;&nbsp;&nbsp;BX<BR>
+&nbsp;CMP &nbsp;&nbsp;&nbsp;&nbsp;BX, AX<BR>
+&nbsp;JB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@@ClockDelayOk</FONT></P>
+<P><FONT face="굴림체">&nbsp;MOV &nbsp;&nbsp;&nbsp;&nbsp;sound_delay, 0<BR>
+&nbsp;JMP &nbsp;&nbsp;&nbsp;&nbsp;@@GoUser</FONT></P>
+<P><FONT face="굴림체">@@ClockDelayOk:<BR>
+&nbsp;ADD &nbsp;&nbsp;&nbsp;&nbsp;sound_delay, AX</FONT></P>
+<P><FONT face="굴림체">&nbsp;STI</FONT></P>
+<P><FONT face="굴림체">@@ClockInterruptEnd:<BR>
+end;</FONT></P>
+<P><FONT face="굴림체"><BR>
+2. API 타이머</FONT></P>
+<P><FONT face="굴림체">1&gt; API 타이머의 개요</FONT></P>
+<P><FONT face="굴림체">&nbsp;타이머는 어떤 프로그램 안에서 주기적으로 행하여 지는 작업이 &nbsp;필요할 때 유용<BR>
+하게 사용되는데, 32 비트 운영체제인 Window 95에서는 &nbsp;2,500개 이상의 타이머를 <BR>
+지원한다.<BR>
+&nbsp;타이머의 선언은 SetTimer()에 의해서 &nbsp;선언이 되어지며 그때 얻은 &nbsp;타이머 ID를 <BR>
+통해서 모든 제어가 이루어진다. &nbsp;타이머가 선언되면 그 타이머가 &nbsp;해제될 때까지 <BR>
+주기적으로 이벤트 또는 콜백 함수를 호출하게 되며, 프로그램이 끝나면 자동적으<BR>
+로 타이머는 종료된다.</FONT></P>
+<P><FONT face="굴림체">2&gt; API 타이머의 선언 방법</FONT></P>
+<P><FONT face="굴림체">&nbsp;API 타이머는 다음의 원형으로 정의된 SetTimer() 함수로 설정을 한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;UINT &nbsp;SetTimer(HWND hWnd, UINT uTimerID, UINT uInterval,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TIMERPROC fnTimerProc)</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hWnd &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 타이머를 가지고 있는 윈도우의 핸들, NULL 일 때는 윈도우 <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;연관 없음<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uTimerID &nbsp;&nbsp;&nbsp;: 정의 하고자 하는 타이머 번호, 0이면 시스템이 알아서 결정<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uInterval &nbsp;&nbsp;: mili second 기준의 이벤트 발생 간격<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fnTimerProc : NULL 이면 WM_TIMER 메세지 발생, 만약 함수라면 그 함수를 <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;콜백 함수로.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;반환값 &nbsp;- &nbsp;설정되어진 타이머 ID</FONT></P>
+<P><FONT face="굴림체">&nbsp;여기서 마지막의 fnTimerProc에 의해서 메세지 콜백의 형태가 2가지로 정해진다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;1) 메세지 발생 <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;: hWnd 로 넘겨진 윈도우 핸들을 가진 인스턴스로 WM_TIMER 라는 메세지가 넘<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;어가게 된다. 프로그래머는 그 메세지를 case로 분류해서 루틴을 짜면 된다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;2) 콜백 함수<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;: void CALLBACK TimerProc(HWND hWnd, UNIT uMsg, UINT idEvent, DWORD<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dwTime)으로 정의되어진 콜백 함수를 이벤트가 발생하면 호출한다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;</FONT></P>
+<P><FONT face="굴림체">3&gt; API 타이머의 단점</FONT></P>
+<P><FONT face="굴림체">&nbsp;윈도우는 많은 타이머들의 호출에 의한 시스템 마비 현상을 &nbsp;없애기 위해 주어진 <BR>
+시간에 단 한 개의 &nbsp;타이머 메세지(WM_TIMER)만을 받고 나머지는 &nbsp;무시해 버린다. <BR>
+또한 WM_PAINT를 제외한 모든 윈도우의 메세지가 WM_TIMER &nbsp;보다 우선하기 때문에 <BR>
+API 타이머는 원래 정해진 시간과는 다소의 오차가 발생하게 된다.<BR>
+대부분의 응용 프로그램에서는 이러한 타이머의 지연에 대해서는 &nbsp;간과해 버릴 수 <BR>
+있으나 멀티미디어나 게임의 동기화에서는 API 타이머로는 만족할 수 &nbsp;없는 게 사<BR>
+실이다. </FONT></P>
+<P><FONT face="굴림체">3. 멀티미디어 타이머</FONT></P>
+<P><FONT face="굴림체">1&gt; 멀티미디어 타이머의 개요</FONT></P>
+<P><FONT face="굴림체">&nbsp;전술한 API 표준 타이머는 메세지 방식의 우선 순위 때문에 &nbsp;정교한 제어를 위해<BR>
+서는 별로 유용하지 못하다. 게다가 최대 빈도수가 초당 18 타임이기 때문에 그보<BR>
+다 더 정확한 1/1000 초를 제어할 수 있는 타이머가 요구되어 졌는데 그것이 바로 <BR>
+이 멀티미디어 타이머이다. 이것은 MIDI 시퀀스 장치 또는 &nbsp;다른 전문 하드웨어에 <BR>
+대한 MIDI 이벤트 제어처럼 애플리케이션의 정확한 타이밍을 &nbsp;요구할 때 사용되어<BR>
+진다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;이 멀티미디어 &nbsp;타이머가 API &nbsp;타이머와 다른 &nbsp;&nbsp;점이라면 Timer Event &nbsp;Callback <BR>
+Notification 메커니즘이라는 것이다. ( API 타이머는 애플리케이션 &nbsp;메세지 큐에 <BR>
+WM_TIMER 삽입 )</FONT></P>
+<P><FONT face="굴림체">2&gt; 함수 요약</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;timeGetDevCaps &nbsp;&nbsp;&nbsp;타이머가 지원하는 최소 최대 해상도를 알아낸다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;timeBeginPeriod &nbsp;&nbsp;최소의 타이머 해상도를 결정한다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;timeEndPeriod &nbsp;&nbsp;&nbsp;&nbsp;timeBeginPeriod 에 의해 만들어진 타이머 해상도를 제거<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;한다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;timeSetEvent &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;타이머 이벤트를 시작하고 간격에 따라 콜백 함수를 호출<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;한다.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;timeKillEvent &nbsp;&nbsp;&nbsp;&nbsp;타이머 이벤트를 끝낸다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;여기서 timeBeginPeriod 에 의해 넘겨지는 밀리 초 단위의 최소 타이머 해상도는 <BR>
+그 해상도에 대한 ID 처럼 생각할 수 있으며 timeEndPeriod 에 의해 제거 될 때도 <BR>
+그 최소 해상도를 넘겨 주어야 제거 가능하다. timeSetEvent &nbsp;로 타이머 이벤트를 <BR>
+시작하기 전에 &nbsp;&nbsp;항상 최소 &nbsp;타이머 &nbsp;해상도가 정해져야 &nbsp;&nbsp;하며 타이머 &nbsp;이벤트가 <BR>
+timeKillEvent 로 제가 된 후에는 항상 제거 되어져야 한다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;또, 정확한 &nbsp;밀리 &nbsp;초 단위의 &nbsp;&nbsp;시간을 얻고자 &nbsp;할 때는 &nbsp;&nbsp;timeGetSystemTime 과 <BR>
+timeGetTime 을 사용하면 되는데 이 &nbsp;두개의 함수는 API 타이머에서 &nbsp;같은 기능을 <BR>
+하는 GetTickCount() 나 GetCurrentTime() 와는 달리 실질적인 밀리 초 정보를 제<BR>
+공한다.</FONT></P>
+<P><FONT face="굴림체">3&gt; 멀티미디어 타이머의 단점</FONT></P>
+<P><FONT face="굴림체">&nbsp;이것은 상당히 정확한 이벤트를 제공하는 반면에 그 만큼 &nbsp;시스템에 많은 부담을 <BR>
+주게 되므로 여러 개의 타이머를 &nbsp;동시에 돌리기에는 많은 시스템의 &nbsp;부하가 따른<BR>
+다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;또 하나의 문제는 콜백 함수의 &nbsp;제한성에 있다. API 타이머의 콜백 &nbsp;함수는 일반 <BR>
+메세지와 같이 처리 되기 때문에 아무런 제약이 &nbsp;없었으나 멀티미디어 타이머에서<BR>
+는 콜백 함수 내에서 사용할 수 있는 함수가 정해져 있고, 정해진 함수 이외의 사<BR>
+용자 함수나 API 등을 호출하면 예측할 수 없는 결과를 초래하게 된다. 정해진 함<BR>
+수란, &nbsp;PostMessage(), &nbsp;timeGetSystemTime(), &nbsp;timeGetTime(), &nbsp;timeSetEvent(), <BR>
+timeKillEvent(), &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;midiOutShortMessage(), &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;midiOutLongMessage(), <BR>
+OutputDebugString() 이 전부이다. PostMessage()와 &nbsp;OutputDebugString() 을 &nbsp;제<BR>
+외하고는 모두 멀티미디어 함수들 뿐이다. 즉, 멀티미디어 용도 외에 타이머를 사<BR>
+용하려면 모두 PostMessage()를 사용하여 다시 메세지를 발생해야 하는 것이다. ( <BR>
+API 타이머 보다야 빠르겠지만 대단한 클럭 낭비다. )</FONT></P>
+<P>&nbsp;</P>
+<p><font color="#CCFF00">#####################################################</font></p>
+<p>
+<FONT face="굴림체">이번 장에서는 'API 타이머'와 '멀티미디어 타이머'의 용법과 함께 &nbsp;그 성능에 대<BR>해서 논하고자 한다. 
+이 강좌의 소스는 모두 델파이로 제작되었으므로 C 사용자들<BR>은 아쉬운 대로 눈으로 읽고 이해하시길 바란다.</FONT></p>
+<P><FONT face="굴림체">unit Unit1;</FONT></P>
+<P><FONT face="굴림체">interface</FONT></P>
+<P><FONT face="굴림체">uses<BR>&nbsp;&nbsp;&nbsp;Windows, Messages, SysUtils, Classes, Graphics, 
+Controls, Forms, Dialogs,<BR>&nbsp;&nbsp;&nbsp;ExtCtrls, StdCtrls;</FONT></P>
+<P><FONT face="굴림체">type<BR>&nbsp;&nbsp;&nbsp;TForm1 = class(TForm)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: TEdit; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 타이머 콜백된 회수 출력<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: TEdit; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 초당 콜백 
+회수<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Button1 &nbsp;&nbsp;&nbsp;&nbsp;: TButton; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 타이머 종료 버튼<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;StaticText1 : 
+TStaticText; &nbsp;// 라벨 1<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;StaticText2 : TStaticText; &nbsp;// 라벨 
+2<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Panel1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: TPanel; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 현재 설정된 콜백 주기 출력<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure 
+FormShow(Sender: TObject);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure FormDestroy(Sender: 
+TObject);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure Button1Click(Sender: TObject);</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;private<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FTimerID: word;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fms &nbsp;&nbsp;&nbsp;&nbsp;: 
+word;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FCouter : integer;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FTime &nbsp;&nbsp;: 
+longint;<BR>&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">var<BR>&nbsp;&nbsp;&nbsp;Form1 : TForm1;</FONT></P>
+<P><FONT face="굴림체">implementation</FONT></P>
+<P><FONT face="굴림체">{$R *.DFM}</FONT></P>
+<P><FONT face="굴림체">// API 타이머 콜백 함수<BR>procedure TimerProc(handle : hWnd; 
+uMessage,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;idEvent : word; dwTime : DWORD);<BR>var<BR>&nbsp;&nbsp;&nbsp;f 
+: real;<BR>&nbsp;&nbsp;&nbsp;s : 
+string;<BR>begin<BR>&nbsp;&nbsp;&nbsp;inc(Form1.FCouter);<BR>&nbsp;&nbsp;&nbsp;str(Form1.FCouter,s);<BR>&nbsp;&nbsp;&nbsp;Form1.Edit1.Text 
+:= s;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;f := (Form1.FCouter * 1000) / (GetCurrentTime - 
+Form1.FTime);<BR>&nbsp;&nbsp;&nbsp;str(f : 6 : 3,s);<BR>&nbsp;&nbsp;&nbsp;Form1.Edit2.Text := s; &nbsp;// 초당 콜백 회수 
+출력 </FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;if Form1.FCouter = 0 then begin<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Form1.FTime := 
+GetCurrentTime; &nbsp;// 콜백 카운트의 초기화<BR>&nbsp;&nbsp;&nbsp;end;<BR>end;</FONT></P>
+<P><FONT face="굴림체">procedure TForm1.FormShow(Sender: TObject);<BR>var<BR>&nbsp;&nbsp;&nbsp;s 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: string;<BR>begin<BR>&nbsp;&nbsp;&nbsp;Fms := 100; &nbsp;// 타이머 주기를 100ms 마다 한 번씩 호출되게 
+한다.<BR>&nbsp;&nbsp;&nbsp;FTimerID := SetTimer(handle,0,Fms,@TimerProc);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+타이머를 설정한다.<BR>&nbsp;&nbsp;&nbsp;if FTimerID = 0 then begin<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise 
+Exception.Create('SetTimer() Error !!');<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Close;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Exit; &nbsp;&nbsp;&nbsp;&nbsp;// 
+에러 처리 루틴<BR>&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;str(Fms,s);<BR>&nbsp;&nbsp;&nbsp;Panel1.Caption := '타이머 설정 :' + s + 
+'ms';</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;FCouter := -1;<BR>end;</FONT></P>
+<P><FONT face="굴림체">procedure TForm1.FormDestroy(Sender: 
+TObject);<BR>begin<BR>&nbsp;&nbsp;&nbsp;if FTimerID &lt;&gt; 0 then 
+begin<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;KillTimer(handle,FTimerID);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 타이머 
+해제<BR>&nbsp;&nbsp;&nbsp;end;<BR>end;</FONT></P>
+<P><FONT face="굴림체">procedure TForm1.Button1Click(Sender: 
+TObject);<BR>begin<BR>&nbsp;&nbsp;&nbsp;Close;<BR>end;</FONT></P>
+<P><FONT face="굴림체">end.</FONT></P>
+<P><FONT face="굴림체">아래는 폼에 대한 Text 파일이다. Form 에서 오른쪽 버튼을 누르면 생기는 메뉴에<BR>서 View as 
+Text 를 선택한 후에 아래의 소스로 대체하고 다시 &nbsp;오른쪽 버튼을 눌<BR>러서 View as Form 을 선택하면 원래의 Form 이 
+형성되게 된다.</FONT></P>
+<P><FONT face="굴림체">object Form1: TForm1<BR>&nbsp;&nbsp;Left = 276<BR>&nbsp;&nbsp;Top = 145<BR>&nbsp;&nbsp;Width 
+= 124<BR>&nbsp;&nbsp;Height = 214<BR>&nbsp;&nbsp;Caption = 'Form1'<BR>&nbsp;&nbsp;Font.Charset = 
+DEFAULT_CHARSET<BR>&nbsp;&nbsp;Font.Color = clWindowText<BR>&nbsp;&nbsp;Font.Height = 
+-11<BR>&nbsp;&nbsp;Font.Name = 'MS Sans Serif'<BR>&nbsp;&nbsp;Font.Style = []<BR>&nbsp;&nbsp;OnDestroy = 
+FormDestroy<BR>&nbsp;&nbsp;OnShow = FormShow<BR>&nbsp;&nbsp;PixelsPerInch = 96<BR>&nbsp;&nbsp;TextHeight = 
+13<BR>&nbsp;&nbsp;object Edit1: TEdit<BR>&nbsp;&nbsp;&nbsp;&nbsp;Left = 0<BR>&nbsp;&nbsp;&nbsp;&nbsp;Top = 56<BR>&nbsp;&nbsp;&nbsp;&nbsp;Width = 
+113<BR>&nbsp;&nbsp;&nbsp;&nbsp;Height = 21<BR>&nbsp;&nbsp;&nbsp;&nbsp;ImeName = '한국어(한글)'<BR>&nbsp;&nbsp;&nbsp;&nbsp;TabOrder = 
+0<BR>&nbsp;&nbsp;end<BR>&nbsp;&nbsp;object Edit2: TEdit<BR>&nbsp;&nbsp;&nbsp;&nbsp;Left = 0<BR>&nbsp;&nbsp;&nbsp;&nbsp;Top = 
+104<BR>&nbsp;&nbsp;&nbsp;&nbsp;Width = 113<BR>&nbsp;&nbsp;&nbsp;&nbsp;Height = 21<BR>&nbsp;&nbsp;&nbsp;&nbsp;ImeName = 
+'한국어(한글)'<BR>&nbsp;&nbsp;&nbsp;&nbsp;TabOrder = 1<BR>&nbsp;&nbsp;end<BR>&nbsp;&nbsp;object Button1: 
+TButton<BR></FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;Left = 24<BR>&nbsp;&nbsp;&nbsp;&nbsp;Top = 144<BR>&nbsp;&nbsp;&nbsp;&nbsp;Width = 75<BR>&nbsp;&nbsp;&nbsp;&nbsp;Height 
+= 25<BR>&nbsp;&nbsp;&nbsp;&nbsp;Caption = 'Stop !!'<BR>&nbsp;&nbsp;&nbsp;&nbsp;TabOrder = 2<BR>&nbsp;&nbsp;&nbsp;&nbsp;OnClick = 
+Button1Click<BR>&nbsp;&nbsp;end<BR>&nbsp;&nbsp;object StaticText1: TStaticText<BR>&nbsp;&nbsp;&nbsp;&nbsp;Left = 
+0<BR>&nbsp;&nbsp;&nbsp;&nbsp;Top = 40<BR>&nbsp;&nbsp;&nbsp;&nbsp;Width = 116<BR>&nbsp;&nbsp;&nbsp;&nbsp;Height = 17<BR>&nbsp;&nbsp;&nbsp;&nbsp;Alignment = 
+taCenter<BR>&nbsp;&nbsp;&nbsp;&nbsp;Caption = '타이머 콜백 호출'<BR>&nbsp;&nbsp;&nbsp;&nbsp;Font.Charset = 
+HANGEUL_CHARSET<BR>&nbsp;&nbsp;&nbsp;&nbsp;Font.Color = clWindowText<BR>&nbsp;&nbsp;&nbsp;&nbsp;Font.Height = 
+-13<BR>&nbsp;&nbsp;&nbsp;&nbsp;Font.Name = '돋움체'<BR>&nbsp;&nbsp;&nbsp;&nbsp;Font.Style = []<BR>&nbsp;&nbsp;&nbsp;&nbsp;ParentFont = 
+False<BR>&nbsp;&nbsp;&nbsp;&nbsp;TabOrder = 3<BR>&nbsp;&nbsp;end<BR>&nbsp;&nbsp;object StaticText2: TStaticText<BR>&nbsp;Left 
+= 8<BR>&nbsp;&nbsp;&nbsp;&nbsp;Top = 88<BR>&nbsp;&nbsp;&nbsp;&nbsp;Width = 102<BR>&nbsp;&nbsp;&nbsp;&nbsp;Height = 17<BR>&nbsp;&nbsp;&nbsp;&nbsp;Caption = '초당 
+콜백 회수'<BR>&nbsp;&nbsp;&nbsp;&nbsp;Font.Charset = HANGEUL_CHARSET<BR>&nbsp;&nbsp;&nbsp;&nbsp;Font.Color </FONT></P>
+<P><FONT face="굴림체">= clWindowText<BR>&nbsp;&nbsp;&nbsp;&nbsp;Font.Height = -13<BR>&nbsp;&nbsp;&nbsp;&nbsp;Font.Name = 
+'돋움체'<BR>&nbsp;&nbsp;&nbsp;&nbsp;Font.Style = []<BR>&nbsp;&nbsp;&nbsp;&nbsp;ParentFont = False<BR>&nbsp;&nbsp;&nbsp;&nbsp;TabOrder = 
+4<BR>&nbsp;&nbsp;end<BR>&nbsp;&nbsp;object Panel1: TPanel<BR>&nbsp;&nbsp;&nbsp;&nbsp;Left = 0<BR>&nbsp;&nbsp;&nbsp;&nbsp;Top = 
+0<BR>&nbsp;&nbsp;&nbsp;&nbsp;Width = 116<BR>&nbsp;&nbsp;&nbsp;&nbsp;Height = 25<BR>&nbsp;&nbsp;&nbsp;&nbsp;Align = alTop<BR>&nbsp;&nbsp;&nbsp;&nbsp;BevelInner = 
+bvLowered<BR>&nbsp;&nbsp;&nbsp;&nbsp;Font.Charset = HANGEUL_CHARSET<BR>&nbsp;&nbsp;&nbsp;&nbsp;Font.Color = 
+clWindowText<BR>&nbsp;&nbsp;&nbsp;&nbsp;Font.Height = -11<BR>&nbsp;&nbsp;&nbsp;&nbsp;Font.Name = '돋움체'<BR>&nbsp;&nbsp;&nbsp;&nbsp;Font.Style 
+= []<BR>&nbsp;&nbsp;&nbsp;&nbsp;ParentFont = False<BR>&nbsp;&nbsp;&nbsp;&nbsp;TabOrder = 5<BR>&nbsp;&nbsp;end<BR>end</FONT></P>
+<P><FONT face="굴림체">위의 소스가 이해 되었다면 직접 실행 시켜 보자. 우리는 처음에 &nbsp;타이머 콜백 주<BR>기를 100ms 로 
+설정했고, 예상되어지는 초당 콜백 회수는 10번이다.<BR>하지만 실제로 1 분 정도 실행 &nbsp;시켜보면 초당 9.036 번의 콜백이 &nbsp;이루어 
+진다는 <BR>것을 알 수 있다 ( 펜티엄 2 266Mz 에서 실험 ). 이것은 API &nbsp;타이머가 우리가 원<BR>하는 것 이하의 성능을 낸다는 
+것을 말해 주고 있는데, 이 &nbsp;결과는 다음에 확인해<BR>볼 멀티미디어 타이머의 정확도에 비해 많은 차이를 보인다.</FONT></P>
+<P><FONT face="굴림체">----------------------------------------------------------------------------</FONT></P>
+<P><FONT face="굴림체">그럼, 다음은 멀티미디어 타이머의 성능을 평가하는 예제이다. <BR>폼에 대한 것은 위의 API 타이머의 
+폼과같이 쓰면 된다.</FONT></P>
+<P><FONT face="굴림체">unit Unit1;</FONT></P>
+<P><FONT face="굴림체">interface</FONT></P>
+<P><FONT face="굴림체">uses<BR>&nbsp;&nbsp;Windows, Messages, SysUtils, Classes, Graphics, 
+Controls, Forms, Dialogs,<BR>&nbsp;&nbsp;ExtCtrls, StdCtrls, mmSystem;</FONT></P>
+<P><FONT face="굴림체">const<BR>&nbsp;&nbsp;&nbsp;USR_TIMER_ELAPSED = 
+WM_USER+100;<BR>type<BR>&nbsp;&nbsp;&nbsp;TForm1 = class(TForm)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: TEdit; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 타이머 콜백된 회수 출력<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: TEdit; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 초당 콜백 
+회수<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Button1 &nbsp;&nbsp;&nbsp;&nbsp;: TButton; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 타이머 종료 버튼<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;StaticText1 : 
+TStaticText; &nbsp;// 라벨 1<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;StaticText2 : TStaticText; &nbsp;// 라벨 
+2<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Panel1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: TPanel; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 현재 설정된 콜백 주기 출력<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure 
+FormShow(Sender: TObject);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure FormDestroy(Sender: 
+TObject);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure Button1Click(Sender: TObject);</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;private<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FTimerID: UINT;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fms &nbsp;&nbsp;&nbsp;&nbsp;: 
+UINT;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FCouter : integer;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FTime &nbsp;&nbsp;: longint;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;procedure EditCallback(var M : TMessage); message 
+USR_TIMER_ELAPSED;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 사용자 메시지를 받기 위한 메시지 처리 루틴<BR>&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">var<BR>&nbsp;&nbsp;&nbsp;Form1 : TForm1;</FONT></P>
+<P><FONT face="굴림체">implementation</FONT></P>
+<P><FONT face="굴림체">{$R *.DFM}</FONT></P>
+<P><FONT face="굴림체">procedure TForm1.EditCallback(var M : 
+TMessage);<BR>var<BR>&nbsp;&nbsp;&nbsp;f : real;<BR>&nbsp;&nbsp;&nbsp;s : 
+string;<BR>begin<BR>&nbsp;&nbsp;&nbsp;inc(Form1.FCouter);<BR>&nbsp;&nbsp;&nbsp;str(Form1.FCouter,s);<BR>&nbsp;&nbsp;&nbsp;Form1.Edit1.Text 
+:= s;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;f := (Form1.FCouter * 1000) / (GetCurrentTime - 
+Form1.FTime);<BR>&nbsp;&nbsp;&nbsp;str(f : 6 : 3,s);<BR>&nbsp;&nbsp;&nbsp;Form1.Edit2.Text := s; &nbsp;// 초당 콜백 회수 
+출력 </FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;if Form1.FCouter = 0 then begin<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Form1.FTime := 
+GetCurrentTime; &nbsp;// 콜백 카운트의 초기화<BR>&nbsp;&nbsp;&nbsp;end;<BR>end;</FONT></P>
+<P><FONT face="굴림체">procedure TimerProc(uTimer,&nbsp;uMessage : UNIT; dwUser,&nbsp;dw1, dw2 
+: &nbsp;DWORD); 
+stdcall;<BR>begin<BR>&nbsp;&nbsp;&nbsp;PostMessage(dwUser,USR_TIMER_ELAPSED,0,0);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+멀티미디어 타이머 콜백 함수에는 대부분의 API가 사용 불가하다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 그러므로 다시 메시지를 사용자 메시지 루틴으로 돌려야 
+한다.<BR>end;</FONT></P>
+<P><FONT face="굴림체">procedure TForm1.FormShow(Sender: TObject);<BR>var<BR>&nbsp;&nbsp;&nbsp;s 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: string;<BR>&nbsp;&nbsp;&nbsp;TimeCaps : TTimeCaps;<BR>begin<BR>&nbsp;&nbsp;&nbsp;Fms := 100; &nbsp;// 타이머 
+주기를 100ms 마다 한 번씩 호출되게 한다.<BR>&nbsp;&nbsp;&nbsp;if timeGetDevCaps(@TimeCaps,sizeof(TimeCaps)) 
+&lt;&gt; TIMERR_NOERROR then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise 
+Exception.Create('&lt;timeGetDevCaps&gt; Error !!');<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 타이머 디바이스에 대한 
+정보를 얻어 온다.</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;if Fms &lt; TimeCaps.wPeriodMin then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fms := 
+TimeCaps.wPeriodMin; // 실제 가능한 호출 주기보다 작으면<BR>&nbsp;&nbsp;&nbsp;if Fms &gt; TimeCaps.wPeriodMax 
+then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fms := TimeCaps.wPeriodMax; // 실제 가능한 호출 주기보다 크면</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;timeBeginPeriod(Fms); // 타이머 주기를 지정한다.<BR>&nbsp;&nbsp;&nbsp;FTimerID := 
+timeSetEvent(Fms,Fms,@TimerProc,integer(handle),<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TIME_PERIODIC);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+타이머를 설정한다. 콜백 함수를 지정하고, TIME_PERIODIC를 사용하여<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 주기적으로 계속 호출되게 
+만든다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;if FTimerID = 0 then 
+begin<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timeEndPeriod(Fms);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise 
+Exception.Create('&lt;timeSetEvent&gt; Error 
+!!');<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Close;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Exit; // 에러 처리 루틴<BR>&nbsp;&nbsp;&nbsp;end;</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;str(Fms,s);<BR>&nbsp;&nbsp;&nbsp;Panel1.Caption := '타이머 설정 :' + s + 
+'ms';</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;FCouter := -1;<BR>end;</FONT></P>
+<P><FONT face="굴림체">procedure TForm1.FormDestroy(Sender: 
+TObject);<BR>begin<BR>&nbsp;&nbsp;&nbsp;if FTimerID &lt;&gt; 0 then 
+begin<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timeKillEvent(FTimerID); // 타이머를 
+해제한다.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timeEndPeriod(Fms); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 타이머 주기를 
+해제한다.<BR>&nbsp;&nbsp;&nbsp;end;<BR>end;</FONT></P>
+<P><FONT face="굴림체">procedure TForm1.Button1Click(Sender: 
+TObject);<BR>begin<BR>&nbsp;&nbsp;&nbsp;Close;<BR>end;</FONT></P>
+<P><FONT face="굴림체">end.</FONT></P>
+<P><FONT face="굴림체">위의 소스를 실행해 보면 항상 0.005 초 정도의 오차만을 가지고 &nbsp;초당 10 회라는 <BR>콜백 회수를 계속 
+유지한다. ( 10.000 초를 기준으로 진동한다고 보는 게 나을 것 <BR>같다. ) <BR>이렇듯 멀티미디어 타이머는 시스템 자원을 많이 
+먹는 대신 정확한 타이머 제어가 <BR>가능하므로 대부분의 정밀 작업이나 실시간 배경음악 출력에 쓰이게 된다.</FONT></P>
+<P><FONT face="굴림체">직접 눈으로 확인했다면 아마도 &nbsp;API 타이머와 멀티미디어 타이머에 &nbsp;대한 적절한 <BR>용법이 떠올랐으리라고 
+본다. 그리고 &nbsp;나머지 활용에 대한 것은 &nbsp;전적으로 당신의 <BR>몫인 것이다.........</FONT></P>
+<P><FONT face="굴림체">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;------------- 
+SMgal ( 안영기 )</FONT></P>
+<P>&nbsp;</P></body>
+</HTML>
