@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BBS 4U 방명록 아카이브</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>방명록 아카이브</h1>
+            <p>2001-07-18 ~ 2005-06-30 smgal.com 방명록 백업</p>
+            <div class="stats">
+                <span id="total-posts">총 2768개 게시물</span>
+                <span id="original-posts">원글 1168개</span>
+                <span id="reply-posts">댓글 1600개</span>
+            </div>
+        </header>
+        
+        <div class="controls">
+            <input type="text" id="search" placeholder="제목, 내용, 작성자로 검색...">
+            <div class="filters">
+                <div class="filter-group year-filter-group">
+                    <div class="year-row">
+                        <button class="year-btn active" data-year="all">전체</button>
+                        <!-- 연도 버튼들은 JavaScript에서 동적으로 생성됩니다 -->
+                    </div>
+                </div>
+                <hr class="hr-dotted" />
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="all">전체</button>
+                    <button class="filter-btn" data-filter="original">원글만</button>
+                </div>
+                <hr class="hr-solid" />
+            </div>
+        </div>
+        
+        <div id="pagination-top"></div>
+        <div id="posts-container"></div>
+        <div id="pagination"></div>
+        
+        <footer class="footer">
+            <p>🔧 BBS 4U 방명록 변환기로 생성됨 • 2025. 6. 28.</p>
+        </footer>
+    </div>
+    
+    <script src="assets/js/app.js"></script>
+</body>
+</html> 
