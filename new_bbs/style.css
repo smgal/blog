@@ -1,0 +1,176 @@
+body {
+    font-family: sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    font-size: 0.9em;
+}
+
+#board {
+    max-width: 720px;
+    margin: 0 auto;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.notice {
+    background-color: #e7f3ff;
+    border: 1px solid #cce5ff;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.post-form {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.form-row input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex: 1;
+}
+
+#post-author {
+    flex: 0 0 150px;
+}
+
+#post-title {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#post-content {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+    min-height: 120px; /* 높이 조정 */
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+#submit-post {
+    padding: 12px 20px;
+    background-color: #6c757d; /* 버튼 색상 변경 */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    align-self: flex-end;
+    font-weight: bold;
+}
+
+#submit-post:hover {
+    background-color: #0056b3;
+}
+
+#posts-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#posts-container .post {
+    border: 1px solid #000;
+    margin-bottom: 15px;
+    border-radius: 0;
+}
+
+.post-header, .post-title-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px;
+}
+
+.post-header {
+    gap: 10px;
+}
+
+.post-title-bar {
+    background-color: rgb(224, 208, 160);
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+}
+
+.post-meta-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.post-number {
+    font-weight: bold;
+}
+
+.author a {
+    text-decoration: none;
+    color: #0000EE;
+}
+
+.homepage-link {
+    margin-left: 5px;
+}
+
+.post-content {
+    padding: 20px;
+    white-space: pre-wrap;
+}
+
+.reply-button {
+    background: none;
+    border: 1px solid #000;
+    cursor: pointer;
+    padding: 2px 5px;
+}
+
+.post .reply-button:hover {
+    text-decoration: underline;
+}
+
+.post-timestamp {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: flex-end;
+    gap: 0 0.5em;
+    text-align: right;
+}
+
+.post-timestamp .date,
+.post-timestamp .time {
+    white-space: nowrap;
+}
+
+.post-timestamp .time {
+    font-size: 0.8em;
+    color: #666;
+}
+
+@media (max-width: 600px) {
+    .form-row {
+        flex-direction: column;
+    }
+
+    #post-author {
+        flex-basis: auto;
+    }
+}

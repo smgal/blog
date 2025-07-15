@@ -1,9 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-    <title>방명록</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>익명 게시판</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>방명록은 개발 중에 있습니다.</h1>
+    <div id="board">
+        <div class="notice">
+            <p><strong>공지:</strong> 이 게시판은 익명으로 운영됩니다. (아직 제작 중입니다)</p>
+        </div>
+
+        <div class="post-form">
+            <div class="form-row">
+                <input type="text" id="post-author" placeholder="이름">
+                <input type="email" id="post-email" placeholder="e-mail">
+            </div>
+            <div class="form-row">
+                <input type="text" id="post-homepage" placeholder="홈페이지">
+            </div>
+            <div class="form-row">
+                <input type="text" id="post-title" placeholder="제목">
+            </div>
+            <textarea id="post-content" placeholder="내용을 입력하세요..."></textarea>
+            <button id="submit-post">글쓰기</button>
+        </div>
+
+        <div id="posts-container">
+            <!-- 게시글이 여기에 동적으로 추가됩니다. -->
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

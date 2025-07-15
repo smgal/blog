@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "public": "new_bbs",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
