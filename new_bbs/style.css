@@ -89,9 +89,11 @@ body {
 }
 
 #posts-container .post {
-    border: 1px solid #000;
+    /* border: 1px solid #000; */ /* 본문 테두리 제거 */
     margin-bottom: 15px;
     border-radius: 0;
+    /* box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); */ /* 그림자 제거 */
+    /* border: 1px solid #eee; */ /* 연한 테두리도 최종 제거 */
 }
 
 .post-header, .post-title-bar {
@@ -103,6 +105,8 @@ body {
 
 .post-header {
     gap: 10px;
+    /* 자식 요소들이 수직 중앙 정렬되도록 */
+    align-items: center;
 }
 
 .post-title-bar {
@@ -163,6 +167,69 @@ body {
 .post-timestamp .time {
     font-size: 0.8em;
     color: #666;
+}
+
+.comments-count {
+    font-size: 0.9em;
+    color: #888;
+    margin-left: 5px;
+}
+
+.comment {
+    margin-top: 15px;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: #FFF0E0; /* 부모에 배경색 적용 */
+    padding-left: 20px; /* margin을 padding으로 변경 */
+}
+
+.comment .post-header {
+    background-color: transparent; /* 헤더는 부모 배경색을 따름 */
+    padding: 5px 10px 5px 0; /* 왼쪽 패딩은 부모가 담당 */
+}
+
+/* 헤더 내부의 타임스탬프를 오른쪽으로 보내기 위해 */
+.comment .post-header .post-meta-left {
+    flex-grow: 1;
+}
+
+.comment .comment-content-wrapper {
+    background-color: #fff;
+    /* border-top: 1px solid #e0d8ce; */ /* 제목 상단 선 제거 */
+}
+
+.comment .post-title-bar {
+    background-color: transparent;
+    font-weight: bold;
+    font-size: 1.1em;
+    padding: 10px;
+    border-top: none; /* wrapper가 top border를 가짐 */
+}
+
+.comment .post-content {
+    background-color: transparent;
+    padding: 15px 10px;
+}
+
+/* 기존 댓글 스타일 제거 */
+.comment .post-title-bar {
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+}
+
+#submit-reply {
+    padding: 12px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    align-self: flex-end;
+    font-weight: bold;
+}
+
+#submit-reply:hover {
+    background-color: #218838;
 }
 
 @media (max-width: 600px) {

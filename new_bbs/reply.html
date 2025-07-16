@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>답글 달기</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="board">
+        <div id="posts-container">
+            <!-- 원본 게시물과 댓글이 여기에 동적으로 추가됩니다. -->
+        </div>
+
+        <div class="post-form">
+            <div class="form-row">
+                <input type="text" id="post-author" placeholder="이름">
+                <input type="email" id="post-email" placeholder="e-mail">
+            </div>
+            <div class="form-row">
+                <input type="text" id="post-homepage" placeholder="홈페이지">
+            </div>
+            <div class="form-row">
+                <input type="text" id="post-title" placeholder="제목">
+            </div>
+            <textarea id="post-content" placeholder="내용을 입력하세요..."></textarea>
+            <button id="submit-reply">답변 달기</button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="reply.js"></script>
+</body>
+</html>
