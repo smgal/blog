@@ -19,13 +19,30 @@ submitPostButton.addEventListener('click', () => {
     const content = postContentInput.value.trim();
 
     if (author && content) {
-        db.collection('posts').add({
-            author: author,
-            email: email,
-            homepage: homepage,
-            title: title,
-            content: content,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        const counterRef = db.collection('counters').doc('main_posts');
+
+        db.runTransaction(transaction => {
+            return transaction.get(counterRef).then(doc => {
+                let newPostNumber = 1;
+                if (doc.exists) {
+                    newPostNumber = doc.data().count + 1;
+                }
+                transaction.set(counterRef, { count: newPostNumber });
+
+                const newPostRef = db.collection('posts').doc();
+                transaction.set(newPostRef, {
+                    author: author,
+                    email: email,
+                    homepage: homepage,
+                    title: title,
+                    content: content,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    post_number: newPostNumber,
+                    is_comment: false,
+                    parent_id: null,
+                    comment_count: 0
+                });
+            });
         })
         .then(() => {
             postAuthorInput.value = '';
@@ -61,7 +78,7 @@ const renderPosts = (snapshot) => {
 
         const postNumberElement = document.createElement('span');
         postNumberElement.classList.add('post-number');
-        postNumberElement.textContent = `#${snapshot.size - index}`; // 역순으로 번호 매기기
+        postNumberElement.textContent = `#${post.post_number}`;
 
         const authorElement = document.createElement('span');
         authorElement.classList.add('author');
@@ -153,4 +170,7 @@ const renderPosts = (snapshot) => {
 };
 
 // Listen for real-time updates
-db.collection('posts').orderBy('timestamp', 'desc').onSnapshot(renderPosts);
+db.collection('posts')
+  .where('is_comment', '==', false)
+  .orderBy('post_number', 'desc')
+  .onSnapshot(renderPosts);
