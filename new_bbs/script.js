@@ -9,6 +9,14 @@ const postHomepageInput = document.getElementById('post-homepage');
 const postTitleInput = document.getElementById('post-title');
 const postContentInput = document.getElementById('post-content');
 const submitPostButton = document.getElementById('submit-post');
+const paginationTop = document.getElementById('pagination-top');
+const paginationBottom = document.getElementById('pagination-bottom');
+
+// --- Pagination State ---
+let currentPage = 1;
+let totalPosts = 0;
+let totalPages = 1;
+const postsPerPage = boardConfig.postsPerPage || 10;
 
 // Create a post
 submitPostButton.addEventListener('click', () => {
@@ -45,20 +53,23 @@ submitPostButton.addEventListener('click', () => {
             });
         })
         .then(() => {
-            postAuthorInput.value = '';
-            postEmailInput.value = '';
-            postHomepageInput.value = '';
-            postTitleInput.value = '';
-            postContentInput.value = '';
+            // Redirect to page 1 to see the new post
+            window.location.href = 'index.html?page=1';
         })
         .catch((error) => {
             console.error("Error adding document: ", error);
+            alert('글 작성에 실패했습니다.');
         });
     }
 });
 
 // Render posts
 const renderPosts = (snapshot) => {
+    if (snapshot.empty) {
+        postsContainer.innerHTML = '<p>표시할 게시물이 없습니다.</p>';
+        return;
+    }
+
     postsContainer.innerHTML = '';
     const posts = [];
     snapshot.forEach(doc => {
@@ -293,8 +304,120 @@ const renderComment = (comment, parentElement, parentPostNumber) => {
     parentElement.appendChild(commentElement);
 };
 
-// Listen for real-time updates
-db.collection('posts')
-  .where('is_comment', '==', false)
-  .orderBy('post_number', 'desc')
-  .onSnapshot(renderPosts);
+// --- Pagination Logic ---
+
+const renderPagination = () => {
+    if (totalPages <= 1) {
+        paginationTop.innerHTML = '';
+        paginationBottom.innerHTML = '';
+        return;
+    }
+
+    let paginationHtml = '';
+    const pageGroupSize = 10;
+    const currentGroup = Math.ceil(currentPage / pageGroupSize);
+    const startPage = (currentGroup - 1) * pageGroupSize + 1;
+    const endPage = Math.min(startPage + pageGroupSize - 1, totalPages);
+
+    // '<<' (First Page)
+    if (currentPage > 1) {
+         paginationHtml += `<a href="?page=1">«</a>`;
+    } else {
+         paginationHtml += `<span class="disabled">«</span>`;
+    }
+
+    // '<' (Previous Group)
+    if (currentGroup > 1) {
+        const prevGroupPage = (currentGroup - 2) * pageGroupSize + 1;
+        paginationHtml += `<a href="?page=${prevGroupPage}">‹</a>`;
+    } else {
+        paginationHtml += `<span class="disabled">‹</span>`;
+    }
+
+    // Page numbers
+    for (let i = startPage; i <= endPage; i++) {
+        if (i === currentPage) {
+            paginationHtml += `<span class="current">${i}</span>`;
+        } else {
+            paginationHtml += `<a href="?page=${i}">${i}</a>`;
+        }
+    }
+
+    // '>' (Next Group)
+    if (currentGroup < Math.ceil(totalPages / pageGroupSize)) {
+        const nextGroupPage = currentGroup * pageGroupSize + 1;
+        paginationHtml += `<a href="?page=${nextGroupPage}">›</a>`;
+    } else {
+        paginationHtml += `<span class="disabled">›</span>`;
+    }
+
+    // '>>' (Last Page)
+    if (currentPage < totalPages) {
+        paginationHtml += `<a href="?page=${totalPages}">»</a>`;
+    } else {
+        paginationHtml += `<span class="disabled">»</span>`;
+    }
+
+    paginationTop.innerHTML = paginationHtml;
+    paginationBottom.innerHTML = paginationHtml;
+};
+
+const loadPage = async (page) => {
+    postsContainer.innerHTML = '<p>게시물을 불러오는 중...</p>';
+    
+    try {
+        let query = db.collection('posts')
+            .where('is_comment', '==', false)
+            .orderBy('post_number', 'desc');
+
+        // For pages other than the first, we need to find the last document of the previous page
+        if (page > 1) {
+            const offset = (page - 1) * postsPerPage;
+            const cursorQuery = db.collection('posts')
+                .where('is_comment', '==', false)
+                .orderBy('post_number', 'desc')
+                .limit(offset);
+            
+            const cursorSnapshot = await cursorQuery.get();
+            if (!cursorSnapshot.empty) {
+                const lastVisible = cursorSnapshot.docs[cursorSnapshot.docs.length - 1];
+                query = query.startAfter(lastVisible);
+            }
+        }
+        
+        query = query.limit(postsPerPage);
+
+        const snapshot = await query.get();
+        renderPosts(snapshot);
+
+    } catch (error) {
+        console.error("Error fetching posts:", error);
+        postsContainer.innerHTML = '<p>게시물을 불러오는 데 실패했습니다.</p>';
+    }
+};
+
+const initBoard = async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    currentPage = parseInt(urlParams.get('page')) || 1;
+
+    const query = db.collection('posts').where('is_comment', '==', false);
+    
+    try {
+        // Get the total number of actual posts
+        const snapshot = await query.get();
+        totalPosts = snapshot.size;
+        totalPages = Math.ceil(totalPosts / postsPerPage) || 1;
+
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        renderPagination();
+        loadPage(currentPage);
+
+    } catch (error) {
+        console.error("Error initializing board:", error);
+        postsContainer.innerHTML = '<p>게시판을 초기화하는 데 실패했습니다.</p>';
+    }
+};
+
+document.addEventListener('DOMContentLoaded', initBoard);
