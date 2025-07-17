@@ -47,20 +47,16 @@ body {
     flex: 1;
 }
 
-#post-author, #post-email {
+#post-author, #post-email, #post-password {
     flex: 1;
 }
 
-#post-password {
-    flex: 0 0 150px;
-}
-
 .password-notice {
+    flex: 1;
     font-size: 0.8em;
     color: #666;
     align-self: center;
-    flex-grow: 1;
-    text-align: left;
+    /* text-align is already left by default for block/flex items */
     padding-left: 10px;
 }
 
@@ -289,7 +285,14 @@ body {
         flex-direction: column;
     }
 
-    #post-author {
+    #post-author, #post-password {
         flex-basis: auto;
+    }
+
+    .password-notice {
+        padding-left: 0;
+        padding-top: 5px;
+        text-align: left;
+        align-self: stretch; /* Ensure it takes full width to apply text-align */
     }
 }
