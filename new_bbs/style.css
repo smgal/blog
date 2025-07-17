@@ -47,8 +47,21 @@ body {
     flex: 1;
 }
 
-#post-author {
+#post-author, #post-email {
+    flex: 1;
+}
+
+#post-password {
     flex: 0 0 150px;
+}
+
+.password-notice {
+    font-size: 0.8em;
+    color: #666;
+    align-self: center;
+    flex-grow: 1;
+    text-align: left;
+    padding-left: 10px;
 }
 
 #post-title {
@@ -139,14 +152,20 @@ body {
     white-space: pre-wrap;
 }
 
-.reply-button {
+.reply-button, .delete-button {
     background: none;
     border: 1px solid #000;
     cursor: pointer;
     padding: 2px 5px;
+    margin-left: 5px;
 }
 
-.post .reply-button:hover {
+.delete-button {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.post .reply-button:hover, .post .delete-button:hover {
     text-decoration: underline;
 }
 

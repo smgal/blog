@@ -4,11 +4,12 @@ const db = firebase.firestore();
 
 const postsContainer = document.getElementById('posts-container');
 const postAuthorInput = document.getElementById('post-author');
+const postPasswordInput = document.getElementById('post-password');
 const postEmailInput = document.getElementById('post-email');
 const postHomepageInput = document.getElementById('post-homepage');
 const postTitleInput = document.getElementById('post-title');
 const postContentInput = document.getElementById('post-content');
-const submitPostButton = document.getElementById('submit-post');
+const postForm = document.getElementById('post-form');
 const paginationTop = document.getElementById('pagination-top');
 const paginationBottom = document.getElementById('pagination-bottom');
 
@@ -19,47 +20,59 @@ let totalPages = 1;
 const postsPerPage = boardConfig.postsPerPage || 10;
 
 // Create a post
-submitPostButton.addEventListener('click', () => {
+postForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
     const author = postAuthorInput.value.trim();
+    const password = postPasswordInput.value.trim();
     const email = postEmailInput.value.trim();
     const homepage = postHomepageInput.value.trim();
     const title = postTitleInput.value.trim();
     const content = postContentInput.value.trim();
 
-    if (author && content) {
+    if (!author || !content) {
+        alert('이름과 내용을 모두 입력해주세요.');
+        return;
+    }
+
+    if (!password) {
+        const confirmation = confirm('비밀번호를 설정하지 않으면 글을 삭제할 수 없습니다. 이대로 등록하시겠습니까?');
+        if (!confirmation) {
+            return;
+        }
+    }
+
+    const hashedPassword = await hashPassword(password);
+
+    try {
         const counterRef = db.collection('counters').doc('main_posts');
+        await db.runTransaction(async (transaction) => {
+            const doc = await transaction.get(counterRef);
+            let newPostNumber = 1;
+            if (doc.exists) {
+                newPostNumber = doc.data().count + 1;
+            }
+            transaction.set(counterRef, { count: newPostNumber });
 
-        db.runTransaction(transaction => {
-            return transaction.get(counterRef).then(doc => {
-                let newPostNumber = 1;
-                if (doc.exists) {
-                    newPostNumber = doc.data().count + 1;
-                }
-                transaction.set(counterRef, { count: newPostNumber });
-
-                const newPostRef = db.collection('posts').doc();
-                transaction.set(newPostRef, {
-                    author: author,
-                    email: email,
-                    homepage: homepage,
-                    title: title,
-                    content: content,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    post_number: newPostNumber,
-                    is_comment: false,
-                    parent_id: null,
-                    comment_count: 0
-                });
+            const newPostRef = db.collection('posts').doc();
+            transaction.set(newPostRef, {
+                author: author,
+                email: email,
+                homepage: homepage,
+                title: title,
+                content: content,
+                password: hashedPassword,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                post_number: newPostNumber,
+                is_comment: false,
+                parent_id: null,
+                comment_count: 0,
+                is_deleted: false
             });
-        })
-        .then(() => {
-            // Redirect to page 1 to see the new post
-            window.location.href = 'index.html?page=1';
-        })
-        .catch((error) => {
-            console.error("Error adding document: ", error);
-            alert('글 작성에 실패했습니다.');
         });
+        window.location.href = 'index.html?page=1';
+    } catch (error) {
+        console.error("Error adding document: ", error);
+        alert('글 작성에 실패했습니다.');
     }
 });
 
@@ -118,15 +131,27 @@ const renderPosts = (snapshot) => {
             metaLeftElement.appendChild(homepageLink);
         }
 
+        const metaRightElement = document.createElement('div');
+        metaRightElement.classList.add('post-meta-right');
+
+        if (post.password) {
+            const deleteButton = document.createElement('button');
+            deleteButton.classList.add('delete-button');
+            deleteButton.textContent = 'DELETE';
+            deleteButton.onclick = () => deletePost(post.id, post.is_comment, post.parent_id);
+            metaRightElement.appendChild(deleteButton);
+        }
+
         const replyButton = document.createElement('button');
         replyButton.classList.add('reply-button');
         replyButton.textContent = 'REPLY';
         replyButton.onclick = () => {
             window.location.href = `reply.html?id=${post.id}`;
         };
+        metaRightElement.appendChild(replyButton);
 
         headerElement.appendChild(metaLeftElement);
-        headerElement.appendChild(replyButton);
+        headerElement.appendChild(metaRightElement);
 
         // Title Bar Row
         const titleBarElement = document.createElement('div');
@@ -195,6 +220,7 @@ const renderPosts = (snapshot) => {
 const loadAndRenderComments = (parentId, parentElement, parentPostNumber) => {
     const commentsRef = db.collection('posts')
         .where('parent_id', '==', parentId)
+        .where('is_deleted', '==', false)
         .orderBy('timestamp', 'asc');
 
     commentsRef.get().then(snapshot => {
@@ -276,8 +302,21 @@ const renderComment = (comment, parentElement, parentPostNumber) => {
         timestampElement.textContent = '방금 전';
     }
 
+    const metaRightElement = document.createElement('div');
+    metaRightElement.classList.add('post-meta-right');
+
+    if (comment.password) {
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-button');
+        deleteButton.textContent = 'DELETE';
+        deleteButton.onclick = () => deletePost(comment.id, true, comment.parent_id);
+        metaRightElement.appendChild(deleteButton);
+    }
+
+    metaRightElement.appendChild(timestampElement);
+
     headerElement.appendChild(metaLeftElement);
-    headerElement.appendChild(timestampElement);
+    headerElement.appendChild(metaRightElement);
     commentElement.appendChild(headerElement);
 
     // --- Content Wrapper for white background ---
@@ -368,6 +407,7 @@ const loadPage = async (page) => {
     try {
         let query = db.collection('posts')
             .where('is_comment', '==', false)
+            .where('is_deleted', '==', false)
             .orderBy('post_number', 'desc');
 
         // For pages other than the first, we need to find the last document of the previous page
@@ -375,6 +415,7 @@ const loadPage = async (page) => {
             const offset = (page - 1) * postsPerPage;
             const cursorQuery = db.collection('posts')
                 .where('is_comment', '==', false)
+                .where('is_deleted', '==', false)
                 .orderBy('post_number', 'desc')
                 .limit(offset);
             
@@ -400,7 +441,9 @@ const initBoard = async () => {
     const urlParams = new URLSearchParams(window.location.search);
     currentPage = parseInt(urlParams.get('page')) || 1;
 
-    const query = db.collection('posts').where('is_comment', '==', false);
+    const query = db.collection('posts')
+        .where('is_comment', '==', false)
+        .where('is_deleted', '==', false);
     
     try {
         // Get the total number of actual posts
@@ -417,6 +460,61 @@ const initBoard = async () => {
     } catch (error) {
         console.error("Error initializing board:", error);
         postsContainer.innerHTML = '<p>게시판을 초기화하는 데 실패했습니다.</p>';
+    }
+};
+
+const deletePost = async (postId, isComment, parentId) => {
+    const password = prompt('삭제하려면 비밀번호를 입력하세요.');
+    if (!password) return;
+
+    const postRef = db.collection('posts').doc(postId);
+
+    try {
+        const doc = await postRef.get();
+        if (!doc.exists) {
+            alert('삭제할 게시물을 찾을 수 없습니다.');
+            return;
+        }
+
+        const postData = doc.data();
+        
+        if (!postData.password) {
+            alert('이 게시물에는 비밀번호가 설정되어 있지 않아 삭제할 수 없습니다.');
+            return;
+        }
+
+        const hashedPassword = await hashPassword(password);
+
+        if (hashedPassword !== postData.password) {
+            alert('비밀번호가 일치하지 않습니다.');
+            return;
+        }
+
+        const confirmation = confirm('정말로 이 게시물을 삭제하시겠습니까?');
+        if (!confirmation) return;
+
+        const batch = db.batch();
+
+        // Mark the post itself as deleted
+        batch.update(postRef, { is_deleted: true });
+
+        // If it's a main post, mark all its comments as deleted
+        if (!isComment) {
+            const commentsQuery = db.collection('posts').where('parent_id', '==', postId);
+            const commentsSnapshot = await commentsQuery.get();
+            commentsSnapshot.forEach(commentDoc => {
+                batch.update(commentDoc.ref, { is_deleted: true });
+            });
+        }
+
+        await batch.commit();
+        
+        alert('게시물이 삭제되었습니다.');
+        window.location.reload();
+
+    } catch (error) {
+        console.error("Error deleting post: ", error);
+        alert('게시물 삭제 중 오류가 발생했습니다.');
     }
 };
 

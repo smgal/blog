@@ -4,11 +4,12 @@ const db = firebase.firestore();
 
 const postsContainer = document.getElementById('posts-container');
 const postAuthorInput = document.getElementById('post-author');
+const postPasswordInput = document.getElementById('post-password');
 const postEmailInput = document.getElementById('post-email');
 const postHomepageInput = document.getElementById('post-homepage');
 const postTitleInput = document.getElementById('post-title');
 const postContentInput = document.getElementById('post-content');
-const submitReplyButton = document.getElementById('submit-reply');
+const replyForm = document.getElementById('reply-form');
 
 let parentPostId = null;
 let parentPostNumber = null;
@@ -30,8 +31,8 @@ const loadPostAndComments = async (postId) => {
     const postRef = db.collection('posts').doc(postId);
     const postDoc = await postRef.get();
 
-    if (!postDoc.exists) {
-        postsContainer.innerHTML = '<p>원본 게시물을 찾을 수 없습니다.</p>';
+    if (!postDoc.exists || postDoc.data().is_deleted) {
+        postsContainer.innerHTML = '<p>게시물을 찾을 수 없거나 삭제되었습니다.</p>';
         return;
     }
 
@@ -42,6 +43,7 @@ const loadPostAndComments = async (postId) => {
     // Load comments
     const commentsRef = db.collection('posts')
         .where('parent_id', '==', postId)
+        .where('is_deleted', '==', false)
         .orderBy('timestamp', 'asc');
     
     commentsRef.onSnapshot(snapshot => {
@@ -172,11 +174,24 @@ const renderPost = (post, isComment, commentIndex) => {
         titleBarElement.appendChild(titleElement);
         titleBarElement.appendChild(timestampElement);
 
+        const metaRightElement = document.createElement('div');
+        metaRightElement.classList.add('post-meta-right');
+
+        if (post.password) {
+            const deleteButton = document.createElement('button');
+            deleteButton.classList.add('delete-button');
+            deleteButton.textContent = 'DELETE';
+            deleteButton.onclick = () => deletePost(post.id, false, null);
+            metaRightElement.appendChild(deleteButton);
+        }
+
         const replyButton = document.createElement('button');
         replyButton.classList.add('reply-button');
         replyButton.textContent = 'REPLY';
         replyButton.disabled = true; // No reply on reply page
-        headerElement.appendChild(replyButton);
+        metaRightElement.appendChild(replyButton);
+
+        headerElement.appendChild(metaRightElement);
 
         const contentElement = document.createElement('div');
         contentElement.classList.add('post-content');
@@ -191,46 +206,127 @@ const renderPost = (post, isComment, commentIndex) => {
 };
 
 // Create a comment
-submitReplyButton.addEventListener('click', () => {
+replyForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
     const author = postAuthorInput.value.trim();
+    const password = postPasswordInput.value.trim();
     const email = postEmailInput.value.trim();
     const homepage = postHomepageInput.value.trim();
     const title = postTitleInput.value.trim();
     const content = postContentInput.value.trim();
 
-    if (author && content && parentPostId) {
-        const parentRef = db.collection('posts').doc(parentPostId);
+    if (!author || !content) {
+        alert('이름과 내용을 모두 입력해주세요.');
+        return;
+    }
 
-        db.runTransaction(transaction => {
-            return transaction.get(parentRef).then(doc => {
-                if (!doc.exists) {
-                    throw "Parent document does not exist!";
-                }
+    if (!parentPostId) {
+        alert('답글을 달 원본 게시물을 찾을 수 없습니다.');
+        return;
+    }
 
-                const newCommentCount = (doc.data().comment_count || 0) + 1;
-                transaction.update(parentRef, { comment_count: newCommentCount });
+    if (!password) {
+        const confirmation = confirm('비밀번호를 설정하지 않으면 이 답글을 삭제할 수 없습니다. 이대로 등록하시겠습니까?');
+        if (!confirmation) {
+            return;
+        }
+    }
 
-                const newCommentRef = db.collection('posts').doc();
-                transaction.set(newCommentRef, {
-                    author: author,
-                    email: email,
-                    homepage: homepage,
-                    title: title,
-                    content: content,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    post_number: newCommentCount, // Use the new comment count as the number
-                    is_comment: true,
-                    parent_id: parentPostId,
-                    comment_count: 0 // Replies to comments are not supported
-                });
+    const hashedPassword = await hashPassword(password);
+    const parentRef = db.collection('posts').doc(parentPostId);
+
+    try {
+        await db.runTransaction(async (transaction) => {
+            const doc = await transaction.get(parentRef);
+            if (!doc.exists) {
+                throw "Parent document does not exist!";
+            }
+
+            const newCommentCount = (doc.data().comment_count || 0) + 1;
+            transaction.update(parentRef, { comment_count: newCommentCount });
+
+            const newCommentRef = db.collection('posts').doc();
+            transaction.set(newCommentRef, {
+                author: author,
+                email: email,
+                homepage: homepage,
+                title: title,
+                content: content,
+                password: hashedPassword,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                post_number: newCommentCount,
+                is_comment: true,
+                parent_id: parentPostId,
+                comment_count: 0,
+                is_deleted: false
             });
-        })
-        .then(() => {
-            window.location.href = 'index.html';
-        })
-        .catch((error) => {
-            console.error("Error adding comment: ", error);
-            alert('답글 작성에 실패했습니다.');
         });
+        // Go back to the main page, to the correct page of the parent post
+        // This is complex, so for now, just go to the main index.
+        window.location.href = `index.html`;
+    } catch (error) {
+        console.error("Error adding comment: ", error);
+        alert('답글 작성에 실패했습니다.');
     }
 });
+
+// This function is duplicated from script.js. In a real app, this would be in a shared utility file.
+const deletePost = async (postId, isComment, parentId) => {
+    const password = prompt('삭제하려면 비밀번호를 입력하세요.');
+    if (!password) return;
+
+    const postRef = db.collection('posts').doc(postId);
+
+    try {
+        const doc = await postRef.get();
+        if (!doc.exists) {
+            alert('삭제할 게시물을 찾을 수 없습니다.');
+            return;
+        }
+
+        const postData = doc.data();
+
+        if (!postData.password) {
+            alert('이 게시물에는 비밀번호가 설정되어 있지 않아 삭제할 수 없습니다.');
+            return;
+        }
+
+        const hashedPassword = await hashPassword(password);
+
+        if (hashedPassword !== postData.password) {
+            alert('비밀번호가 일치하지 않습니다.');
+            return;
+        }
+
+        const confirmation = confirm('정말로 이 게시물을 삭제하시겠습니까?');
+        if (!confirmation) return;
+
+        const batch = db.batch();
+
+        // Mark the post/comment itself as deleted
+        batch.update(postRef, { is_deleted: true });
+
+        // If it's a main post, mark all its comments as deleted
+        if (!isComment) {
+            const commentsQuery = db.collection('posts').where('parent_id', '==', postId);
+            const commentsSnapshot = await commentsQuery.get();
+            commentsSnapshot.forEach(commentDoc => {
+                batch.update(commentDoc.ref, { is_deleted: true });
+            });
+        }
+
+        await batch.commit();
+        
+        alert('삭제되었습니다.');
+        
+        if (!isComment) {
+            window.location.href = 'index.html'; // Go back to home after deleting main post
+        } else {
+            window.location.reload();
+        }
+
+    } catch (error) {
+        console.error("Error deleting post: ", error);
+        alert('삭제 중 오류가 발생했습니다.');
+    }
+};
