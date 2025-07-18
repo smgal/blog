@@ -232,6 +232,19 @@ const renderComment = (comment, parentElement, parentPostNumber) => {
     const commentElement = document.createElement('div');
     commentElement.classList.add('post', 'comment');
 
+    // Delete button container
+    if (comment.password) {
+        commentElement.classList.add('has-delete-button');
+        const deleteContainer = document.createElement('div');
+        deleteContainer.classList.add('comment-delete-container');
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-button');
+        deleteButton.textContent = 'DELETE';
+        deleteButton.onclick = () => deletePost(comment.id, true, comment.parent_id);
+        deleteContainer.appendChild(deleteButton);
+        commentElement.appendChild(deleteContainer);
+    }
+
     // Header Row
     const headerElement = document.createElement('div');
     headerElement.classList.add('post-header');
@@ -301,14 +314,6 @@ const renderComment = (comment, parentElement, parentPostNumber) => {
 
     const metaRightElement = document.createElement('div');
     metaRightElement.classList.add('post-meta-right');
-
-    if (comment.password) {
-        const deleteButton = document.createElement('button');
-        deleteButton.classList.add('delete-button');
-        deleteButton.textContent = 'DELETE';
-        deleteButton.onclick = () => deletePost(comment.id, true, comment.parent_id);
-        metaRightElement.appendChild(deleteButton);
-    }
 
     metaRightElement.appendChild(timestampElement);
 

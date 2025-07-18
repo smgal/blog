@@ -151,6 +151,19 @@ const renderPost = (post, isComment, commentIndex) => {
     }
 
     if (isComment) {
+        // Delete button container
+        if (post.password) {
+            postElement.classList.add('has-delete-button');
+            const deleteContainer = document.createElement('div');
+            deleteContainer.classList.add('comment-delete-container');
+            const deleteButton = document.createElement('button');
+            deleteButton.classList.add('delete-button');
+            deleteButton.textContent = 'DELETE';
+            deleteButton.onclick = () => deletePost(post.id, true, post.parent_id);
+            deleteContainer.appendChild(deleteButton);
+            postElement.appendChild(deleteContainer);
+        }
+
         // 댓글 렌더링 로직 (script.js의 renderComment와 동일하게)
         headerElement.appendChild(timestampElement);
         postElement.appendChild(headerElement);

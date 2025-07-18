@@ -24,6 +24,26 @@ body {
     margin-bottom: 20px;
 }
 
+.notice ul {
+    padding-left: 0;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    list-style-type: none;
+}
+
+.notice li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 5px;
+}
+
+.notice li::before {
+    content: '➥';
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
 .post-form {
     background-color: #f8f9fa;
     border: 1px solid #dee2e6;
@@ -191,11 +211,25 @@ body {
 }
 
 .comment {
-    margin-top: 15px;
+    margin-top: 0;
     border-radius: 4px;
     overflow: hidden;
     background-color: #FFF0E0; /* 부모에 배경색 적용 */
     padding-left: 20px; /* margin을 padding으로 변경 */
+    position: relative;
+}
+
+.comment.has-delete-button {
+    padding-top: 0; /* 삭제 버튼 공간 확보 방식 변경 */
+}
+
+.comment-delete-container {
+    position: relative;
+    background-color: #fff;
+    padding: 5px 10px 5px 0;
+    text-align: right;
+    margin-left: -20px; /* 부모의 padding-left 만큼 당겨서 채움 */
+    margin-bottom: 5px; /* 아래 요소와 간격 */
 }
 
 .comment .post-header {
