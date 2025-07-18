@@ -92,6 +92,9 @@ const renderPosts = (snapshot) => {
     posts.forEach((post, index) => {
         const postElement = document.createElement('div');
         postElement.classList.add('post');
+        if (post.content_deleted) {
+            postElement.classList.add('content-deleted');
+        }
 
         // Header Row
         const headerElement = document.createElement('div');
@@ -134,7 +137,7 @@ const renderPosts = (snapshot) => {
         const metaRightElement = document.createElement('div');
         metaRightElement.classList.add('post-meta-right');
 
-        if (post.password) {
+        if (post.password && !post.content_deleted) {
             const deleteButton = document.createElement('button');
             deleteButton.classList.add('delete-button');
             deleteButton.textContent = 'DELETE';
@@ -142,13 +145,15 @@ const renderPosts = (snapshot) => {
             metaRightElement.appendChild(deleteButton);
         }
 
-        const replyButton = document.createElement('button');
-        replyButton.classList.add('reply-button');
-        replyButton.textContent = 'REPLY';
-        replyButton.onclick = () => {
-            window.location.href = `reply.html?id=${post.id}`;
-        };
-        metaRightElement.appendChild(replyButton);
+        if (!post.content_deleted) {
+            const replyButton = document.createElement('button');
+            replyButton.classList.add('reply-button');
+            replyButton.textContent = 'REPLY';
+            replyButton.onclick = () => {
+                window.location.href = `reply.html?id=${post.id}`;
+            };
+            metaRightElement.appendChild(replyButton);
+        }
 
         headerElement.appendChild(metaLeftElement);
         headerElement.appendChild(metaRightElement);
@@ -195,19 +200,11 @@ const renderPosts = (snapshot) => {
         // Content
         const contentElement = document.createElement('div');
         contentElement.classList.add('post-content');
-        contentElement.textContent = post.content;
+        contentElement.textContent = post.content_deleted ? '삭제된 글입니다.' : post.content;
 
         postElement.appendChild(headerElement);
         postElement.appendChild(titleBarElement);
         postElement.appendChild(contentElement);
-
-        // Comments Count
-        if (post.comment_count > 0) {
-            const commentsCountElement = document.createElement('div');
-            commentsCountElement.classList.add('comments-count');
-            commentsCountElement.textContent = `( ${post.comment_count} )`;
-            metaLeftElement.appendChild(commentsCountElement);
-        }
 
         postsContainer.appendChild(postElement);
 
@@ -493,23 +490,52 @@ const deletePost = async (postId, isComment, parentId) => {
         const confirmation = confirm('정말로 이 게시물을 삭제하시겠습니까?');
         if (!confirmation) return;
 
+        // Check for active (not deleted) comments
+        const commentsQuery = db.collection('posts')
+            .where('parent_id', '==', (isComment ? parentId : postId))
+            .where('is_deleted', '==', false);
+        
+        const commentsSnapshot = await commentsQuery.get();
+        
+        let activeCommentsExist = false;
+        if (isComment) {
+            // If deleting a comment, check if other non-deleted comments exist
+            commentsSnapshot.forEach(commentDoc => {
+                if (commentDoc.id !== postId) {
+                    activeCommentsExist = true;
+                }
+            });
+        } else {
+            // If deleting a post, check if any non-deleted comments exist
+            activeCommentsExist = !commentsSnapshot.empty;
+        }
+
         const batch = db.batch();
 
-        // Mark the post itself as deleted
-        batch.update(postRef, { is_deleted: true });
-
-        // If it's a main post, mark all its comments as deleted
-        if (!isComment) {
-            const commentsQuery = db.collection('posts').where('parent_id', '==', postId);
-            const commentsSnapshot = await commentsQuery.get();
-            commentsSnapshot.forEach(commentDoc => {
-                batch.update(commentDoc.ref, { is_deleted: true });
+        if (activeCommentsExist && !isComment) {
+            // Case: Deleting a post with active comments -> content delete
+            batch.update(postRef, { 
+                content_deleted: true,
+                title: '(삭제됨)',
+                content: '삭제된 글입니다.'
             });
+        } else {
+            // Case: Deleting a comment, or a post with no active comments -> full delete
+            batch.update(postRef, { is_deleted: true });
+
+            // If deleting the last active comment, check if the parent post is content_deleted.
+            // If so, delete the parent post as well.
+            if (isComment && !activeCommentsExist && parentId) {
+                const parentRef = db.collection('posts').doc(parentId);
+                const parentDoc = await parentRef.get();
+                if (parentDoc.exists && parentDoc.data().content_deleted) {
+                    batch.update(parentRef, { is_deleted: true });
+                }
+            }
         }
 
         await batch.commit();
         
-        alert('게시물이 삭제되었습니다.');
         window.location.reload();
 
     } catch (error) {

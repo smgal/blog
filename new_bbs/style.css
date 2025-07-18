@@ -280,6 +280,16 @@ body {
     pointer-events: none;
 }
 
+.post.content-deleted .post-title-bar,
+.post.content-deleted .post-content {
+    color: #999;
+    background-color: #f8f9fa;
+}
+
+.post.content-deleted .post-content {
+    font-style: italic;
+}
+
 @media (max-width: 600px) {
     .form-row {
         flex-direction: column;

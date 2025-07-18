@@ -31,7 +31,7 @@ const loadPostAndComments = async (postId) => {
     const postRef = db.collection('posts').doc(postId);
     const postDoc = await postRef.get();
 
-    if (!postDoc.exists || postDoc.data().is_deleted) {
+    if (!postDoc.exists || (postDoc.data().is_deleted && !postDoc.data().content_deleted)) {
         postsContainer.innerHTML = '<p>게시물을 찾을 수 없거나 삭제되었습니다.</p>';
         return;
     }
@@ -65,6 +65,9 @@ const renderPost = (post, isComment, commentIndex) => {
     postElement.classList.add('post');
     if (isComment) {
         postElement.classList.add('comment');
+    }
+    if (post.content_deleted && !isComment) {
+        postElement.classList.add('content-deleted');
     }
 
     // Header Row
@@ -177,7 +180,7 @@ const renderPost = (post, isComment, commentIndex) => {
         const metaRightElement = document.createElement('div');
         metaRightElement.classList.add('post-meta-right');
 
-        if (post.password) {
+        if (post.password && !post.content_deleted) {
             const deleteButton = document.createElement('button');
             deleteButton.classList.add('delete-button');
             deleteButton.textContent = 'DELETE';
@@ -195,7 +198,7 @@ const renderPost = (post, isComment, commentIndex) => {
 
         const contentElement = document.createElement('div');
         contentElement.classList.add('post-content');
-        contentElement.textContent = post.content;
+        contentElement.textContent = post.content_deleted ? '삭제된 글입니다.' : post.content;
 
         postElement.appendChild(headerElement);
         postElement.appendChild(titleBarElement);
@@ -301,23 +304,51 @@ const deletePost = async (postId, isComment, parentId) => {
         const confirmation = confirm('정말로 이 게시물을 삭제하시겠습니까?');
         if (!confirmation) return;
 
+        // Check for active (not deleted) comments
+        const commentsQuery = db.collection('posts')
+            .where('parent_id', '==', (isComment ? parentId : postId))
+            .where('is_deleted', '==', false);
+        
+        const commentsSnapshot = await commentsQuery.get();
+        
+        let activeCommentsExist = false;
+        if (isComment) {
+            // If deleting a comment, check if other non-deleted comments exist
+            commentsSnapshot.forEach(commentDoc => {
+                if (commentDoc.id !== postId) {
+                    activeCommentsExist = true;
+                }
+            });
+        } else {
+            // If deleting a post, check if any non-deleted comments exist
+            activeCommentsExist = !commentsSnapshot.empty;
+        }
+
         const batch = db.batch();
 
-        // Mark the post/comment itself as deleted
-        batch.update(postRef, { is_deleted: true });
-
-        // If it's a main post, mark all its comments as deleted
-        if (!isComment) {
-            const commentsQuery = db.collection('posts').where('parent_id', '==', postId);
-            const commentsSnapshot = await commentsQuery.get();
-            commentsSnapshot.forEach(commentDoc => {
-                batch.update(commentDoc.ref, { is_deleted: true });
+        if (activeCommentsExist && !isComment) {
+            // Case: Deleting a post with active comments -> content delete
+            batch.update(postRef, { 
+                content_deleted: true,
+                title: '(삭제됨)',
+                content: '삭제된 글입니다.'
             });
+        } else {
+            // Case: Deleting a comment, or a post with no active comments -> full delete
+            batch.update(postRef, { is_deleted: true });
+
+            // If deleting the last active comment, check if the parent post is content_deleted.
+            // If so, delete the parent post as well.
+            if (isComment && !activeCommentsExist && parentId) {
+                const parentRef = db.collection('posts').doc(parentId);
+                const parentDoc = await parentRef.get();
+                if (parentDoc.exists && parentDoc.data().content_deleted) {
+                    batch.update(parentRef, { is_deleted: true });
+                }
+            }
         }
 
         await batch.commit();
-        
-        alert('삭제되었습니다.');
         
         if (!isComment) {
             window.location.href = 'index.html'; // Go back to home after deleting main post
