@@ -7,24 +7,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
-
     const db = firebase.firestore();
-    const counterRef = db.collection('counters').doc('visits');
+    const functions = firebase.functions();
+
     const counterSpan = document.getElementById('visit-counter');
 
-    const incrementCounter = async () => {
+    // Function to display the counter. It now only reads the total count.
+    const displayCounter = async () => {
+        const counterRef = db.collection('counters').doc('visits');
         try {
-            const newCount = await db.runTransaction(async (transaction) => {
-                const doc = await transaction.get(counterRef);
-                let count = 1;
-                if (doc.exists) {
-                    count = doc.data().count + 1;
-                }
-                transaction.set(counterRef, { count: count });
-                return count;
-            });
+            const doc = await counterRef.get();
+            let count = 0;
+            if (doc.exists) {
+                count = doc.data().count;
+            }
             
-            // 오늘 날짜를 YYYY/M/D 형식으로 가져옵니다.
             const today = new Date();
             const year = today.getFullYear();
             const month = today.getMonth() + 1;
@@ -32,16 +29,31 @@ document.addEventListener('DOMContentLoaded', () => {
             const dateString = `${year}/${month}/${day}`;
 
             if (counterSpan) {
-                counterSpan.textContent = `${dateString}까지 ${newCount.toLocaleString()}회 방문`;
+                counterSpan.textContent = `${dateString}까지 ${count.toLocaleString()}회 방문`;
             }
-
         } catch (error) {
-            console.error("Error updating counter: ", error);
+            console.error("Error reading counter:", error);
             if (counterSpan) {
                 counterSpan.textContent = '카운터 로딩 실패';
             }
         }
     };
 
-    incrementCounter();
+    // Call the Cloud Function to record the visit.
+    const recordVisit = async () => {
+        try {
+            const recordVisitFunction = functions.httpsCallable('recordVisit');
+            await recordVisitFunction({ referrer: document.referrer });
+        } catch (error) {
+            console.error('Error calling recordVisit function:', error);
+        }
+    };
+
+    // --- Main Execution ---
+    // 1. Call the function to record the visit in the background.
+    recordVisit();
+    
+    // 2. Immediately display the current counter value.
+    // This provides a fast UI response without waiting for the function to complete.
+    displayCounter();
 });
