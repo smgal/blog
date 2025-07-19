@@ -1,4 +1,5 @@
-const {onCall} = require("firebase-functions/v2/https");
+const {onCall, HttpsError} = require("firebase-functions/v2/https");
+const logger = require("firebase-functions/logger");
 const admin = require("firebase-admin");
 
 admin.initializeApp();
@@ -11,7 +12,6 @@ const getSearchKeyword = (referrer) => {
     const url = new URL(referrer);
     const hostname = url.hostname;
     
-    // List of search engines and their query parameters
     const searchEngines = {
       "google.": "q",
       "naver.com": "query",
@@ -29,7 +29,6 @@ const getSearchKeyword = (referrer) => {
     }
     return null;
   } catch (error) {
-    // This can happen if the referrer is not a valid URL.
     return null;
   }
 };
@@ -37,53 +36,111 @@ const getSearchKeyword = (referrer) => {
 exports.recordVisit = onCall(async (request) => {
   const referrer = request.data.referrer || null;
   
-  // Use a transaction to ensure all writes are atomic.
-  await db.runTransaction(async (transaction) => {
-    // 1. Increment total visits
-    const totalVisitsRef = db.collection("counters").doc("visits");
-    const totalVisitsDoc = await transaction.get(totalVisitsRef);
-    const newTotalVisits = (totalVisitsDoc.data()?.count || 0) + 1;
-    transaction.set(totalVisitsRef, { count: newTotalVisits }, { merge: true });
-
-    // 2. Increment daily stats
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, "0");
-    const dd = String(today.getDate()).padStart(2, "0");
-    const dateString = `${yyyy}-${mm}-${dd}`;
-    
-    const dailyStatsRef = db.collection("daily_stats").doc(dateString);
-    const dailyStatsDoc = await transaction.get(dailyStatsRef);
-    const newDailyCount = (dailyStatsDoc.data()?.count || 0) + 1;
-    transaction.set(dailyStatsRef, { count: newDailyCount }, { merge: true });
-
-    if (referrer) {
-      // 3. Increment referrer stats
+  // --- LOGGING FOR DEBUGGING ---
+  const debugData = { referrer };
+  if (referrer) {
       try {
-        const referrerUrl = new URL(referrer);
-        const hostname = referrerUrl.hostname.replace(/^www\./, ""); // remove www.
-        
-        const origin = request.rawRequest.headers.origin;
-        if (origin && hostname && hostname !== new URL(origin).hostname) {
-            const referrerRef = db.collection("referrers").doc(hostname);
-            const referrerDoc = await transaction.get(referrerRef);
-            const newReferrerCount = (referrerDoc.data()?.count || 0) + 1;
-            transaction.set(referrerRef, { count: newReferrerCount }, { merge: true });
-        }
+          const referrerUrl = new URL(referrer);
+          debugData.hostname = referrerUrl.hostname.replace(/^www\./, "");
+          const keyword = getSearchKeyword(referrer);
+          if (keyword) {
+              debugData.keyword = keyword;
+              debugData.sanitizedKeyword = keyword.toLowerCase().replace(/\//g, '_').trim();
+          }
       } catch (e) {
-        // Ignore invalid referrer URLs
+          debugData.parseError = e.message;
+      }
+  }
+  logger.info("Debug Visit Data", debugData);
+  // --- END LOGGING ---
+
+  try {
+    await db.runTransaction(async (transaction) => {
+      // --- 1. DEFINE ALL DOCUMENT REFERENCES ---
+      const totalVisitsRef = db.collection("counters").doc("visits");
+      
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, "0");
+      const dd = String(today.getDate()).padStart(2, "0");
+      const dateString = `${yyyy}-${mm}-${dd}`;
+      const dailyStatsRef = db.collection("daily_stats").doc(dateString);
+
+      let referrerRef = null;
+      let keywordRef = null;
+      let originalKeyword = null;
+
+      if (referrer) {
+        try {
+          const referrerUrl = new URL(referrer);
+          const hostname = referrerUrl.hostname.replace(/^www\./, "");
+          const origin = request.rawRequest.headers.origin;
+
+          if (origin && origin.startsWith("http")) {
+            const originHostname = new URL(origin).hostname;
+            if (hostname && hostname !== originHostname) {
+              referrerRef = db.collection("referrers").doc(hostname);
+            }
+          } else if (hostname) {
+            // Fallback for cases where origin is not available or invalid
+            referrerRef = db.collection("referrers").doc(hostname);
+          }
+        } catch (e) {
+          logger.warn("Could not parse referrer", {referrer, error: e.message});
+        }
+
+        const keyword = getSearchKeyword(referrer);
+        if (keyword) {
+          const sanitizedKeyword = keyword.toLowerCase().replace(/\//g, '_').trim();
+          if (sanitizedKeyword) {
+            keywordRef = db.collection("search_keywords").doc(sanitizedKeyword);
+            originalKeyword = keyword.toLowerCase();
+          }
+        }
       }
 
-      // 4. Increment search keyword stats
-      const keyword = getSearchKeyword(referrer);
-      if (keyword) {
-        const keywordRef = db.collection("search_keywords").doc(keyword.toLowerCase());
-        const keywordDoc = await transaction.get(keywordRef);
+      // --- 2. EXECUTE ALL READS DYNAMICALLY ---
+      const reads = [
+        transaction.get(totalVisitsRef),
+        transaction.get(dailyStatsRef)
+      ];
+      if (referrerRef) reads.push(transaction.get(referrerRef));
+      if (keywordRef) reads.push(transaction.get(keywordRef));
+      
+      const results = await Promise.all(reads);
+
+      const totalVisitsDoc = results[0];
+      const dailyStatsDoc = results[1];
+      
+      let docIndex = 2;
+      const referrerDoc = referrerRef ? results[docIndex++] : null;
+      const keywordDoc = keywordRef ? results[docIndex] : null;
+
+      // --- 3. EXECUTE ALL WRITES ---
+      const newTotalVisits = (totalVisitsDoc.data()?.count || 0) + 1;
+      transaction.set(totalVisitsRef, { count: newTotalVisits }, { merge: true });
+
+      const newDailyCount = (dailyStatsDoc.data()?.count || 0) + 1;
+      transaction.set(dailyStatsRef, { count: newDailyCount }, { merge: true });
+
+      if (referrerRef && referrerDoc) {
+        const newReferrerCount = (referrerDoc.data()?.count || 0) + 1;
+        transaction.set(referrerRef, { count: newReferrerCount }, { merge: true });
+      }
+
+      if (keywordRef && keywordDoc) {
         const newKeywordCount = (keywordDoc.data()?.count || 0) + 1;
-        transaction.set(keywordRef, { count: newKeywordCount }, { merge: true });
+        transaction.set(keywordRef, { count: newKeywordCount, original: originalKeyword }, { merge: true });
       }
-    }
-  });
+    });
 
-  return { success: true };
+    return { success: true };
+  } catch (error) {
+    logger.error("Transaction failed for recordVisit", {
+      errorMessage: error.message,
+      errorStack: error.stack,
+      referrer: referrer,
+    });
+    throw new HttpsError("internal", "Failed to record visit.");
+  }
 });
