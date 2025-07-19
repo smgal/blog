@@ -22,14 +22,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 count = doc.data().count;
             }
             
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = today.getMonth() + 1;
-            const day = today.getDate();
-            const dateString = `${year}/${month}/${day}`;
-
             if (counterSpan) {
-                counterSpan.textContent = `${dateString}까지 ${count.toLocaleString()}회 방문`;
+                const countStr = count.toString();
+                let imagesHtml = '';
+                for (const digit of countStr) {
+                    imagesHtml += `<img src="res/${digit}.gif" alt="${digit}">`;
+                }
+                counterSpan.innerHTML = `${imagesHtml}회 방문`;
             }
         } catch (error) {
             console.error("Error reading counter:", error);
