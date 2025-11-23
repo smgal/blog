@@ -6,104 +6,183 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=no" />
 	<title>SMgal 개인 페이지</title>
 	<link rel="icon" href="favicon.ico" type="image/x-icon">
-    <style>
-        /* 공통 스타일 */
-        body {
-            color: rgb(0, 0, 31);
-            background-color: white;
-            background-image: url(res/back01.jpg);
+	<style>
+		/* 공통 스타일 */
+		* {
+			box-sizing: border-box;
+		}
+
+		img {
+			max-width: 100%;
+			height: auto;
+		}
+
+		body {
+			color: rgb(0, 0, 31);
+			background-color: white;
+			background-image: url(res/back01.jpg);
 			font-family: 'Noto Sans KR', sans-serif;
-        }
-        a {
-            text-decoration: none; /* 링크 밑줄 제거 */
-            color: blue; /* 기본 링크 색상 */
-        }
-        a:visited {
-            color: purple; /* 방문한 링크 색상 */
-        }
-        a:active {
-            color: red; /* 활성 링크 색상 */
-        }
-        /* 폰트 크기 및 색상 클래스 */
-        .font-size-2 { font-size: 12px; }
-        .font-size-3 { font-size: 14px; }
-        .font-size-5 { font-size: 24px; }
-        .font-impact { font-family: Impact; }
-        .font-gulim { font-family: 'Noto Sans KR', sans-serif; }
+		}
 
-        /* 특정 색상 클래스 */
-        .color-90cd9e { color: #90cd9e; }
-        .color-84bc91 { color: #84bc91; }
-        .color-76a882 { color: #76a882; }
-        .color-4f7057 { color: #4f7057; }
-        .color-679272 { color: #679272; }
-        .color-587d61 { color: #587d61; }
-        .color-707080 { color: #707080; }
-        .color-606080 { color: #606080; }
+		a {
+			text-decoration: none;
+			/* 링크 밑줄 제거 */
+			color: blue;
+			/* 기본 링크 색상 */
+		}
 
-        /* 추가된 중앙 정렬 클래스 */
-        .text-center { text-align: center; }
-        .margin-center { margin: 0 auto; }
+		a:visited {
+			color: purple;
+			/* 방문한 링크 색상 */
+		}
 
-        /* 배경색 클래스 */
-        .bg-eef5ee { background-color: #eef5ee; }
-        .bg-eeeeee { background-color: #eeeeee; }
+		a:active {
+			color: red;
+			/* 활성 링크 색상 */
+		}
 
-        /* 메뉴 컨테이너 스타일 */
-        .menu-container {
-            display: flex;
-            justify-content: space-around;
-            border: 2px solid #666666; /* 기존 테이블의 외부 테두리 */
-            border-collapse: collapse; /* border-collapse는 table에만 적용되므로 제거 */
-        }
-        .menu-section {
-            padding: 0px;
-            text-align: left;
-            vertical-align: top; /* div에는 valign이 없으므로 제거 */
-            border-right: 2px solid #666666; /* 세로선 */
-        }
-        .menu-section:last-child {
-            border-right: none; /* 마지막 섹션에는 세로선 없음 */
-        }
-        .menu-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0px;
-        }
-        .menu-icon {
-            width: 19px; /* 기존 td width */
-            height: 24px; /* 기존 td height */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .menu-link {
-            flex-grow: 1;
-            height: 24px; /* 기존 td height */
-            display: flex;
-            align-items: center;
-        }
-        .menu-item-header {
-            margin-top: 4px;
-            margin-bottom: 0px;
-        }
-        .no-vertical-margin {
-            margin-top: 0;
-            margin-bottom: 0;
-        }
-    </style>
+		/* 폰트 크기 및 색상 클래스 */
+		.font-size-2 {
+			font-size: 12px;
+		}
+
+		.font-size-3 {
+			font-size: 14px;
+		}
+
+		.font-size-5 {
+			font-size: 24px;
+		}
+
+		.font-impact {
+			font-family: Impact;
+		}
+
+		.font-gulim {
+			font-family: 'Noto Sans KR', sans-serif;
+		}
+
+		/* 특정 색상 클래스 */
+		.color-90cd9e {
+			color: #90cd9e;
+		}
+
+		.color-84bc91 {
+			color: #84bc91;
+		}
+
+		.color-76a882 {
+			color: #76a882;
+		}
+
+		.color-4f7057 {
+			color: #4f7057;
+		}
+
+		.color-679272 {
+			color: #679272;
+		}
+
+		.color-587d61 {
+			color: #587d61;
+		}
+
+		.color-707080 {
+			color: #707080;
+		}
+
+		.color-606080 {
+			color: #606080;
+		}
+
+		/* 추가된 중앙 정렬 클래스 */
+		.text-center {
+			text-align: center;
+		}
+
+		.margin-center {
+			margin: 0 auto;
+		}
+
+		/* 배경색 클래스 */
+		.bg-eef5ee {
+			background-color: #eef5ee;
+		}
+
+		.bg-eeeeee {
+			background-color: #eeeeee;
+		}
+
+		/* 메뉴 컨테이너 스타일 */
+		.menu-container {
+			display: flex;
+			justify-content: space-around;
+			border: 2px solid #666666;
+			/* 기존 테이블의 외부 테두리 */
+			border-collapse: collapse;
+			/* border-collapse는 table에만 적용되므로 제거 */
+		}
+
+		.menu-section {
+			padding: 0px;
+			text-align: left;
+			vertical-align: top;
+			/* div에는 valign이 없으므로 제거 */
+			border-right: 2px solid #666666;
+			/* 세로선 */
+		}
+
+		.menu-section:last-child {
+			border-right: none;
+			/* 마지막 섹션에는 세로선 없음 */
+		}
+
+		.menu-item {
+			display: flex;
+			align-items: center;
+			margin-bottom: 0px;
+		}
+
+		.menu-icon {
+			width: 19px;
+			/* 기존 td width */
+			height: 24px;
+			/* 기존 td height */
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.menu-link {
+			flex-grow: 1;
+			height: 24px;
+			/* 기존 td height */
+			display: flex;
+			align-items: center;
+		}
+
+		.menu-item-header {
+			margin-top: 4px;
+			margin-bottom: 0px;
+		}
+
+		.no-vertical-margin {
+			margin-top: 0;
+			margin-bottom: 0;
+		}
+	</style>
 </head>
 
 <body>
-	<div class="text-center margin-center" style="width: 480px;">
-		<table cellpadding="0" width="480">
+	<div class="text-center margin-center" style="max-width: 480px; width: 100%;">
+		<table cellpadding="0" width="100%">
 			<tbody>
 				<tr>
-					<td class="text-center" valign="top" width="480">
-						<table class="margin-center" cellpadding="0" cellspacing="0" width="476">
+					<td class="text-center" valign="top" width="100%">
+						<table class="margin-center" cellpadding="0" cellspacing="0" width="100%">
 							<tbody>
 								<tr>
-									<td width="480">
+									<td width="100%">
 										<p class="text-center">
 											<span class="color-90cd9e font-impact font-size-5">SM</span>
 											<span class="color-84bc91 font-impact font-size-5">gal<b>의</b></span>
@@ -121,20 +200,21 @@
 								</tr>
 							</tbody>
 						</table>
-						<table cellpadding="0" width="480">
+						<table cellpadding="0" width="100%">
 							<tbody>
 								<tr>
-									<td width="480">
+									<td width="100%">
 										<p style="text-align: right; display: flex; justify-content: flex-end;">
-											<span id="visit-counter" class="font-size-2" style="font-size: 18px; display: flex; align-items: center;"></span>
+											<span id="visit-counter" class="font-size-2"
+												style="font-size: 18px; display: flex; align-items: center;"></span>
 										</p>
 									</td>
 								</tr>
 							</tbody>
 						</table>
 						<br>
-						<table bordercolordark="white" bordercolorlight="black" class="margin-center"
-							cellspacing="10" width="480">
+						<table bordercolordark="white" bordercolorlight="black" class="margin-center" cellspacing="10"
+							width="100%">
 							<tbody>
 								<tr style="border-style: inset; border-color: rgb(51, 51, 51);">
 									<td bordercolor="black"
@@ -142,8 +222,8 @@
 										class="bg-eef5ee">
 										<p class="text-center font-size-3">
 											여기는 https://smgal.com 입니다.<br>
-											2003년에 도메인과 함께 현재의 모습으로 개편되었고<br>
-											2025년에는 아카이빙 사이트로 리뉴얼 하였습니다.<br>
+											2003년에 현재의 모습으로 개편되었고<br>
+											지금은 아카이빙 사이트로 리뉴얼 하였습니다.<br>
 											앞으로는 방명록만 운용할 예정입니다.
 										</p>
 									</td>
@@ -152,8 +232,9 @@
 						</table>
 						<hr>
 						<br>
-						<div class="margin-center table-border-style menu-container" style="width: 450px;">
-							<div class="menu-section" style="width: 140px;">
+						<div class="margin-center table-border-style menu-container"
+							style="max-width: 450px; width: 100%;">
+							<div class="menu-section" style="flex: 1;">
 								<div class="menu-item-header">
 									<p class="no-vertical-margin">
 										<img src="res/menu-1.gif" alt="개인정보" height="20" width="69">
@@ -161,30 +242,37 @@
 								</div>
 								<div class="menu-item">
 									<div class="menu-icon">
-										<span class="color-707080 font-gulim font-size-2"><b><img src="res/menu-0.gif" height="20" width="18"></b></span>
+										<span class="color-707080 font-gulim font-size-2"><b><img src="res/menu-0.gif"
+													height="20" width="18"></b></span>
 									</div>
 									<div class="menu-link">
-										<p><a href="profile/index.htm" class="color-707080 font-gulim font-size-3"><b>프로필</b></a></p>
+										<p><a href="profile/index.htm"
+												class="color-707080 font-gulim font-size-3"><b>프로필</b></a></p>
 									</div>
 								</div>
 								<div class="menu-item">
 									<div class="menu-icon">
-										<span class="color-707080 font-gulim font-size-2"><b><img src="res/menu-0.gif" height="20" width="18"></b></span>
+										<span class="color-707080 font-gulim font-size-2"><b><img src="res/menu-0.gif"
+													height="20" width="18"></b></span>
 									</div>
 									<div class="menu-link">
-										<p><a href="diary/index.html" class="color-606080 font-gulim font-size-3"><b>작업 일지 2003~</b></a></p>
+										<p><a href="diary/index.html" class="color-606080 font-gulim font-size-3"><b>작업
+													일지 2003~</b></a></p>
 									</div>
 								</div>
 								<div class="menu-item">
 									<div class="menu-icon">
-										<span class="color-707080 font-gulim font-size-2"><b><img src="res/menu-0.gif" height="20" width="18"></b></span>
+										<span class="color-707080 font-gulim font-size-2"><b><img src="res/menu-0.gif"
+													height="20" width="18"></b></span>
 									</div>
 									<div class="menu-link">
-										<p><a href="https://smgal-com-guestbook.web.app" target="_blank" class="color-707080 font-gulim font-size-3"><b>방명록</b></a>&nbsp;<img src="res/new.gif"></p>
+										<p><a href="https://smgal-com-guestbook.web.app" target="_blank"
+												class="color-707080 font-gulim font-size-3"><b>방명록</b></a>&nbsp;<img
+												src="res/new.gif"></p>
 									</div>
 								</div>
 							</div>
-							<div class="menu-section" style="width: 135px;">
+							<div class="menu-section" style="flex: 1;">
 								<div class="menu-item-header">
 									<p class="no-vertical-margin">
 										<img src="res/menu-2.gif" alt="게임 제작" height="20" width="69">
@@ -192,30 +280,36 @@
 								</div>
 								<div class="menu-item">
 									<div class="menu-icon">
-										<span class="color-707080 font-gulim font-size-2"><b><img src="res/menu-0.gif" height="20" width="18"></b></span>
+										<span class="color-707080 font-gulim font-size-2"><b><img src="res/menu-0.gif"
+													height="20" width="18"></b></span>
 									</div>
 									<div class="menu-link">
-										<p><a href="game-dev/index.htm" class="color-606080 font-gulim font-size-3"><b>자료 및 강좌</b></a></p>
+										<p><a href="game-dev/index.htm"
+												class="color-606080 font-gulim font-size-3"><b>자료 및 강좌</b></a></p>
 									</div>
 								</div>
 								<div class="menu-item">
 									<div class="menu-icon">
-										<span class="color-707080 font-gulim font-size-2"><b><img src="res/menu-0.gif" height="20" width="18"></b></span>
+										<span class="color-707080 font-gulim font-size-2"><b><img src="res/menu-0.gif"
+													height="20" width="18"></b></span>
 									</div>
 									<div class="menu-link">
-										<p><a href="bbs_dev/index.html" class="color-606080 font-gulim font-size-3"><b>개발 관련 게시판</b></a></p>
+										<p><a href="bbs_dev/index.html"
+												class="color-606080 font-gulim font-size-3"><b>개발 관련 게시판</b></a></p>
 									</div>
 								</div>
 								<div class="menu-item">
 									<div class="menu-icon">
-										<span class="color-707080 font-gulim font-size-2"><b><img src="res/menu-0.gif" height="20" width="18"></b></span>
+										<span class="color-707080 font-gulim font-size-2"><b><img src="res/menu-0.gif"
+													height="20" width="18"></b></span>
 									</div>
 									<div class="menu-link">
-										<p><a href="bbs_dev_avej/index.html" class="color-606080 font-gulim font-size-3"><b>Avej 개발 게시판</b></a></p>
+										<p><a href="bbs_dev_avej/index.html"
+												class="color-606080 font-gulim font-size-3"><b>Avej 개발 게시판</b></a></p>
 									</div>
 								</div>
 							</div>
-							<div class="menu-section" style="width: 186px;">
+							<div class="menu-section" style="flex: 1;">
 								<div class="menu-item-header">
 									<p class="no-vertical-margin">
 										<img src="res/menu-3.gif" alt="기타" height="20" width="35">
@@ -223,47 +317,58 @@
 								</div>
 								<div class="menu-item">
 									<div class="menu-icon">
-										<span class="color-707080 font-gulim font-size-2"><b><img src="res/menu-0.gif" height="20" width="18"></b></span>
+										<span class="color-707080 font-gulim font-size-2"><b><img src="res/menu-0.gif"
+													height="20" width="18"></b></span>
 									</div>
 									<div class="menu-link">
 										<p><b>
-											<span class="color-606080 font-gulim font-size-3"><a href="http://smgal.com/figure_blog" target=_blank class="color-606080 font-gulim font-size-3">피규어 제작소(x)</a></span>
-										</b></p>
+												<span class="color-606080 font-gulim font-size-3"><a
+														href="http://smgal.com/figure_blog" target=_blank
+														class="color-606080 font-gulim font-size-3">피규어
+														제작소(x)</a></span>
+											</b></p>
 									</div>
 								</div>
 								<div class="menu-item">
 									<div class="menu-icon">
-										<span class="color-707080 font-gulim font-size-2"><b><img src="res/menu-0.gif" height="20" width="18"></b></span>
+										<span class="color-707080 font-gulim font-size-2"><b><img src="res/menu-0.gif"
+													height="20" width="18"></b></span>
 									</div>
 									<div class="menu-link">
 										<p><b>
-											<span class="color-606080 font-gulim font-size-2"><a href="bbs_10y/index.html" target=_blank class="color-606080 font-gulim font-size-3">지인/ 우인/동인 게시판</a></span>
-										</b></p>
+												<span class="color-606080 font-gulim font-size-2"><a
+														href="bbs_10y/index.html" target=_blank
+														class="color-606080 font-gulim font-size-3">지인/우인/동인</a></span>
+											</b></p>
 									</div>
 								</div>
 								<div class="menu-item">
 									<div class="menu-icon">
-										<span class="color-707080 font-gulim font-size-2"><b><img src="res/menu-0.gif" height="20" width="18"></b></span>
+										<span class="color-707080 font-gulim font-size-2"><b><img src="res/menu-0.gif"
+													height="20" width="18"></b></span>
 									</div>
 									<div class="menu-link">
 										<p><b>
-											<span class="color-606080 font-gulim font-size-2"><a href="guestbook/index.html" target=_blank class="color-606080 font-gulim font-size-3">이전 방명록 (놀이터)</a></span>
-										</b></p>
+												<span class="color-606080 font-gulim font-size-2"><a
+														href="guestbook/index.html" target=_blank
+														class="color-606080 font-gulim font-size-3">이전 방명록
+														(놀이터)</a></span>
+											</b></p>
 									</div>
 								</div>
 							</div>
 						</div>
 						<br>
 						<hr>
-						<table bordercolordark="white" bordercolorlight="black" class="margin-center"
-							cellspacing="10" width="480">
+						<table bordercolordark="white" bordercolorlight="black" class="margin-center" cellspacing="10"
+							width="100%">
 							<tbody>
 								<tr style="border-style: inset; border-color: rgb(51, 51, 51);">
 									<td bordercolor="black"
 										style="border-style: dotted; border-color: rgb(102, 102, 102);"
 										class="bg-eeeeee">
 										<p class="text-center">게임 개발 블로그 <a href="http://avej.com/"
-													target=_blank>http://avej.com</a></p>
+												target=_blank>http://avej.com</a></p>
 									</td>
 								</tr>
 							</tbody>

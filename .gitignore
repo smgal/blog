@@ -70,3 +70,5 @@ node_modules/
 .dataconnect
 
 new_bbs/firebase-config.js
+
+run.sh
