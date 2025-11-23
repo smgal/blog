@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제로보드 게시판</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="board">
+        <div class="notice">
+            <p><strong>공지:</strong> 이 게시판은 제로보드 데이터를 복원한 Read-only 게시판입니다.</p>
+            <ul>
+                <li>2004년~2010년 동안의 존재했던 게시판을 복원하였습니다.</li>
+                <li>게시글 작성, 수정, 삭제 기능은 제공하지 않습니다.</li>
+                <li>원본 데이터의 형태를 최대한 보존하여 표시합니다.</li>
+            </ul>
+        </div>
+
+        <div id="pagination-top" class="pagination"></div>
+
+        <div id="posts-container">
+            <!-- 게시글이 여기에 동적으로 추가됩니다. -->
+        </div>
+
+        <div id="pagination-bottom" class="pagination"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
