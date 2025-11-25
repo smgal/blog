@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>avej.com 의 구 게시물</title>
+    <meta name="GENERATOR" content="Microsoft DHTML Editing Control">
+    <style>
+        .item-container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            flex-basis: 45%;
+            /* Force 2 items per row */
+            max-width: 300px;
+            /* Optional: Limit max width */
+        }
+
+        .item-title {
+            margin: 0 0 10px 0;
+            font-weight: bold;
+            line-height: 1.2;
+            /* Minimize line height */
+        }
+
+        .block-text {
+            display: block;
+        }
+    </style>
+</head>
+
+<body style="background-image: url('bg_smgal.jpg'); margin: 0; padding: 20px;">
+    <p style="text-align: center;"><strong>avej.com 에 있던 예전 프로젝트 목록입니다.</strong></p>
+    <hr>
+    <div
+        style="display: flex; justify-content: center; align-items: stretch; gap: 30px 2px; flex-wrap: wrap; max-width: 420px; margin: 0 auto;">
+
+        <div class="item-container">
+            <p class="item-title">
+                <span style="font-size: small;">15년 전의 게임을 만들자<br></span>
+            </p>
+            <a href="fw-mu-arae/index.html"><img src="proj_avej01.bmp"
+                    style="width: 200px; height: 321px; border: none;" alt="15년 전의 게임을 만들자"></a>
+        </div>
+        <div class="item-container">
+            <p class="item-title">
+                <span style="font-size: small;">데자뷰 던전<br></span>
+            </p>
+            <a href="fw-deja-dun/index.html"><img src="proj_dejadun.bmp"
+                    style="width: 200px; height: 320px; border: none;" alt="데자뷰 던전"></a>
+        </div>
+
+        <!-- Force break not needed with flex-basis, but user asked for newline logic. Flex wrap handles it. -->
+
+        <div class="item-container">
+            <p class="item-title">
+                <span class="block-text" style="font-size: small; color: #3366CC;">비전속으로,</span>
+                <span class="block-text" style="font-size: small; color: #3366CC;">다크메이지 실리안 카미너스</span>
+                <span class="block-text" style="font-size: small;">Windows 버전</span>
+            </p>
+            <a href="fw-lore-win/index.html"><img src="proj_winmystic.gif"
+                    style="width: 200px; height: 320px; border: none;" alt="비전속으로"></a>
+        </div>
+
+        <div class="item-container">
+            <p class="item-title">
+                <span class="block-text" style="font-size: small; color: #3366CC;">그녀의 기사단</span>
+                <span class="block-text" style="font-size: small;">98년 버전</span>
+                <span class="block-text" style="font-size: small;">[5.19M]</span>
+            </p>
+            <a href="fw-kanojyono/HerKnight0.zip"><img src="proj_kanojyo0.gif"
+                    style="width: 200px; height: 320px; border: none;" alt="그녀의 기사단"></a>
+        </div>
+    </div>
+</body>
+
+</html>
