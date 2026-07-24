@@ -2,6 +2,9 @@
   "functions": {
     "source": "functions"
   },
+  "firestore": {
+    "rules": "blog/firestore.rules"
+  },
   "hosting": [
     {
       "target": "guestbook",
@@ -15,6 +18,15 @@
     {
       "target": "visits",
       "public": ".",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
+    },
+    {
+      "target": "blog",
+      "public": "blog",
       "ignore": [
         "firebase.json",
         "**/.*",
