@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시물 - SMgal 블로그</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main id="board">
+        <header class="blog-header compact">
+            <div>
+                <h1><a href="index.html">SMgal 블로그</a></h1>
+                <p><a href="index.html">← 목록으로 돌아가기</a></p>
+            </div>
+            <a class="admin-link" href="admin.html">ADMIN</a>
+        </header>
+
+        <section id="post-container" aria-live="polite">
+            <p class="loading-message">게시물을 불러오는 중...</p>
+        </section>
+
+        <section class="comments-section">
+            <h2>댓글 <span id="visible-comment-count">0</span></h2>
+            <div id="comments-container" class="comments-container" aria-live="polite"></div>
+        </section>
+
+        <form id="comment-form" class="post-form">
+            <h2>댓글 남기기</h2>
+            <p id="comment-login-state" class="form-help"></p>
+            <div class="form-row">
+                <input type="text" id="comment-author" maxlength="80" placeholder="이름" required>
+                <input type="email" id="comment-email" maxlength="200" placeholder="e-mail (선택)">
+            </div>
+            <div class="form-row password-row">
+                <input type="password" id="comment-password" maxlength="200" placeholder="비밀번호" autocomplete="new-password">
+                <span class="password-notice">(선택) 비밀번호 설정 시 댓글을 삭제할 수 있습니다.</span>
+            </div>
+            <div class="form-row">
+                <input type="text" id="comment-homepage" maxlength="500" placeholder="홈페이지 (선택)">
+            </div>
+            <textarea id="comment-content" maxlength="10000" placeholder="댓글을 입력하세요..." required></textarea>
+            <button type="submit" id="submit-comment">댓글 등록</button>
+        </form>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="post.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>블로그 관리 - SMgal 블로그</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main id="board" class="admin-board">
+        <header class="blog-header compact">
+            <div>
+                <h1>블로그 관리</h1>
+                <p><a href="index.html">← 공개 블로그로 돌아가기</a></p>
+            </div>
+        </header>
+
+        <section id="auth-panel" class="admin-panel auth-panel">
+            <p id="auth-status">관리자 로그인이 필요합니다.</p>
+            <div class="button-row">
+                <button type="button" id="sign-in-button" class="primary-button">Google로 로그인</button>
+                <button type="button" id="sign-out-button" class="secondary-button hidden">로그아웃</button>
+            </div>
+        </section>
+
+        <div id="admin-dashboard" class="hidden">
+            <section class="admin-panel">
+                <h2 id="post-form-heading">새 글 작성</h2>
+                <form id="admin-post-form" class="post-form admin-form">
+                    <input type="hidden" id="edit-post-id">
+                    <div class="form-row">
+                        <input type="text" id="admin-post-title" maxlength="200" placeholder="제목" required>
+                        <select id="admin-post-category" aria-label="카테고리" required>
+                            <option value="">카테고리 선택</option>
+                        </select>
+                    </div>
+                    <textarea id="admin-post-content" maxlength="100000" placeholder="본문 (간단한 마크다운 사용 가능)" required></textarea>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="admin-post-pinned">
+                        상단 고정
+                    </label>
+                    <p class="form-help">지원 서식: ## 제목, **굵게**, *기울임*, `code`, [텍스트](https://주소)</p>
+                    <div class="button-row end">
+                        <button type="button" id="cancel-post-edit" class="secondary-button hidden">편집 취소</button>
+                        <button type="submit" id="save-post-button" class="primary-button">글 저장</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="admin-panel">
+                <h2>카테고리 관리</h2>
+                <form id="category-form" class="inline-form">
+                    <input type="hidden" id="edit-category-id">
+                    <input type="text" id="category-name" maxlength="80" placeholder="카테고리 이름" required>
+                    <input type="number" id="category-order" value="0" step="1" aria-label="정렬 순서">
+                    <button type="submit" class="primary-button">저장</button>
+                    <button type="button" id="cancel-category-edit" class="secondary-button hidden">취소</button>
+                </form>
+                <p class="form-help">카테고리를 삭제해도 기존 글의 카테고리 값은 유지됩니다.</p>
+                <div id="categories-admin-list" class="admin-list"></div>
+            </section>
+
+            <section class="admin-panel">
+                <div class="section-heading">
+                    <h2>글 관리</h2>
+                    <button type="button" id="refresh-posts" class="secondary-button">새로고침</button>
+                </div>
+                <div id="admin-posts-list" class="admin-list"></div>
+            </section>
+
+            <section class="admin-panel">
+                <div class="section-heading">
+                    <h2>댓글 관리</h2>
+                    <button type="button" id="refresh-comments" class="secondary-button">새로고침</button>
+                </div>
+                <div id="admin-comments-list" class="admin-list"></div>
+            </section>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

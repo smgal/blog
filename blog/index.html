@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMgal 블로그</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main id="board">
+        <header class="blog-header">
+            <div>
+                <h1><a href="index.html">SMgal 블로그</a></h1>
+                <p>기록과 생각을 남기는 개인 블로그입니다.</p>
+            </div>
+            <a class="admin-link" href="admin.html">ADMIN</a>
+        </header>
+
+        <nav id="category-filters" class="category-filters" aria-label="카테고리 필터"></nav>
+
+        <div id="pagination-top" class="pagination"></div>
+
+        <div class="comments-toolbar">
+            <button
+                type="button"
+                id="toggle-all-comments"
+                class="comments-toggle-all"
+                role="switch"
+                aria-checked="true"
+            >댓글 모두 접기</button>
+        </div>
+
+        <section id="posts-container" aria-live="polite">
+            <p class="loading-message">게시물을 불러오는 중...</p>
+        </section>
+
+        <div id="pagination-bottom" class="pagination"></div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
