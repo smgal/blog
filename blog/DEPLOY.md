@@ -27,6 +27,12 @@ npx firebase-tools login
 npx firebase-tools projects:list
 ```
 
+토큰 만료가 되었다면 다음과 같이...
+```sh
+npx firebase-tools logout
+npx firebase-tools login --reauth
+```
+
 프로젝트 목록에서 다음 두 프로젝트에 접근할 수 있는지 확인한다.
 
 - `smgal-com-guestbook`: 방명록, 블로그, Firebase Auth, 블로그 Firestore
